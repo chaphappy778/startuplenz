@@ -1,0 +1,26 @@
+{
+  "name": "startuplenz-sync",
+  "version": "1.0.0",
+  "description": "StartupLenz — Nightly Sync Orchestrator",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "sync",
+    "cost-data",
+    "alerts",
+    "supabase"
+  ],
+  "author": "StartupLenz",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.43.4",
+    "dotenv": "^16.4.5"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}

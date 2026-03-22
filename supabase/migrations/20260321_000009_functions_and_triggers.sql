@@ -9,8 +9,9 @@
 
 -- ---------------------------------------------------------------------------
 -- 1. Auto-provision a users row when auth.users gets a new entry
---    Fires via Supabase Auth hook (or manually wired as a trigger on auth.users
---    if you have superuser access in a self-hosted deployment).
+--    NOTE: Creating triggers on auth.users may be disallowed on Supabase hosted
+--    projects. Prefer using Auth Webhooks or an Edge Function if permission
+--    errors occur.
 -- ---------------------------------------------------------------------------
 create or replace function handle_new_auth_user()
 returns trigger
@@ -22,13 +23,11 @@ declare
   v_free_tier_id uuid;
   v_sub_id       uuid;
 begin
-  -- Look up the Free tier
   select id into v_free_tier_id
   from subscription_tiers
   where slug = 'free'
   limit 1;
 
-  -- Create the internal user row
   insert into users (auth_user_id, email, full_name)
   values (
     new.id,
@@ -37,23 +36,23 @@ begin
   )
   on conflict (auth_user_id) do nothing;
 
-  -- Create a Free subscription for the new user
   insert into user_subscriptions (user_id, tier_id, status)
   select u.id, v_free_tier_id, 'active'
   from users u
   where u.auth_user_id = new.id
   returning id into v_sub_id;
 
-  -- Point the user's active_subscription_id at it
   update users
   set active_subscription_id = v_sub_id
-  where auth_user_id = new.id;
+  where auth_user_id = new.id
+    and v_sub_id is not null;
 
   return new;
 end;
 $$;
 
--- Wire the trigger (idempotent: drop first)
+revoke execute on function handle_new_auth_user() from public;
+
 drop trigger if exists on_auth_user_created on auth.users;
 create trigger on_auth_user_created
   after insert on auth.users
@@ -61,16 +60,24 @@ create trigger on_auth_user_created
 
 -- ---------------------------------------------------------------------------
 -- 2. Auto-increment plan version number on plan_snapshots insert
+--    Advisory lock serializes concurrent inserts per saved_plan_id to
+--    prevent duplicate version numbers from a MAX() race condition.
 -- ---------------------------------------------------------------------------
 create or replace function set_plan_snapshot_version()
 returns trigger
 language plpgsql
 as $$
+declare
+  _lock_key bigint;
 begin
+  _lock_key := ('x' || substr(md5(new.saved_plan_id::text), 1, 16))::bit(64)::bigint;
+  perform pg_advisory_xact_lock(_lock_key);
+
   select coalesce(max(version_number), 0) + 1
-  into new.version_number
+    into new.version_number
   from plan_snapshots
   where saved_plan_id = new.saved_plan_id;
+
   return new;
 end;
 $$;
@@ -81,7 +88,7 @@ create trigger trg_plan_snapshot_version
   for each row execute procedure set_plan_snapshot_version();
 
 -- ---------------------------------------------------------------------------
--- 3. Auto-update saved_plans.updated_at on any row change
+-- 3. Auto-update updated_at on saved_plans and users
 -- ---------------------------------------------------------------------------
 create or replace function touch_updated_at()
 returns trigger
@@ -105,21 +112,24 @@ create trigger trg_users_updated_at
 
 -- ---------------------------------------------------------------------------
 -- 4. Flip is_current atomically when a new cost_snapshot is inserted
---    Ensures the partial unique index is never violated.
+--    Advisory lock keyed by data_source_mapping_id prevents concurrent
+--    inserts from violating the partial unique index.
 -- ---------------------------------------------------------------------------
 create or replace function flip_current_snapshot()
 returns trigger
 language plpgsql
 as $$
+declare
+  _lock_key bigint;
 begin
-  -- Mark the previous current snapshot as no longer current
+  _lock_key := ('x' || substr(md5(new.data_source_mapping_id::text), 1, 16))::bit(64)::bigint;
+  perform pg_advisory_xact_lock(_lock_key);
+
   update cost_snapshots
   set is_current = false
   where data_source_mapping_id = new.data_source_mapping_id
-    and is_current = true
-    and id <> new.id;
+    and is_current = true;
 
-  -- Ensure the incoming row is marked current
   new.is_current = true;
   return new;
 end;
@@ -133,9 +143,7 @@ create trigger trg_flip_current_snapshot
 -- ---------------------------------------------------------------------------
 -- 5. Alert fan-out
 --    Queues one user_alert_queue row per affected Pro/Team user whenever
---    an alert_event is inserted. Users qualify if they have an active,
---    non-archived saved_plan for the affected vertical AND their tier
---    has alerts_enabled = true.
+--    an alert_event is inserted.
 -- ---------------------------------------------------------------------------
 create or replace function fanout_alert_to_users(p_alert_event_id uuid)
 returns void
@@ -147,37 +155,46 @@ declare
   v_vertical_input_id uuid;
   v_vertical_id       uuid;
 begin
-  -- Resolve which vertical_input and vertical this alert belongs to
   select dsm.vertical_input_id
   into v_vertical_input_id
   from alert_events ae
   join data_source_mappings dsm on dsm.id = ae.data_source_mapping_id
   where ae.id = p_alert_event_id;
 
+  if v_vertical_input_id is null then
+    raise notice 'fanout_alert_to_users: no data_source_mapping found for alert_event %', p_alert_event_id;
+    return;
+  end if;
+
   select vi.vertical_id
   into v_vertical_id
   from vertical_inputs vi
   where vi.id = v_vertical_input_id;
 
-  -- Fan out to every eligible user
+  if v_vertical_id is null then
+    raise notice 'fanout_alert_to_users: no vertical found for vertical_input %', v_vertical_input_id;
+    return;
+  end if;
+
   insert into user_alert_queue (user_id, alert_event_id, channel)
   select distinct
     sp.user_id,
     p_alert_event_id,
     'email'::alert_channel
   from saved_plans sp
-  join users u                  on u.id  = sp.user_id
-  join user_subscriptions us    on us.id = u.active_subscription_id
-  join subscription_tiers st    on st.id = us.tier_id
-  where sp.vertical_id  = v_vertical_id
-    and sp.is_archived  = false
+  join users u               on u.id  = sp.user_id
+  join user_subscriptions us on us.id = u.active_subscription_id
+  join subscription_tiers st on st.id = us.tier_id
+  where sp.vertical_id    = v_vertical_id
+    and sp.is_archived    = false
     and st.alerts_enabled = true
-    and us.status       = 'active'
+    and us.status         = 'active'
   on conflict (user_id, alert_event_id, channel) do nothing;
 end;
 $$;
 
--- Trigger that calls fanout automatically on alert_event insert
+revoke execute on function fanout_alert_to_users(uuid) from public;
+
 create or replace function trg_fanout_on_alert_event()
 returns trigger
 language plpgsql
@@ -194,48 +211,61 @@ create trigger trg_alert_event_fanout
   for each row execute procedure trg_fanout_on_alert_event();
 
 -- ---------------------------------------------------------------------------
--- 6. pg_cron — nightly sync schedule
---    Calls the Edge Function 'sync-cost-data' every night at 02:00 UTC.
---    Requires pg_cron + pg_net extensions (installed in migration 000001).
---    The Edge Function URL must be set in the Supabase project env vars.
+-- 6. Nightly sync schedule
+--    pg_cron on Supabase hosted does not support DO blocks or $$ quoting
+--    inside the job body string. The job body must be a single plain SQL
+--    statement with all internal quotes escaped as ''.
 --
---    To customise: update the cron expression or the Edge Function name.
---    To disable:   select cron.unschedule('nightly-cost-sync');
+--    If pg_cron or pg_net are not installed this block skips gracefully.
+--    Recommended alternative: use the Supabase Dashboard to schedule the
+--    Edge Function directly (Edge Functions → sync-cost-data → Schedule).
 -- ---------------------------------------------------------------------------
 do $$
 begin
-  -- Remove existing schedule if present so we can safely update it
-  perform cron.unschedule('nightly-cost-sync')
-  where exists (
-    select 1 from cron.job where jobname = 'nightly-cost-sync'
-  );
+  if not exists (select 1 from pg_extension where extname = 'pg_cron') then
+    raise notice 'pg_cron not installed — skipping nightly-cost-sync schedule';
+    return;
+  end if;
+
+  if not exists (
+    select 1 from pg_proc p
+    join pg_namespace n on n.oid = p.pronamespace
+    where p.proname = 'http_post' and n.nspname = 'net'
+  ) then
+    raise notice 'pg_net not available — skipping nightly-cost-sync schedule';
+    return;
+  end if;
+
+  if exists (select 1 from cron.job where jobname = 'nightly-cost-sync') then
+    perform cron.unschedule('nightly-cost-sync');
+  end if;
 
   perform cron.schedule(
     'nightly-cost-sync',
-    '0 2 * * *',   -- 02:00 UTC every day
-    $$
-      select net.http_post(
-        url     := current_setting('app.supabase_url') || '/functions/v1/sync-cost-data',
-        headers := jsonb_build_object(
-          'Content-Type',  'application/json',
-          'Authorization', 'Bearer ' || current_setting('app.supabase_service_role_key')
-        ),
-        body    := '{}'::jsonb
-      );
-    $$
+    '0 2 * * *',
+    'select net.http_post(
+       url     := current_setting(''app.supabase_url'') || ''/functions/v1/sync-cost-data'',
+       headers := jsonb_build_object(
+                    ''Content-Type'',  ''application/json'',
+                    ''Authorization'', ''Bearer '' || current_setting(''app.supabase_service_role_key'')
+                  ),
+       body    := ''{}''::jsonb
+     );'
   );
+
+  raise notice 'nightly-cost-sync scheduled successfully';
 end;
 $$;
 
 -- ---------------------------------------------------------------------------
 -- 7. Convenience view — current costs per vertical input
 --    Used by the formula engine to look up live input values without
---    joining through the is_current filter every time.
+--    repeating the is_current filter on every query.
 -- ---------------------------------------------------------------------------
 create or replace view current_costs as
 select
   vi.vertical_id,
-  vi.id           as vertical_input_id,
+  vi.id            as vertical_input_id,
   vi.input_key,
   vi.formula_key,
   cs.normalized_value,
@@ -247,5 +277,14 @@ join data_source_mappings dsm on dsm.id = cs.data_source_mapping_id
 join vertical_inputs vi       on vi.id  = dsm.vertical_input_id
 where cs.is_current = true;
 
--- Grant read access to authenticated users
 grant select on current_costs to authenticated;
+
+-- ---------------------------------------------------------------------------
+-- 8. Unique index on user_alert_queue
+--    Ensures ON CONFLICT (user_id, alert_event_id, channel) in the fan-out
+--    function has a concrete unique constraint to target.
+--    CREATE INDEX CONCURRENTLY cannot run inside a transaction block so this
+--    is issued as a plain statement, not wrapped in DO $$.
+-- ---------------------------------------------------------------------------
+create unique index if not exists idx_user_alert_queue_unique
+  on user_alert_queue (user_id, alert_event_id, channel);
