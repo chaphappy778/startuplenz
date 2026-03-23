@@ -3,70 +3,60 @@
  *
  * Data source: USITC Tariff Database API
  *   https://hts.usitc.gov/  (web)
- *   https://hts.usitc.gov/reststop/api/details/  (REST)
+ *   https://hts.usitc.gov/reststop/search  (REST — confirmed working 2026)
  *
  * Update cadence: USITC updates the HTS schedule at the start of each year
  * and issues supplements throughout the year for Section 301 tariffs.
  * We fetch nightly but only write new snapshot rows when values change.
  *
- * Tier 1 verticals → relevant HTS chapters/headings:
- *
- *   Craft supplies / yarn / fabric  → Ch 52 (cotton), Ch 55 (manmade fibers), Ch 60 (knit fabric)
- *   Candle / fragrance materials    → 3406.00 (candles), 3301.29 (essential oils), 2712.20 (paraffin)
- *   Packaging (boxes/bags)          → 4819.10 (cartons), 6305.33 (polypropylene bags)
- *   Apparel / print-on-demand blank → 6109.10 (cotton t-shirts), 6109.90 (other t-shirts)
- *   Food truck supplies             → 0901.21 (roasted coffee), 1902.30 (pasta), 2009 (juices)
- *
- * The USITC REST API returns JSON for a given HTS code.
- * Endpoint: GET https://hts.usitc.gov/reststop/api/details/en/{htsCode}
+ * The USITC REST API returns a JSON array of matching HTS records.
+ * Endpoint: GET https://hts.usitc.gov/reststop/search?keyword={htsCode}
+ * The old /reststop/api/details/en/{code} path returns 404 — it no longer exists.
  *
  * We store:
  *   - general (MFN) rate
  *   - special rate (GSP / free trade agreement rates if present)
  *   - col2 rate (adversarial countries)
- *   - any additional Section 301 rate note (parsed from footnote text)
  */
 
 const https = require('https');
 const { writeSnapshot } = require('../lib/snapshot');
 
-// HTS codes to monitor, grouped by vertical
+// HTS codes to monitor — item.hts must match the DB external_key after 'HTS:' prefix is added
 const HTS_CODES = [
-  // Candle / fragrance
-  { hts: '3406.00.0000', vertical: 'candle_bath',    label: 'Candles' },
-  { hts: '3301.29.5100', vertical: 'candle_bath',    label: 'Essential oils NES' },
-  { hts: '2712.20.0000', vertical: 'candle_bath',    label: 'Paraffin wax' },
-  // Craft / textile
-  { hts: '5205.11.0000', vertical: 'craft_handmade', label: 'Cotton yarn (single >714mn/kg)' },
-  { hts: '5512.11.0000', vertical: 'craft_handmade', label: 'Woven polyester fabric' },
-  // Packaging
-  { hts: '4819.10.0040', vertical: 'packaging',      label: 'Folding cartons / boxes' },
-  { hts: '6305.33.0010', vertical: 'packaging',      label: 'PP woven bags' },
-  // Apparel / POD blanks
-  { hts: '6109.10.0012', vertical: 'print_on_demand', label: 'Cotton t-shirts, mens' },
-  { hts: '6109.90.1067', vertical: 'print_on_demand', label: 'Manmade fiber t-shirts' },
-  // Subscription box / general
-  { hts: '4819.20.0040', vertical: 'subscription_box', label: 'Folding boxes, other' },
+  { hts: '3907.30.0000', vertical: 'candle_bath',    label: 'Epoxide resins' },
+  { hts: '5509.21.0000', vertical: 'craft_handmade', label: 'Yarn of polyester staple fibers' },
+  { hts: '3923.21.0000', vertical: 'packaging',      label: 'Sacks and bags of polymers of ethylene' },
 ];
 
 function fetchHTS(htsCode) {
   return new Promise((resolve, reject) => {
-    // Remove dots and padding zeros for the API endpoint
-    const code = htsCode.replace(/\./g, '');
-    const url = `https://hts.usitc.gov/reststop/api/details/en/${code}`;
+    // Pass the dotted HTS code directly as the search keyword — no dot-stripping.
+    // The search endpoint accepts '3907.30.0000' and returns an array of matching records.
+    const url = 'https://hts.usitc.gov/reststop/search?keyword=' + encodeURIComponent(htsCode);
 
     https.get(url, res => {
       let data = '';
       res.on('data', chunk => (data += chunk));
       res.on('end', () => {
         if (res.statusCode === 404) {
-          resolve(null); // code not found — skip gracefully
+          resolve(null); // endpoint not found — skip gracefully
           return;
         }
         try {
-          resolve(JSON.parse(data));
+          const body = JSON.parse(data);
+          // Response is an array of matching records. Find the exact htsno match.
+          // The API returns htsno in 10-digit dotted form ('3907.30.00.00') but our
+          // HTS_CODES use the 8-digit form ('3907.30.0000'). Compare by stripping dots
+          // and using a prefix/startsWith match to handle both formats safely.
+          const record = Array.isArray(body) ? body.find(r => {
+            const normalized = r.htsno.replace(/\./g, '');
+            const target = htsCode.replace(/\./g, '');
+            return normalized.startsWith(target) || target.startsWith(normalized);
+          }) : body;
+          resolve(record);
         } catch (e) {
-          reject(new Error(`HTS JSON parse error for ${htsCode}: ${e.message}`));
+          reject(new Error('HTS JSON parse error for ' + htsCode + ': ' + e.message));
         }
       });
     }).on('error', reject);
@@ -92,31 +82,22 @@ async function syncUSITC(supabase, syncRunId) {
     // Gentle rate limiting — USITC is a public server
     await new Promise(r => setTimeout(r, 300));
 
-    let result;
+    let record;
     try {
-      result = await fetchHTS(item.hts);
+      record = await fetchHTS(item.hts);
     } catch (err) {
-      console.warn(`[usitc] skipping ${item.hts}: ${err.message}`);
+      console.warn(`[usitc] fetch error for ${item.hts}: ${err.message}`);
       continue;
     }
 
-    if (!result) continue;
-
-    // The USITC API response shape varies; normalise defensively
-    const record = Array.isArray(result) ? result[0] : result;
     if (!record) continue;
 
     const generalRate = parseRate(record.general || record.generalRate || '');
     const specialRate = parseRate(record.special || record.specialRate || '');
-
-    // rawValue:        the general (MFN) rate as a decimal, or -1 sentinel for compound duties
-    // normalizedValue: same — rate is already a clean decimal (0.065 = 6.5%)
-    //                  For compound/specific duties where rate is null, we store -1
-    //                  so the NOT NULL constraint is satisfied; metadataJson holds the raw string.
     const numericRate = generalRate.rate ?? -1;
 
     const snapshotResult = await writeSnapshot(supabase, {
-      externalKey:     item.hts,          // e.g. '4819.10.0040'
+      externalKey:     `HTS:${item.hts}`,
       syncRunId,
       rawValue:        numericRate,
       normalizedValue: numericRate,
@@ -125,9 +106,9 @@ async function syncUSITC(supabase, syncRunId) {
         hts_code:     item.hts,
         vertical:     item.vertical,
         label:        item.label,
-        raw_rate:     generalRate.raw,    // original string e.g. "6.5%" or "29.8¢/kg+4.5%"
+        raw_rate:     generalRate.raw,
         special_rate: specialRate.raw,
-        col2_rate:    record.col2 || record.col2Rate || null,
+        col2_rate:    record.col2 || record.other || null,
         description:  record.description || null,
         period:       new Date().toISOString().slice(0, 7),
         is_compound:  generalRate.rate === null,

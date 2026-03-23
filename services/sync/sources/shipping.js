@@ -189,11 +189,9 @@ async function syncShipping(supabase, syncRunId) {
       }
 
       for (const rate of rates) {
-        // externalKey must match the external_key stored in data_source_mappings.
-        // Pattern: 'shipping_{service_token}_{zone_label}_{weight}lb'
-        // e.g. 'shipping_ups_ground_zone4_ny_chicago_2lb'
-        const externalKey = `shipping_${rate.service}_${zone.label}_${weightLb}lb`
-          .replace(/\s+/g, '_').toLowerCase();
+        // externalKey must exactly match data_source_mappings.external_key.
+        // Pattern: 'shippo:{service_token}'  e.g. 'shippo:usps_first_class_package'
+        const externalKey = `shippo:${rate.service}`.toLowerCase();
 
         const result = await writeSnapshot(supabase, {
           externalKey,

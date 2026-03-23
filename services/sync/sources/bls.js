@@ -25,13 +25,11 @@ const { writeSnapshot } = require('../lib/snapshot');
 
 // Series → our internal cost_category mapping
 const SERIES_MAP = [
-  { seriesId: 'WPU03THRU15', category: 'materials_general',      label: 'PPI All Commodities' },
-  { seriesId: 'WPU0913',     category: 'packaging_plastics',     label: 'PPI Plastics Products' },
-  { seriesId: 'WPU0312',     category: 'packaging_cardboard',    label: 'PPI Paperboard Containers' },
-  { seriesId: 'WPU0561',     category: 'materials_chemicals',    label: 'PPI Industrial Chemicals' },
-  { seriesId: 'WPU0371',     category: 'materials_textile',      label: 'PPI Yarn & Thread Mills' },
-  { seriesId: 'PCU4931494931494', category: 'shipping_labor',    label: 'PPI Couriers & Messengers' },
-  { seriesId: 'CUUR0000SAF11',    category: 'food_away_from_home', label: 'CPI Food Away From Home' },
+  { seriesId: 'PCU325510325510', category: 'materials_chemicals',  label: 'PPI Industrial Chemicals & Plastics' },
+  { seriesId: 'PCU313110313110', category: 'materials_textile',    label: 'PPI Yarn & Thread Mills' },
+  { seriesId: 'PCU484122484122', category: 'shipping_labor',       label: 'PPI Couriers & Messengers' },
+  { seriesId: 'WPU0915',        category: 'packaging_plastics',   label: 'PPI Plastics Products' },
+  { seriesId: 'WPU0911',        category: 'packaging_cardboard',  label: 'PPI Paperboard Containers' },
 ];
 
 const BLS_API_URL = 'https://api.bls.gov/publicAPI/v2/timeseries/data/';

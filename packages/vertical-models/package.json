@@ -1,0 +1,10 @@
+{
+  "name": "@startuplenz/vertical-models",
+  "version": "1.0.0",
+  "main": "handmade/index.js",
+  "exports": {
+    "./handmade": "./handmade/index.js"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}
