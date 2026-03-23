@@ -1,0 +1,13 @@
+{
+  "name": "startuplenz",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "devDependencies": {
+    "supabase": "^2.83.0"
+  }
+}
