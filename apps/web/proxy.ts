@@ -19,7 +19,7 @@ const PROTECTED_PREFIXES = [
 // Routes that should redirect to /dashboard when the user IS authenticated.
 const AUTH_ONLY_PATHS = ['/login', '/signup']
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(

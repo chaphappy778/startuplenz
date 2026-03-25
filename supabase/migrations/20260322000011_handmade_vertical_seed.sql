@@ -60,28 +60,24 @@ BEGIN
     INSERT INTO vertical_inputs (
         id, vertical_id, input_key, display_label, unit_label,
         min_value, max_value, default_value, step_size,
-        formula_key,
         is_live_data, sort_order
     ) VALUES
     (
         gen_random_uuid(), v_vertical_id,
         'units_per_drop', 'Units per Drop', 'units',
         1, 500, 24, 1,
-        'units_per_drop',
         false, 10
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'drops_per_month', 'Drops per Month', 'drops',
         1, 12, 2, 1,
-        'drops_per_month',
         false, 20
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'sell_through_rate', 'Sell-Through Rate', '%',
         10, 100, 75, 5,
-        'sell_through_rate',
         false, 30
     ),
 
@@ -91,14 +87,12 @@ BEGIN
         gen_random_uuid(), v_vertical_id,
         'price_per_unit', 'Price per Unit', 'USD',
         1, 500, 14, 0.5,
-        'price_per_unit',
         false, 40
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'avg_order_size', 'Average Order Size', 'units',
         1, 10, 2, 0.5,
-        'avg_order_size',
         false, 50
     ),
 
@@ -108,28 +102,24 @@ BEGIN
         gen_random_uuid(), v_vertical_id,
         'material_cost_per_unit', 'Material Cost per Unit', 'USD',
         0.10, 200, 2.50, 0.10,
-        'material_cost_per_unit',
         true, 60
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'packaging_cost_per_unit', 'Packaging Cost per Unit', 'USD',
         0.05, 20, 0.75, 0.05,
-        'packaging_cost_per_unit',
         true, 70
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'labor_minutes_per_unit', 'Labor per Unit', 'mins',
         1, 480, 20, 1,
-        'labor_minutes_per_unit',
         false, 80
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'maker_hourly_rate', 'Maker Hourly Rate', 'USD/hr',
         0, 150, 15, 1,
-        'maker_hourly_rate',
         false, 90
     ),
 
@@ -139,14 +129,12 @@ BEGIN
         gen_random_uuid(), v_vertical_id,
         'avg_shipping_cost_per_order', 'Avg. Shipping Cost per Order', 'USD',
         0, 30, 4.50, 0.25,
-        'avg_shipping_cost_per_order',
         true, 100
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'free_shipping_threshold', 'Free Shipping Threshold', 'USD',
         0, 200, 35, 5,
-        'free_shipping_threshold',
         false, 110
     ),
 
@@ -156,28 +144,24 @@ BEGIN
         gen_random_uuid(), v_vertical_id,
         'platform_mix_etsy_pct', 'Etsy Channel Mix', '%',
         0, 100, 80, 5,
-        'platform_mix_etsy_pct',
         false, 120
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'etsy_offsite_ads_opt_out', 'Etsy Offsite Ads Opted Out', 'bool',
         0, 1, 0, 1,
-        'etsy_offsite_ads_opt_out',
         false, 130
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'ad_spend_pct_revenue', 'Ad Spend (% of Revenue)', '%',
         0, 30, 5, 1,
-        'ad_spend_pct_revenue',
         false, 140
     ),
     (
         gen_random_uuid(), v_vertical_id,
         'tiktok_affiliate_rate', 'TikTok Affiliate Rate', '%',
         0, 30, 10, 1,
-        'tiktok_affiliate_rate',
         false, 150
     ),
 
@@ -187,7 +171,6 @@ BEGIN
         gen_random_uuid(), v_vertical_id,
         'return_rate', 'Return / Refund Rate', '%',
         0, 20, 2, 0.5,
-        'return_rate',
         false, 160
     )
     ON CONFLICT (vertical_id, input_key) DO NOTHING;
@@ -236,22 +219,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_material,
-        'BLS_CPI',
+        'bls',
         'https://api.bls.gov/publicAPI/v2/timeseries/data/',
         '$.Results.series[0].data[0].value',
         'PCU325510325510',
         3.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_material
-          AND external_key = 'PCU325510325510'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     INSERT INTO data_source_mappings (
         id,
@@ -262,22 +240,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_material,
-        'BLS_CPI',
+        'bls',
         'https://api.bls.gov/publicAPI/v2/timeseries/data/',
         '$.Results.series[0].data[0].value',
         'PCU313110313110',
         4.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_material
-          AND external_key = 'PCU313110313110'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     INSERT INTO data_source_mappings (
         id,
@@ -288,22 +261,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_material,
-        'USITC_TARIFF',
+        'usitc',
         'https://api.usitc.gov/api/get_data_value',
         '$.data[0].duty_rate',
         'HTS:3907.30.0000',
         5.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_material
-          AND external_key = 'HTS:3907.30.0000'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     INSERT INTO data_source_mappings (
         id,
@@ -314,22 +282,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_material,
-        'USITC_TARIFF',
+        'usitc',
         'https://api.usitc.gov/api/get_data_value',
         '$.data[0].duty_rate',
         'HTS:5509.21.0060',
         5.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_material
-          AND external_key = 'HTS:5509.21.0060'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     INSERT INTO data_source_mappings (
         id,
@@ -340,22 +303,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_material,
-        'USITC_TARIFF',
+        'usitc',
         'https://api.usitc.gov/api/get_data_value',
         '$.data[0].duty_rate',
         'HTS:3923.21.0085',
         5.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_material
-          AND external_key = 'HTS:3923.21.0085'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     -- ── PACKAGING COST MAPPINGS ───────────────────────────────────────────────
 
@@ -368,22 +326,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_packaging,
-        'BLS_CPI',
+        'bls',
         'https://api.bls.gov/publicAPI/v2/timeseries/data/',
         '$.Results.series[0].data[0].value',
         'WPU0915',
         4.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_packaging
-          AND external_key = 'WPU0915'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     INSERT INTO data_source_mappings (
         id,
@@ -394,22 +347,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_packaging,
-        'BLS_CPI',
+        'bls',
         'https://api.bls.gov/publicAPI/v2/timeseries/data/',
         '$.Results.series[0].data[0].value',
         'WPU0911',
         4.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_packaging
-          AND external_key = 'WPU0911'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     -- ── SHIPPING COST MAPPINGS ────────────────────────────────────────────────
 
@@ -422,22 +370,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_shipping,
-        'SHIPPO_RATE',
+        'shippo',
         'https://api.goshippo.com/rates/',
         '$.amount',
         'shippo:usps_first_class_package',
         3.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_shipping
-          AND external_key = 'shippo:usps_first_class_package'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     INSERT INTO data_source_mappings (
         id,
@@ -448,22 +391,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_shipping,
-        'SHIPPO_RATE',
+        'shippo',
         'https://api.goshippo.com/rates/',
         '$.amount',
         'shippo:usps_priority_mail',
         3.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_shipping
-          AND external_key = 'shippo:usps_priority_mail'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     INSERT INTO data_source_mappings (
         id,
@@ -474,22 +412,17 @@ BEGIN
         external_key,
         change_alert_threshold_pct,
         is_active
-    )
-    SELECT
+    ) VALUES (
         gen_random_uuid(),
         v_input_shipping,
-        'BLS_CPI',
+        'bls',
         'https://api.bls.gov/publicAPI/v2/timeseries/data/',
         '$.Results.series[0].data[0].value',
         'PCU484122484122',
         3.0,
         true
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM data_source_mappings
-        WHERE vertical_input_id = v_input_shipping
-          AND external_key = 'PCU484122484122'
-    );
+    )
+    ON CONFLICT (vertical_input_id, external_key) DO NOTHING;
 
     RAISE NOTICE 'data_source_mappings seeded for handmade-craft vertical.';
     RAISE NOTICE '  material_cost_per_unit input id:      %', v_input_material;

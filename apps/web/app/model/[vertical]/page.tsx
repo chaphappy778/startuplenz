@@ -1,19 +1,39 @@
-import VerticalSelector from "@/components/VerticalSelector";
+// apps/web/app/model/[vertical]/page.tsx
+import { notFound, redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { canAccessVertical, getUser } from "@/lib/auth";
 
-export default function HomePage() {
+interface PageProps {
+  params: Promise<{ vertical: string }>;
+}
+
+export default async function VerticalModelPage({ params }: PageProps) {
+  const { vertical } = await params;
+  const supabase = await createClient();
+
+  const { data: verticalData } = await supabase
+    .from("verticals")
+    .select("id, slug, display_name, is_active")
+    .eq("slug", vertical)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  if (!verticalData) notFound();
+
+  const accessible = await canAccessVertical(verticalData.id);
+
+  if (!accessible) {
+    const user = await getUser();
+    redirect(user ? "/pricing" : `/signup?next=/model/${vertical}`);
+  }
+
   return (
-    <main className="home-page">
-      <div className="home-hero">
-        <div className="logo-mark">SL</div>
-        <h1 className="hero-title">
-          StartupLenz
-        </h1>
-        <p className="hero-sub">
-          Live-data cost modeling for entrepreneurs. Pick your vertical, move
-          the sliders, see exactly where your money goes.
-        </p>
-      </div>
-      <VerticalSelector />
+    <main className="mx-auto max-w-5xl px-4 py-8">
+      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+        {verticalData.display_name} Cost Model
+      </h1>
+      {/* TODO: <CalculatorClient verticalId={verticalData.id} /> */}
+      <p className="text-gray-500 text-sm">Calculator component goes here.</p>
     </main>
   );
 }

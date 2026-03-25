@@ -8,9 +8,6 @@
 
 -- ---------------------------------------------------------------------------
 -- Helper function
--- Translates the Supabase JWT subject (auth.uid()) into the internal
--- users.id used as the FK across all user-owned tables.
--- Declared STABLE so Postgres can cache it within a single query.
 -- ---------------------------------------------------------------------------
 create or replace function auth_user_id()
 returns uuid
@@ -24,7 +21,6 @@ $$;
 
 -- ---------------------------------------------------------------------------
 -- Enable RLS on every table
--- (Safe to run multiple times — Postgres ignores if already enabled)
 -- ---------------------------------------------------------------------------
 alter table users                   enable row level security;
 alter table user_subscriptions      enable row level security;
@@ -33,8 +29,6 @@ alter table plan_snapshots          enable row level security;
 alter table user_alert_queue        enable row level security;
 alter table alert_notification_log  enable row level security;
 
--- Public / shared tables — still enable RLS, but grant read to all
--- authenticated users via open SELECT policies
 alter table subscription_tiers      enable row level security;
 alter table verticals               enable row level security;
 alter table vertical_inputs         enable row level security;
@@ -70,16 +64,12 @@ create policy "users: update own"
   on users for update
   using (auth_user_id = auth.uid());
 
--- Insert handled by the auth trigger in 000009 (service role)
-
 -- ---------------------------------------------------------------------------
 -- USER_SUBSCRIPTIONS — own rows only
 -- ---------------------------------------------------------------------------
 create policy "user_subscriptions: select own"
   on user_subscriptions for select
   using (user_id = auth_user_id());
-
--- Writes handled by Stripe webhook via service role
 
 -- ---------------------------------------------------------------------------
 -- SAVED_PLANS — full CRUD on own rows
@@ -132,10 +122,8 @@ create policy "user_alert_queue: select own"
   on user_alert_queue for select
   using (user_id = auth_user_id());
 
--- Fan-out writes handled by service role (fanout_alert_to_users function)
-
 -- ---------------------------------------------------------------------------
--- ALERT_NOTIFICATION_LOG — readable if the parent queue item belongs to user
+-- ALERT_NOTIFICATION_LOG — readable if parent queue item belongs to user
 -- ---------------------------------------------------------------------------
 create policy "alert_notification_log: select own"
   on alert_notification_log for select
@@ -149,23 +137,27 @@ create policy "alert_notification_log: select own"
   );
 
 -- ---------------------------------------------------------------------------
--- PUBLIC READ TABLES — any authenticated user can read these
+-- PUBLIC READ TABLES
+-- verticals, vertical_inputs, vertical_access_limits — public read so
+-- unauthenticated users can browse verticals and the access gate can resolve
+-- tier permissions before a session exists.
+-- All other shared tables remain authenticated-only.
 -- ---------------------------------------------------------------------------
 create policy "subscription_tiers: read"
   on subscription_tiers for select
-  using (auth.role() = 'authenticated');
+  using (true);
 
 create policy "verticals: read"
   on verticals for select
-  using (auth.role() = 'authenticated');
+  using (true);
 
 create policy "vertical_inputs: read"
   on vertical_inputs for select
-  using (auth.role() = 'authenticated');
+  using (true);
 
 create policy "vertical_access_limits: read"
   on vertical_access_limits for select
-  using (auth.role() = 'authenticated');
+  using (true);
 
 create policy "data_source_mappings: read"
   on data_source_mappings for select
@@ -175,8 +167,6 @@ create policy "cost_snapshots: read"
   on cost_snapshots for select
   using (auth.role() = 'authenticated');
 
--- Sync run logs — authenticated users can see job history (useful for
--- "last updated" display in the UI); writes via service role only
 create policy "sync_runs: read"
   on sync_runs for select
   using (auth.role() = 'authenticated');
