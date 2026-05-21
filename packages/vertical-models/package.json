@@ -1,10 +1,20 @@
 {
   "name": "@startuplenz/vertical-models",
   "version": "1.0.0",
-  "main": "handmade/index.js",
+  "main": "handmade/model.js",
   "exports": {
-    "./handmade": "./handmade/index.js"
+    "./handmade": "./handmade/model.js",
+    "./food-truck": "./food-truck/model.js",
+    "./subscription-box": "./subscription-box/model.js",
+    "./candle-bath-body": "./candle-bath-body/model.js",
+    "./print-on-demand": "./print-on-demand/model.js",
+    "./digital-products": "./digital-products/model.js",
+    "./reseller": "./reseller/model.js",
+    "./cleaning-service": "./cleaning-service/model.js",
+    "./house-flipping": "./house-flipping/model.js",
+    "./slime-business": "./slime-business/model.js"
   },
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "_note": "handmade/index.js is a misplaced sync orchestrator (imports ./sources/* that don't exist here). The actual model engines live in <slug>/model.js. Each exports a runModel(values, snapshots) function; handmade returns its native rich shape and gets adapted in apps/web/lib/modelClient.ts, the rest return ModelOutput directly."
 }

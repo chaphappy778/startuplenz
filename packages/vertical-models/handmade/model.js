@@ -143,9 +143,31 @@ function _calcCore(inp) {
   const laborCostPerUnit= (inp.labor_minutes_per_unit / 60) * inp.maker_hourly_rate;
   const laborCost       = unitsSold * laborCostPerUnit;
 
+  // Channel mix — three channels (Etsy, TikTok Shop, own site/direct).
+  // Normalize against the sum so the user doesn't have to total 100 exactly;
+  // fall back to "100% Etsy" if all three are absent (legacy data shape).
+  const etsyShareIn   = +(inp.platform_mix_etsy_pct   ?? 0);
+  const tiktokShareIn = +(inp.platform_mix_tiktok_pct ?? 0);
+  const directShareIn = +(inp.platform_mix_direct_pct ?? 0);
+  let etsyMix, tiktokMix, directMix;
+  if (etsyShareIn + tiktokShareIn + directShareIn > 0) {
+    const sum = etsyShareIn + tiktokShareIn + directShareIn;
+    etsyMix   = etsyShareIn   / sum;
+    tiktokMix = tiktokShareIn / sum;
+    directMix = directShareIn / sum;
+  } else if (inp.platform_mix_etsy_pct !== undefined) {
+    // Legacy data with only the Etsy slider — treat rest as TikTok.
+    etsyMix = inp.platform_mix_etsy_pct / 100;
+    tiktokMix = 1 - etsyMix;
+    directMix = 0;
+  } else {
+    etsyMix = 0.80; tiktokMix = 0.20; directMix = 0;
+  }
+
+  // Direct-sale processor fee (Shopify Payments / Stripe) — own-site only.
+  const DIRECT_PROCESSING_PCT = 0.029;
+
   // Shipping
-  const etsyMix         = (inp.platform_mix_etsy_pct ?? 80) / 100;
-  const tiktokMix       = 1 - etsyMix;
   const freeShipThreshold = inp.free_shipping_threshold ?? 35;
   const avgOrderValue   = inp.price_per_unit * inp.avg_order_size;
   // If avg order exceeds threshold, we absorb shipping cost
@@ -188,7 +210,11 @@ function _calcCore(inp) {
     };
   }
 
-  const totalPlatformFees = etsyFeeTotal + tiktokFeeTotal;
+  // Direct (own-site) — only card processing applies
+  const directRevenue = netRevenue * directMix;
+  const directFeeTotal = directRevenue * DIRECT_PROCESSING_PCT;
+
+  const totalPlatformFees = etsyFeeTotal + tiktokFeeTotal + directFeeTotal;
 
   // Advertising
   const adSpend = grossRevenue * ((inp.ad_spend_pct_revenue ?? 5) / 100);
@@ -210,6 +236,7 @@ function _calcCore(inp) {
     grossProfit,
     etsyFeeBreakdown,
     tiktokFeeBreakdown,
+    directFeeTotal,
     totalPlatformFees,
     totalShippingCost,
     adSpend,
@@ -294,6 +321,7 @@ export function runModel(rawInputs, snapshots = {}) {
       fees: {
         etsy:    core.etsyFeeBreakdown,
         tiktok:  core.tiktokFeeBreakdown,
+        direct:  round2(core.directFeeTotal ?? 0),
         total:   round2(core.totalPlatformFees),
       },
       shipping: {

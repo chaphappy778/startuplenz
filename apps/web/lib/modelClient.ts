@@ -1,102 +1,198 @@
 /**
  * modelClient.ts
  *
- * Thin client that bridges the calculator UI to the vertical model package.
- * Today it runs a mock; when the real package lands, swap the import and
- * call signature — the rest of the UI needs no changes.
+ * Bridges the calculator UI to the vertical model package.
  *
- * Integration checklist (see README section "Wiring the real model"):
- *  1. Install @startuplenz/vertical-models from packages/vertical-models
- *  2. Replace the MOCK_OUTPUT block with: import { runModel } from '@startuplenz/vertical-models'
- *  3. Map SliderValues → the model's expected input shape (may need key renames)
- *  4. If the model is async (hits Supabase for live cost snapshots), await it and
- *     add loading state in AssumptionsPanel / page component
- *  5. Pass verticalSlug so the model knows which formula set to use
+ * computeModel() now calls the real `@startuplenz/vertical-models/handmade`
+ * engine and adapts its rich output shape to the simpler `ModelOutput` shape
+ * the existing UI components consume. Live cost snapshots are not wired in
+ * yet — that's Phase 3.5. When they are, `snapshots` should be passed as the
+ * second argument to `runModel()` and the live-data badge can be driven off
+ * the `liveDataApplied` flags returned by the engine.
  */
 
-import type { ModelOutput, SliderValues } from "./types";
+import { runModel as runHandmade } from "@startuplenz/vertical-models/handmade";
+import { runModel as runFoodTruck } from "@startuplenz/vertical-models/food-truck";
+import { runModel as runSubscriptionBox } from "@startuplenz/vertical-models/subscription-box";
+import { runModel as runCandleBathBody } from "@startuplenz/vertical-models/candle-bath-body";
+import { runModel as runPrintOnDemand } from "@startuplenz/vertical-models/print-on-demand";
+import { runModel as runDigitalProducts } from "@startuplenz/vertical-models/digital-products";
+import { runModel as runReseller } from "@startuplenz/vertical-models/reseller";
+import { runModel as runCleaningService } from "@startuplenz/vertical-models/cleaning-service";
+import { runModel as runHouseFlipping } from "@startuplenz/vertical-models/house-flipping";
+import { runModel as runSlimeBusiness } from "@startuplenz/vertical-models/slime-business";
+import type { CostItem, ModelOutput, SliderValues } from "./types";
 
-// ─── Mock implementation ──────────────────────────────────────────────────────
-// Scales output linearly with ordersPerMonth so sliders feel live.
-// Replace this entire function body when integrating the real model.
+// ─── Insight builder (copied from the previous mock — same heuristic) ────────
 
-function runMockModel(values: SliderValues, _verticalSlug: string): ModelOutput {
-  const orders = values["ordersPerMonth"] ?? 10;
-  const avgPrice = values["avgOrderValue"] ?? 38;
-  const materialCost = values["materialCostPerUnit"] ?? 8;
-  const packagingCost = values["packagingCostPerUnit"] ?? 3;
-  const platformFeePct = (values["platformFeePct"] ?? 10) / 100;
-  const shippingCost = values["shippingCostPerOrder"] ?? 7.6;
+function buildInsight(margin: number, orders: number): string {
+  if (margin >= 0.4)
+    return "Excellent margins. You have room to reinvest in marketing or reduce prices to grow faster.";
+  if (margin >= 0.25)
+    return "Healthy margins for a small brand. Focus on growing order size to push profitability higher.";
+  if (margin >= 0.1)
+    return "Margins are thin — look at reducing material or shipping costs before scaling volume.";
+  if (margin >= 0)
+    return "You're breaking even. One price increase or cost cut could flip this to profit quickly.";
+  if (orders <= 0)
+    return "Volume is at zero — try increasing units per drop, drops per month, or your sell-through rate.";
+  return "You're losing money at this volume. Increase prices or reduce costs before launching.";
+}
 
-  const grossRevenue = orders * avgPrice;
-  const cogs = orders * (materialCost + packagingCost);
-  const platformFees = grossRevenue * platformFeePct;
-  const shippingTotal = orders * shippingCost;
-  const platformAndShipping = platformFees + shippingTotal;
-  const netProfit = grossRevenue - cogs - platformAndShipping;
+// ─── Adapter: real model output → UI ModelOutput ─────────────────────────────
+
+interface RealMonthly {
+  revenue: { gross: number; refundDeduction: number; net: number };
+  cogs: { materials: number; packaging: number; labor: number; total: number };
+  fees: {
+    etsy: Record<string, number>;
+    tiktok: Record<string, number>;
+    total: number;
+  };
+  shipping: { total: number };
+  advertising: { total: number };
+  profit: { gross: number; net: number; marginPct: number };
+  volume: { unitsListed: number; unitsSold: number; ordersPerMonth: number };
+}
+
+interface RealTrajectoryPoint {
+  month: number;
+  phase: "launch" | "traction" | "scale";
+  sellThroughMultiplier: number;
+  dropsMultiplier: number;
+  projectedNetProfit: number;
+}
+
+interface RealOutput {
+  vertical: string;
+  generatedAt: string;
+  inputs: Record<string, number>;
+  monthly: RealMonthly;
+  trajectory: RealTrajectoryPoint[];
+  annualized: Record<string, number>;
+  liveDataApplied: Record<string, boolean>;
+}
+
+function avgProfit(traj: RealTrajectoryPoint[], from: number, to: number): number {
+  const slice = traj.filter((p) => p.month >= from && p.month <= to);
+  if (slice.length === 0) return 0;
+  return slice.reduce((s, p) => s + p.projectedNetProfit, 0) / slice.length;
+}
+
+function adaptOutput(real: RealOutput): ModelOutput {
+  const grossRevenue = real.monthly.revenue.gross;
+  const costOfGoods = real.monthly.cogs.total;
+  const platformAndShipping =
+    real.monthly.fees.total + real.monthly.shipping.total;
+  const netProfit = real.monthly.profit.net;
   const profitMargin = grossRevenue > 0 ? netProfit / grossRevenue : 0;
+  const ordersPerMonth = real.monthly.volume.ordersPerMonth;
 
-  const scale = orders / 10; // relative to baseline
+  const launchAvg = avgProfit(real.trajectory, 1, 3);
+  const tractionAvg = avgProfit(real.trajectory, 4, 8);
+  const scaleAvg = avgProfit(real.trajectory, 9, 12);
+
+  const breakdownItems: Array<Omit<CostItem, "pct">> = [
+    { label: "Materials", value: real.monthly.cogs.materials },
+    { label: "Packaging", value: real.monthly.cogs.packaging },
+    { label: "Labor", value: real.monthly.cogs.labor },
+    { label: "Platform fees", value: real.monthly.fees.total },
+    { label: "Shipping", value: real.monthly.shipping.total },
+    { label: "Advertising", value: real.monthly.advertising.total },
+  ];
+
+  const costBreakdown: CostItem[] = breakdownItems
+    .filter((item) => item.value > 0.01)
+    .map((item) => ({
+      label: item.label,
+      value: Math.round(item.value),
+      pct: grossRevenue > 0 ? item.value / grossRevenue : 0,
+    }));
 
   return {
     grossRevenue: Math.round(grossRevenue),
-    costOfGoods: Math.round(cogs),
+    costOfGoods: Math.round(costOfGoods),
     platformAndShipping: Math.round(platformAndShipping),
     netProfit: Math.round(netProfit),
     profitMargin,
-    ordersPerMonth: orders,
+    ordersPerMonth: Math.round(ordersPerMonth * 10) / 10,
     growth: {
       launch: {
         months: "1–3",
-        netProfit: Math.round(netProfit * 0.26),
+        netProfit: Math.round(launchAvg),
         label: "Small drops, building audience",
       },
       traction: {
         months: "4–8",
-        netProfit: Math.round(netProfit * 0.65),
+        netProfit: Math.round(tractionAvg),
         label: "Social following grows",
       },
       scale: {
         months: "9–12",
-        netProfit: Math.round(netProfit),
+        netProfit: Math.round(scaleAvg),
         label: "Full drops, loyal base",
       },
     },
-    costBreakdown: [
-      { label: "Materials", value: Math.round(orders * materialCost), pct: 0 },
-      { label: "Packaging", value: Math.round(orders * packagingCost), pct: 0 },
-      { label: "Platform fees", value: Math.round(platformFees), pct: 0 },
-      { label: "Shipping", value: Math.round(shippingTotal), pct: 0 },
-    ].map((item) => ({
-      ...item,
-      pct: grossRevenue > 0 ? item.value / grossRevenue : 0,
-    })),
-    insight: buildInsight(profitMargin, orders),
+    costBreakdown,
+    insight: buildInsight(profitMargin, ordersPerMonth),
   };
 }
 
-function buildInsight(margin: number, orders: number): string {
-  if (margin >= 0.4) return "Excellent margins. You have room to reinvest in marketing or reduce prices to grow faster.";
-  if (margin >= 0.25) return "Healthy margins for a small brand. Focus on growing order size to push profitability higher.";
-  if (margin >= 0.1) return "Margins are thin — look at reducing material or shipping costs before scaling volume.";
-  if (margin >= 0) return "You're breaking even. One price increase or cost cut could flip this to profit quickly.";
-  return "You're losing money at this volume. Increase prices or reduce costs before launching.";
-}
-
-// ─── Public API ───────────────────────────────────────────────────────────────
+// ─── Public API ──────────────────────────────────────────────────────────────
 
 /**
  * Run the vertical model for the given slider values.
  *
- * @param values   - Current slider state (key → numeric value)
- * @param vertical - Vertical slug (e.g. "handmade-craft")
- * @returns        ModelOutput — all numbers needed by the UI
+ * @param values   - Current slider state (formulaKey → numeric value)
+ * @param vertical - Vertical slug
  *
- * When integrating the real model:
- *   - If synchronous: keep the same signature, just swap the body
- *   - If async:       change return type to Promise<ModelOutput> and
- *                     add `await` at every call site (modelClient.ts → page.tsx)
+ * handmade-craft uses the rich RealOutput shape from packages/vertical-models
+ * and gets adapted to ModelOutput. The other verticals return ModelOutput
+ * directly from their model.js exports.
  */
 export function computeModel(values: SliderValues, vertical: string): ModelOutput {
-  return runMockModel(values, vertical);
+  switch (vertical) {
+    case "handmade-craft": {
+      const real = runHandmade(values, {}) as unknown as RealOutput;
+      return adaptOutput(real);
+    }
+    case "food-truck":
+      return runFoodTruck(values, {}) as unknown as ModelOutput;
+    case "subscription-box":
+      return runSubscriptionBox(values, {}) as unknown as ModelOutput;
+    case "candle-bath-body":
+      return runCandleBathBody(values, {}) as unknown as ModelOutput;
+    case "print-on-demand":
+      return runPrintOnDemand(values, {}) as unknown as ModelOutput;
+    case "digital-products":
+      return runDigitalProducts(values, {}) as unknown as ModelOutput;
+    case "reseller":
+      return runReseller(values, {}) as unknown as ModelOutput;
+    case "cleaning-service":
+      return runCleaningService(values, {}) as unknown as ModelOutput;
+    case "house-flipping":
+      return runHouseFlipping(values, {}) as unknown as ModelOutput;
+    case "slime-business":
+      return runSlimeBusiness(values, {}) as unknown as ModelOutput;
+    default:
+      return emptyOutput();
+  }
+}
+
+function emptyOutput(): ModelOutput {
+  return {
+    grossRevenue: 0,
+    costOfGoods: 0,
+    platformAndShipping: 0,
+    netProfit: 0,
+    profitMargin: 0,
+    ordersPerMonth: 0,
+    growth: {
+      launch: { months: "1–3", netProfit: 0, label: "Coming soon" },
+      traction: { months: "4–8", netProfit: 0, label: "Coming soon" },
+      scale: { months: "9–12", netProfit: 0, label: "Coming soon" },
+    },
+    costBreakdown: [],
+    insight: "Model coming soon for this vertical.",
+  };
 }
