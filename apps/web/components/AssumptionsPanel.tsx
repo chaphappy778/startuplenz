@@ -93,6 +93,17 @@ export default function AssumptionsPanel({ sliders, values, onChange }: Props) {
               <div className="slider-header">
                 <label className="slider-label" htmlFor={s.key}>
                   {s.label}
+                  {s.helpText && (
+                    <span
+                      className="slider-help"
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Explanation for ${s.label}`}
+                      data-help={s.helpText}
+                    >
+                      ?
+                    </span>
+                  )}
                 </label>
                 <span className="slider-value">{display}</span>
               </div>

@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { baseMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "StartupLenz — Live Cost Modeling",
-  description: "Vertical-specific startup cost modeling with live data.",
-};
+export const metadata: Metadata = baseMetadata();
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
