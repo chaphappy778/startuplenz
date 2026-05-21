@@ -44,6 +44,38 @@ export async function requireUser(): Promise<User> {
   return user;
 }
 
+// ─── Admin gate ───────────────────────────────────────────────────────────────
+//
+// Admin status is determined by the user's email matching an entry in the
+// STARTUPLENZ_ADMIN_EMAILS env var (comma-separated, case-insensitive).
+// Server-only — the env var has no NEXT_PUBLIC_ prefix.
+
+function adminEmails(): string[] {
+  return (process.env.STARTUPLENZ_ADMIN_EMAILS ?? "")
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+export function isAdminEmail(email: string | null | undefined): boolean {
+  if (!email) return false;
+  const allow = adminEmails();
+  if (allow.length === 0) return false;
+  return allow.includes(email.toLowerCase());
+}
+
+export async function isAdmin(): Promise<boolean> {
+  const user = await getUser();
+  return isAdminEmail(user?.email);
+}
+
+export async function requireAdmin(): Promise<User> {
+  const user = await getUser();
+  if (!user) redirect("/login?next=/admin");
+  if (!isAdminEmail(user.email)) redirect("/?error=admin_required");
+  return user;
+}
+
 // ─── Tier resolution ──────────────────────────────────────────────────────────
 
 export async function getUserTier(): Promise<UserTier> {

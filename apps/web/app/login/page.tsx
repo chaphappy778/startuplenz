@@ -9,11 +9,20 @@ import { createClient } from "@/lib/supabase/client";
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = searchParams.get("next") ?? "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  // Surface errors propagated via ?error= (e.g. auth_callback_failed from the
+  // OAuth callback route) so they don't get silently lost when the page reloads.
+  const urlError = searchParams.get("error");
+  const [error, setError] = useState<string | null>(
+    urlError === "auth_callback_failed"
+      ? "Sign-in didn't complete. This usually means localhost:4000 isn't allowed in Supabase Auth → URL Configuration. See the README troubleshooting section."
+      : urlError
+        ? urlError
+        : null,
+  );
   const [isPending, startTransition] = useTransition();
 
   function handleEmailLogin(e: React.FormEvent) {

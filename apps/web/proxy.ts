@@ -57,7 +57,11 @@ export async function proxy(request: NextRequest) {
   // ── Redirect authenticated users away from login/signup ─────────────────
   if (user && AUTH_ONLY_PATHS.some((p) => pathname.startsWith(p))) {
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    // /dashboard doesn't exist. Send signed-in users to a sensible default.
+    // If a ?next= was preserved (e.g. ?next=/admin/inputs), honor it.
+    const next = request.nextUrl.searchParams.get('next')
+    url.pathname = next && next.startsWith('/') ? next : '/'
+    url.search = ''
     return NextResponse.redirect(url)
   }
 
