@@ -229,3 +229,271 @@ function formatSliderValue(value: number, slider: SliderDef): string {
   if (u)                        return v + " " + u;
   return String(v);
 }
+
+// ════════════════════════════════════════════════════════════════════════════
+// Multi-lever solver — sequential greedy
+// ════════════════════════════════════════════════════════════════════════════
+//
+// Why sequential rather than constrained-optimization: the model engines are
+// pure JS with conditionals and channel splits. Symbolic gradients are
+// brittle. A greedy walk through user-prioritized levers is also more
+// explainable to the user — "we tried price first; it wasn't enough, so we
+// also bumped sell-through" maps directly to how a founder thinks about it.
+
+export interface GoalSeekChange {
+  sliderKey: string;
+  originalValue: number;
+  snappedValue: number;
+  pctChange: number;
+}
+
+export interface GoalSeekMultiSuccess {
+  ok: true;
+  changes: GoalSeekChange[];
+  achievedMetric: number;
+  resultingOutput: ModelOutput;
+}
+
+export interface GoalSeekMultiFailure {
+  ok: false;
+  reason: GoalSeekFailure["reason"] | "unreachable_with_levers";
+  message: string;
+  /** Changes we DID apply on the way to giving up — surfaces "we tried X" UI. */
+  changesAttempted?: GoalSeekChange[];
+  bestAchievable?: number;
+}
+
+export type GoalSeekMultiResult = GoalSeekMultiSuccess | GoalSeekMultiFailure;
+
+export interface GoalSeekMultiRequest {
+  verticalSlug: string;
+  sliders: SliderDef[];
+  values: SliderValues;
+  metric: GoalMetric;
+  target: number;
+  /** Priority-ordered list of slider keys to vary, 1+. */
+  varySliderKeys: string[];
+}
+
+/** Probe which extreme of a slider moves the metric closer to the target. */
+function pickTargetFavorableExtreme(
+  req: Omit<GoalSeekMultiRequest, "varySliderKeys">,
+  sliderKey: string,
+): number {
+  const slider = req.sliders.find((s) => s.key === sliderKey);
+  if (!slider) return 0;
+  const atMin = computeModel({ ...req.values, [sliderKey]: slider.min }, req.verticalSlug);
+  const atMax = computeModel({ ...req.values, [sliderKey]: slider.max }, req.verticalSlug);
+  const minMetric = extractMetric(atMin, req.metric);
+  const maxMetric = extractMetric(atMax, req.metric);
+  return Math.abs(req.target - maxMetric) < Math.abs(req.target - minMetric)
+    ? slider.max
+    : slider.min;
+}
+
+function pctChangeOf(from: number, to: number): number {
+  if (from === 0) return to === 0 ? 0 : Number.POSITIVE_INFINITY;
+  return ((to - from) / from) * 100;
+}
+
+export function goalSeekMulti(req: GoalSeekMultiRequest): GoalSeekMultiResult {
+  if (req.varySliderKeys.length === 0) {
+    return {
+      ok: false,
+      reason: "no_signal",
+      message: "Pick at least one lever to adjust.",
+    };
+  }
+
+  // Single-lever shortcut — defer to the original solver.
+  if (req.varySliderKeys.length === 1) {
+    const single = goalSeek({
+      verticalSlug: req.verticalSlug,
+      sliders: req.sliders,
+      values: req.values,
+      metric: req.metric,
+      target: req.target,
+      varySliderKey: req.varySliderKeys[0],
+    });
+    if (!single.ok) {
+      return {
+        ok: false,
+        reason: single.reason,
+        message: single.message,
+      };
+    }
+    const slider = req.sliders.find((s) => s.key === req.varySliderKeys[0])!;
+    const originalValue = Number(req.values[slider.key] ?? slider.defaultValue);
+    return {
+      ok: true,
+      changes: [
+        {
+          sliderKey: slider.key,
+          originalValue,
+          snappedValue: single.snappedValue,
+          pctChange: single.pctChange,
+        },
+      ],
+      achievedMetric: single.achievedMetric,
+      resultingOutput: single.resultingOutput,
+    };
+  }
+
+  // Multi-lever: walk through the keys greedily. For each, try to land the
+  // target with all prior levers' changes baked in. If a lever can finish,
+  // we're done. If not, lock it at its target-favorable extreme and move on.
+  const workingValues: SliderValues = { ...req.values };
+  const changes: GoalSeekChange[] = [];
+
+  for (let i = 0; i < req.varySliderKeys.length; i++) {
+    const key = req.varySliderKeys[i];
+    const slider = req.sliders.find((s) => s.key === key);
+    if (!slider) continue;
+
+    const isLast = i === req.varySliderKeys.length - 1;
+    const originalValue = Number(req.values[key] ?? slider.defaultValue);
+
+    const single = goalSeek({
+      verticalSlug: req.verticalSlug,
+      sliders: req.sliders,
+      values: workingValues,
+      metric: req.metric,
+      target: req.target,
+      varySliderKey: key,
+    });
+
+    if (single.ok) {
+      changes.push({
+        sliderKey: key,
+        originalValue,
+        snappedValue: single.snappedValue,
+        pctChange: pctChangeOf(originalValue, single.snappedValue),
+      });
+      return {
+        ok: true,
+        changes,
+        achievedMetric: single.achievedMetric,
+        resultingOutput: single.resultingOutput,
+      };
+    }
+
+    // Can't solve with this lever alone.
+    if (
+      single.reason === "target_above_maximum" ||
+      single.reason === "target_below_minimum"
+    ) {
+      const extreme = pickTargetFavorableExtreme(
+        {
+          verticalSlug: req.verticalSlug,
+          sliders: req.sliders,
+          values: workingValues,
+          metric: req.metric,
+          target: req.target,
+        },
+        key,
+      );
+
+      // Already at the helpful extreme? Don't waste a "lever slot" — let the
+      // next iteration take a shot.
+      if (extreme === workingValues[key]) {
+        if (isLast) {
+          const finalOutput = computeModel(workingValues, req.verticalSlug);
+          const achieved = extractMetric(finalOutput, req.metric);
+          return {
+            ok: false,
+            reason: "unreachable_with_levers",
+            message: `Even with the selected levers pushed to their extremes, the best ${humanMetric(req.metric)} is ${formatMetric(achieved, req.metric)} (target ${formatMetric(req.target, req.metric)}). Add another lever or relax the target.`,
+            changesAttempted: changes,
+            bestAchievable: achieved,
+          };
+        }
+        continue;
+      }
+
+      changes.push({
+        sliderKey: key,
+        originalValue,
+        snappedValue: extreme,
+        pctChange: pctChangeOf(originalValue, extreme),
+      });
+      workingValues[key] = extreme;
+
+      if (isLast) {
+        const finalOutput = computeModel(workingValues, req.verticalSlug);
+        const achieved = extractMetric(finalOutput, req.metric);
+        if (Math.abs(achieved - req.target) < 1) {
+          return {
+            ok: true,
+            changes,
+            achievedMetric: achieved,
+            resultingOutput: finalOutput,
+          };
+        }
+        return {
+          ok: false,
+          reason: "unreachable_with_levers",
+          message: `Even with all selected levers pushed to their extremes, the best ${humanMetric(req.metric)} is ${formatMetric(achieved, req.metric)} (target ${formatMetric(req.target, req.metric)}). Add another lever or relax the target.`,
+          changesAttempted: changes,
+          bestAchievable: achieved,
+        };
+      }
+    } else {
+      // Slider not found / no signal — bubble up and stop.
+      return {
+        ok: false,
+        reason: single.reason,
+        message: single.message,
+        changesAttempted: changes,
+      };
+    }
+  }
+
+  // Fallthrough — shouldn't really hit this branch given the loop above, but
+  // keep a safe default so the function always returns.
+  const finalOutput = computeModel(workingValues, req.verticalSlug);
+  return {
+    ok: true,
+    changes,
+    achievedMetric: extractMetric(finalOutput, req.metric),
+    resultingOutput: finalOutput,
+  };
+}
+
+/** Build a human-readable summary of a multi-lever solution. */
+export function describeMultiSolution(
+  changes: GoalSeekChange[],
+  sliders: SliderDef[],
+  target: number,
+  metric: GoalMetric,
+): string {
+  if (changes.length === 0) return "No changes needed — you're already on target.";
+
+  const parts = changes.map((c) => {
+    const slider = sliders.find((s) => s.key === c.sliderKey);
+    if (!slider) return "";
+    const direction =
+      c.snappedValue > c.originalValue
+        ? "raise"
+        : c.snappedValue < c.originalValue
+          ? "drop"
+          : "keep";
+    if (direction === "keep") {
+      return `keep ${slider.label} at ${formatSliderValue(c.snappedValue, slider)}`;
+    }
+    const absPct = Math.abs(c.pctChange);
+    const pctText = Number.isFinite(absPct)
+      ? `${absPct >= 100 ? Math.round(absPct) : absPct.toFixed(0)}%`
+      : "";
+    return `${direction} ${slider.label} from ${formatSliderValue(c.originalValue, slider)} to ${formatSliderValue(c.snappedValue, slider)}${pctText ? ` (${pctText})` : ""}`;
+  }).filter(Boolean);
+
+  if (parts.length === 1) {
+    return `To hit ${formatMetric(target, metric)} in monthly ${humanMetric(metric)}, ${parts[0]}.`;
+  }
+  if (parts.length === 2) {
+    return `To hit ${formatMetric(target, metric)}, ${parts[0]} AND ${parts[1]}.`;
+  }
+  const last = parts[parts.length - 1];
+  const head = parts.slice(0, -1).join(", ");
+  return `To hit ${formatMetric(target, metric)}, ${head}, AND ${last}.`;
+}

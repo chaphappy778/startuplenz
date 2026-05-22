@@ -80,7 +80,8 @@ export default function GrowthTrajectory({ growth }: Props) {
               <span className={`growth-phase-profit ${isPositive ? "pos" : "neg"}`}>
                 {fmt(phase.netProfit)}
               </span>
-              <p className="growth-phase-label">{phase.label}</p>
+              {/* Qualitative label lives only in the expanded overlay — keeps
+                  the inline cards short so the panel doesn't stretch. */}
             </div>
           );
         })}
@@ -237,7 +238,9 @@ function GrowthChartSvg({
 
         // Detail mode: full annotations. ALL edge-text uses start/end anchoring
         // so labels don't overhang the chart area (the "aunch" cut-off bug).
+        // Value badge color signals at-a-glance: green = earning, red = losing.
         const isNeg = p.profit < 0;
+        const valueColor = isNeg ? "#f43f5e" : "#4ade80";
         const anchor: "start" | "middle" | "end" =
           i === 0 ? "start"
             : i === points.length - 1 ? "end"
@@ -261,7 +264,7 @@ function GrowthChartSvg({
               fontFamily="Inter, sans-serif"
               fontSize="13"
               fontWeight="700"
-              fill={isNeg ? "#f43f5e" : "#f0f4ff"}
+              fill={valueColor}
             >
               {fmtShort(p.profit)}
             </text>
