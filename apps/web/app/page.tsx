@@ -50,8 +50,8 @@ export default function HomePage() {
       <section className="home-stats" aria-label="Tool stats">
         <Stat number="10" label="Verticals modeled" />
         <Stat number="160+" label="Real-world inputs" />
+        <Stat number="45" label="Side-by-side compares" />
         <Stat number="$0" label="Forever, no signup" />
-        <Stat number="130+" label="SEO-indexed pages" />
       </section>
 
       {/* ── HOW IT WORKS ─────────────────────────────────────────────────── */}
