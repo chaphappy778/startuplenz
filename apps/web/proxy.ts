@@ -20,6 +20,32 @@ const PROTECTED_PREFIXES = [
 const AUTH_ONLY_PATHS = ['/login', '/signup']
 
 export async function proxy(request: NextRequest) {
+  const { pathname: earlyPath, searchParams: earlyParams } = request.nextUrl
+
+  // ── OAuth code rescue ───────────────────────────────────────────────────
+  // If Supabase's Redirect URL allow-list rejects our requested callback URL,
+  // it falls back to the configured Site URL — which means the OAuth code
+  // ends up on (e.g.) `/?code=...` instead of `/auth/callback?code=...`.
+  // Forward it through to the callback so the session still gets created.
+  // We only do this when the PKCE verifier cookie is present, so legitimate
+  // links with an unrelated `code` query param aren't hijacked.
+  if (
+    earlyParams.has("code") &&
+    !earlyPath.startsWith("/auth/callback") &&
+    request.cookies
+      .getAll()
+      .some((c) => c.name.endsWith("-auth-token-code-verifier"))
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = "/auth/callback"
+    // Preserve the original path as `next` so the user lands where they
+    // would have if Supabase had done the right thing.
+    if (earlyPath !== "/" && !url.searchParams.has("next")) {
+      url.searchParams.set("next", earlyPath)
+    }
+    return NextResponse.redirect(url)
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
