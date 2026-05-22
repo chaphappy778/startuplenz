@@ -329,6 +329,25 @@ export default function CalculatorClient({
         </div>
       )}
 
+      {/* Headline KPI strip — the "what are the numbers" answer. */}
+      <MonthlySnapshot output={output} />
+
+      {/* Promoted insight callout — the "what does it mean" answer. */}
+      <InsightCallout text={output.insight} />
+
+      {/* Dashboard grid — donut on the left (dominant), growth on the right. */}
+      <div className="dashboard-grid">
+        <CostBreakdown items={output.costBreakdown} />
+        <GrowthTrajectory growth={output.growth} />
+      </div>
+
+      {/* Supporting panels — "your assumptions" + "what would it take?" */}
+      <AssumptionsPanel
+        sliders={sliders}
+        values={values}
+        onChange={handleChange}
+      />
+
       <GoalSeekPanel
         verticalSlug={verticalSlug}
         sliders={sliders}
@@ -336,21 +355,6 @@ export default function CalculatorClient({
         onApply={handleChange}
         initialTarget={initialGoalTarget}
       />
-
-      <AssumptionsPanel
-        sliders={sliders}
-        values={values}
-        onChange={handleChange}
-      />
-
-      <MonthlySnapshot output={output} />
-
-      <div className="lower-grid">
-        <CostBreakdown items={output.costBreakdown} />
-        <GrowthTrajectory growth={output.growth} />
-      </div>
-
-      <InsightCallout text={output.insight} />
 
       {showEmailDialog && (
         <div className="calc-save-overlay" role="dialog">

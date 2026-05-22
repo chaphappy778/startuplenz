@@ -919,75 +919,343 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 14px;
 }
 
-/* ─── Monthly Snapshot ────────────────────────────────────────────────────────── */
-.snapshot-grid {
+/* ─── KPI snapshot (top of dashboard — the headline numbers) ──────────────────── */
+
+.kpi-snapshot { width: 100%; }
+
+.kpi-snapshot-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
 }
 
-.snapshot-card {
+.kpi-tile {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 20px 18px;
+  padding: 20px 22px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  transition: border-color 0.15s;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 150ms ease, transform 150ms ease;
 }
 
-.snapshot-card.tone-positive { border-color: rgba(74,222,128,0.25); }
-.snapshot-card.tone-negative { border-color: rgba(244,63,94,0.18); }
+.kpi-tile::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(99,102,241,0.10), transparent 70%);
+}
 
-.card-label {
+.kpi-tile:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+.kpi-tile-positive { border-color: rgba(74,222,128,0.28); }
+.kpi-tile-positive::before {
+  background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(74,222,128,0.12), transparent 70%);
+}
+
+.kpi-tile-negative { border-color: rgba(244,63,94,0.25); }
+.kpi-tile-negative::before {
+  background: radial-gradient(ellipse 100% 60% at 50% 0%, rgba(244,63,94,0.12), transparent 70%);
+}
+
+.kpi-label {
   font-size: 0.72rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  position: relative;
+  z-index: 1;
+}
+
+.kpi-value {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.2vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--text-primary);
+  position: relative;
+  z-index: 1;
+}
+
+.kpi-tile-positive .kpi-value { color: var(--green); }
+.kpi-tile-negative .kpi-value { color: var(--red); }
+
+.kpi-sub {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Promoted insight callout ────────────────────────────────────────────────── */
+
+.insight-callout-card {
+  position: relative;
+  display: flex;
+  background: linear-gradient(135deg, rgba(99,102,241,0.10), rgba(167,139,250,0.06));
+  border: 1px solid rgba(99,102,241,0.35);
+  border-radius: var(--radius);
+  padding: 18px 22px 18px 28px;
+  box-shadow:
+    0 18px 30px -16px rgba(99,102,241,0.30),
+    0 0 0 1px rgba(99,102,241,0.05);
+  overflow: hidden;
+}
+
+.insight-callout-card::before {
+  content: "";
+  position: absolute;
+  inset: -40px;
+  background: radial-gradient(ellipse 40% 70% at 0% 50%, rgba(99,102,241,0.20), transparent 70%);
+  pointer-events: none;
+}
+
+.insight-callout-rail {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--accent), var(--accent2));
+  border-top-left-radius: var(--radius);
+  border-bottom-left-radius: var(--radius);
+}
+
+.insight-callout-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.insight-callout-eyebrow {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent2);
+}
+
+.insight-callout-text {
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text-primary);
+  font-weight: 400;
+}
+
+/* ─── Dashboard grid (donut + growth side by side) ───────────────────────────── */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+/* Shared panel scaffold for the donut/growth cards. */
+.cost-breakdown-panel,
+.growth-trajectory-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 22px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.panel-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.panel-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
-.card-value {
-  font-family: var(--font-mono);
-  font-size: 1.6rem;
-  font-weight: 500;
-  line-height: 1;
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
 }
 
-.tone-neutral  .card-value { color: var(--text-primary); }
-.tone-positive .card-value { color: var(--green); }
-.tone-negative .card-value { color: var(--red); }
+/* ─── Donut + legend ──────────────────────────────────────────────────────────── */
 
-.card-sub {
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-}
-
-/* ─── Insight callout ─────────────────────────────────────────────────────────── */
-.insight-callout {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  background: rgba(99,102,241,0.07);
-  border: 1px solid rgba(99,102,241,0.2);
-  border-radius: var(--radius);
-  padding: 16px 20px;
-}
-
-.insight-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
-
-.insight-text {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-/* ─── Lower grid (growth + breakdown) ────────────────────────────────────────── */
-.lower-grid {
+.donut-and-legend {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 180px 1fr;
+  align-items: center;
   gap: 24px;
+}
+
+.donut-wrap {
+  position: relative;
+  width: 180px;
+  height: 180px;
+}
+
+.donut-svg { width: 100%; height: 100%; display: block; }
+
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.donut-center-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.donut-center-value {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  margin-top: 2px;
+}
+
+.donut-legend {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.donut-legend-row {
+  display: grid;
+  grid-template-columns: 14px 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 0.86rem;
+}
+
+.donut-legend-row:last-child { border-bottom: none; }
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.legend-label { color: var(--text-primary); font-weight: 500; }
+.legend-pct {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+.legend-value {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: right;
+  min-width: 56px;
+}
+
+.donut-empty {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+/* ─── Growth trajectory (area chart + phase cards) ───────────────────────────── */
+
+.growth-chart {
+  height: 100px;
+  background: rgba(99,102,241,0.04);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 6px 8px;
+}
+
+.growth-chart-svg { width: 100%; height: 100%; display: block; }
+
+.growth-phase-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.growth-phase {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.growth-phase-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+
+.growth-phase-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  padding: 2px 7px;
+  background: rgba(99,102,241,0.18);
+  border-radius: 999px;
+}
+
+.phase-launch   .growth-phase-badge { background: rgba(250,204,21,0.18); color: var(--yellow); }
+.phase-traction .growth-phase-badge { background: rgba(251,146,60,0.18); color: var(--orange); }
+.phase-scale    .growth-phase-badge { background: rgba(74,222,128,0.18); color: var(--green); }
+
+.growth-phase-months {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.growth-phase-profit {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.growth-phase-profit.pos { color: var(--text-primary); }
+.growth-phase-profit.neg { color: var(--red); }
+
+.growth-phase-label {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
 }
 
 /* ─── Growth Trajectory ───────────────────────────────────────────────────────── */
@@ -2245,7 +2513,12 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 1100px) {
   .snapshot-grid { grid-template-columns: repeat(2, 1fr); }
+  .kpi-snapshot-grid { grid-template-columns: repeat(2, 1fr); }
   .lower-grid { grid-template-columns: 1fr; }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .donut-and-legend { grid-template-columns: 160px 1fr; gap: 16px; }
+  .donut-wrap { width: 160px; height: 160px; }
+  .growth-phase-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 860px) {
@@ -2266,6 +2539,10 @@ a { color: inherit; text-decoration: none; }
 
 @media (max-width: 540px) {
   .snapshot-grid { grid-template-columns: 1fr 1fr; }
+  .kpi-snapshot-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi-tile { padding: 16px 16px; }
+  .donut-and-legend { grid-template-columns: 1fr; }
+  .donut-wrap { width: 180px; height: 180px; margin: 0 auto; }
   .sidebar .vertical-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
