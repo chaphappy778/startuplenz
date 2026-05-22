@@ -4,10 +4,13 @@
 // Built as an SVG (not a screenshot) so it scales crisply on retina, doesn't
 // add a network request, and stays in sync with the brand theme tokens.
 //
-// Intentionally simplified — KPI tiles up top, donut + growth chart in the
-// middle, sidebar slider rail on the left, insight callout at the bottom.
-// Aria-hidden because the real calculator content lives elsewhere on the
-// site; this is pure visual storytelling for the hero.
+// Layout:
+//   • Sidebar with realistic labeled sliders (drops/month, units, etc.)
+//   • 4 KPI tiles across the top (revenue / profit / margin / orders)
+//   • Donut cost-breakdown with legend (donut LEFT, legend RIGHT, both
+//     contained inside the card — previous version overflowed)
+//   • Area chart for growth trajectory
+//   • Insight callout banner across the bottom
 
 export default function DashboardPreview() {
   return (
@@ -43,25 +46,51 @@ export default function DashboardPreview() {
       <circle cx="40" cy="22" r="5" fill="#facc15" opacity="0.55" />
       <circle cx="58" cy="22" r="5" fill="#4ade80" opacity="0.55" />
 
-      {/* Sidebar */}
+      {/* ── Sidebar with realistic sliders ─────────────────────────────── */}
       <rect x="14" y="48" width="148" height="378" rx="12" fill="#1a2235" stroke="#2a3a5c" strokeWidth="1" />
-      <rect x="28" y="64" width="80" height="10" rx="3" fill="#4a5d80" opacity="0.5" />
-      {[0, 1, 2, 3, 4].map((i) => (
-        <g key={i}>
-          <rect x="28" y={94 + i * 56} width="56" height="6" rx="2" fill="#8898b8" opacity="0.6" />
-          <rect x="28" y={108 + i * 56} width="120" height="4" rx="2" fill="#2a3a5c" />
-          <rect x="28" y={108 + i * 56} width={20 + i * 18} height="4" rx="2" fill="url(#dp-accent)" />
-          <circle cx={28 + 20 + i * 18} cy="110" r="0" />
-          <circle cx={28 + 20 + i * 18} cy={110 + i * 56} r="5" fill="#f0f4ff" stroke="#6366f1" strokeWidth="2" />
-        </g>
-      ))}
+      <text x="28" y="72" fontFamily="Syne, sans-serif" fontSize="11" fontWeight="700" fill="#f0f4ff" letterSpacing="-0.01em">
+        Slime brand
+      </text>
+      <text x="28" y="86" fontFamily="Inter, sans-serif" fontSize="8" fill="#4a5d80" letterSpacing="0.06em">
+        ASSUMPTIONS
+      </text>
 
-      {/* KPI tiles */}
+      {(() => {
+        // Realistic sample values for a slime brand at modest scale.
+        const sliders = [
+          { label: "Drops / month",  value: "4",      pct: 0.40 },
+          { label: "Units / drop",   value: "50",     pct: 0.50 },
+          { label: "Sell-through",   value: "80%",    pct: 0.80 },
+          { label: "Price / unit",   value: "$12",    pct: 0.55 },
+          { label: "Material cost",  value: "$1.80",  pct: 0.30 },
+        ];
+        return sliders.map((s, i) => {
+          const yBase = 110 + i * 58;
+          const trackX = 28;
+          const trackW = 120;
+          const knobX = trackX + trackW * s.pct;
+          return (
+            <g key={s.label}>
+              <text x={trackX} y={yBase} fontFamily="Inter, sans-serif" fontSize="9" fill="#8898b8">
+                {s.label}
+              </text>
+              <text x={trackX + trackW} y={yBase} textAnchor="end" fontFamily="DM Mono, monospace" fontSize="9" fontWeight="500" fill="#f0f4ff">
+                {s.value}
+              </text>
+              <rect x={trackX} y={yBase + 8} width={trackW} height="3" rx="1.5" fill="#2a3a5c" />
+              <rect x={trackX} y={yBase + 8} width={trackW * s.pct} height="3" rx="1.5" fill="url(#dp-accent)" />
+              <circle cx={knobX} cy={yBase + 9.5} r="5" fill="#f0f4ff" stroke="#6366f1" strokeWidth="1.5" />
+            </g>
+          );
+        });
+      })()}
+
+      {/* ── KPI tiles ──────────────────────────────────────────────────── */}
       {[
         { x: 178, label: "Monthly revenue", value: "$12,840", trend: "+8.2%" },
-        { x: 314, label: "Net profit", value: "$3,205", trend: "+12%" },
-        { x: 450, label: "Margin", value: "24.9%", trend: "+1.4pt" },
-        { x: 586, label: "Orders / mo", value: "412", trend: "+6%" },
+        { x: 314, label: "Net profit",      value: "$3,205",  trend: "+12%" },
+        { x: 450, label: "Margin",          value: "24.9%",   trend: "+1.4pt" },
+        { x: 586, label: "Orders / mo",     value: "412",     trend: "+6%" },
       ].map((tile) => (
         <g key={tile.label}>
           <rect x={tile.x} y="48" width="120" height="80" rx="10" fill="#1e2a42" stroke="#2a3a5c" />
@@ -77,39 +106,53 @@ export default function DashboardPreview() {
         </g>
       ))}
 
-      {/* Donut chart card (cost breakdown) */}
+      {/* ── Cost breakdown: donut LEFT, legend RIGHT, both contained ───── */}
       <rect x="178" y="142" width="256" height="200" rx="12" fill="#1e2a42" stroke="#2a3a5c" />
       <text x="194" y="166" fontFamily="Inter, sans-serif" fontSize="11" fill="#8898b8" letterSpacing="0.04em">
         COST BREAKDOWN
       </text>
-      <g transform="translate(306 252)">
-        {/* Donut segments — clockwise from 12 o'clock */}
-        <circle cx="0" cy="0" r="58" fill="none" stroke="#2a3a5c" strokeWidth="22" />
-        <circle cx="0" cy="0" r="58" fill="none" stroke="url(#dp-accent)" strokeWidth="22"
-          strokeDasharray="125 364" strokeDashoffset="0" transform="rotate(-90)" />
-        <circle cx="0" cy="0" r="58" fill="none" stroke="#fb923c" strokeWidth="22"
-          strokeDasharray="78 364" strokeDashoffset="-125" transform="rotate(-90)" />
-        <circle cx="0" cy="0" r="58" fill="none" stroke="#4ade80" strokeWidth="22"
-          strokeDasharray="55 364" strokeDashoffset="-203" transform="rotate(-90)" />
-        <circle cx="0" cy="0" r="58" fill="none" stroke="#60a5fa" strokeWidth="22"
-          strokeDasharray="38 364" strokeDashoffset="-258" transform="rotate(-90)" />
+
+      {/* Donut — radius 40 + stroke 14 means outer extent 47px. Centered at
+          (242, 252) keeps it fully inside the card's left half (178→306). */}
+      <g transform="translate(242 252)">
+        <circle cx="0" cy="0" r="40" fill="none" stroke="#2a3a5c" strokeWidth="14" />
+        <circle cx="0" cy="0" r="40" fill="none" stroke="url(#dp-accent)" strokeWidth="14"
+          strokeDasharray="85 251" strokeDashoffset="0" transform="rotate(-90)" />
+        <circle cx="0" cy="0" r="40" fill="none" stroke="#fb923c" strokeWidth="14"
+          strokeDasharray="53 251" strokeDashoffset="-85" transform="rotate(-90)" />
+        <circle cx="0" cy="0" r="40" fill="none" stroke="#4ade80" strokeWidth="14"
+          strokeDasharray="38 251" strokeDashoffset="-138" transform="rotate(-90)" />
+        <circle cx="0" cy="0" r="40" fill="none" stroke="#60a5fa" strokeWidth="14"
+          strokeDasharray="25 251" strokeDashoffset="-176" transform="rotate(-90)" />
+        <text x="0" y="-4" textAnchor="middle" fontFamily="DM Mono, monospace" fontSize="9" fill="#4a5d80">
+          TOTAL
+        </text>
+        <text x="0" y="11" textAnchor="middle" fontFamily="Syne, sans-serif" fontSize="14" fontWeight="700" fill="#f0f4ff">
+          $9,635
+        </text>
       </g>
-      {/* Donut legend */}
+
+      {/* Legend in the right half of the card (x=306 → 420). Width per row
+          is ~110px — fits "Materials  34%" comfortably at 10pt. */}
       {[
-        { y: 200, color: "#a78bfa", label: "Materials", pct: "34%" },
-        { y: 222, color: "#fb923c", label: "Labor", pct: "21%" },
-        { y: 244, color: "#4ade80", label: "Platform fees", pct: "15%" },
-        { y: 266, color: "#60a5fa", label: "Shipping", pct: "10%" },
+        { y: 198, color: "#a78bfa", label: "Materials",     pct: "34%" },
+        { y: 224, color: "#fb923c", label: "Labor",         pct: "21%" },
+        { y: 250, color: "#4ade80", label: "Platform fees", pct: "15%" },
+        { y: 276, color: "#60a5fa", label: "Shipping",      pct: "10%" },
+        { y: 302, color: "#4a5d80", label: "Other",         pct: "20%" },
       ].map((row) => (
         <g key={row.label}>
-          <circle cx="394" cy={row.y} r="4" fill={row.color} />
-          <text x="406" y={row.y + 3} fontFamily="Inter, sans-serif" fontSize="10" fill="#8898b8">
+          <circle cx="316" cy={row.y - 3} r="3.5" fill={row.color} />
+          <text x="326" y={row.y} fontFamily="Inter, sans-serif" fontSize="10" fill="#8898b8">
             {row.label}
+          </text>
+          <text x="420" y={row.y} textAnchor="end" fontFamily="DM Mono, monospace" fontSize="10" fontWeight="500" fill="#f0f4ff">
+            {row.pct}
           </text>
         </g>
       ))}
 
-      {/* Growth trajectory area chart */}
+      {/* ── Growth trajectory area chart ───────────────────────────────── */}
       <rect x="450" y="142" width="256" height="200" rx="12" fill="#1e2a42" stroke="#2a3a5c" />
       <text x="466" y="166" fontFamily="Inter, sans-serif" fontSize="11" fill="#8898b8" letterSpacing="0.04em">
         GROWTH TRAJECTORY
@@ -117,12 +160,10 @@ export default function DashboardPreview() {
       <text x="466" y="320" fontFamily="DM Mono, monospace" fontSize="9" fill="#4a5d80">M1</text>
       <text x="528" y="320" fontFamily="DM Mono, monospace" fontSize="9" fill="#4a5d80">M4</text>
       <text x="592" y="320" fontFamily="DM Mono, monospace" fontSize="9" fill="#4a5d80">M8</text>
-      <text x="660" y="320" fontFamily="DM Mono, monospace" fontSize="9" fill="#4a5d80">M12</text>
-      {/* Grid */}
+      <text x="656" y="320" fontFamily="DM Mono, monospace" fontSize="9" fill="#4a5d80">M12</text>
       {[195, 230, 265, 300].map((y) => (
         <line key={y} x1="466" y1={y} x2="690" y2={y} stroke="#2a3a5c" strokeWidth="0.5" opacity="0.7" />
       ))}
-      {/* Area */}
       <path
         d="M 466 290 L 504 270 L 542 248 L 580 226 L 618 208 L 656 188 L 690 178 L 690 305 L 466 305 Z"
         fill="url(#dp-area)"
@@ -131,11 +172,10 @@ export default function DashboardPreview() {
         d="M 466 290 L 504 270 L 542 248 L 580 226 L 618 208 L 656 188 L 690 178"
         fill="none" stroke="url(#dp-accent)" strokeWidth="2" strokeLinecap="round"
       />
-      {/* Endpoint dot */}
       <circle cx="690" cy="178" r="4" fill="#a78bfa" />
       <circle cx="690" cy="178" r="8" fill="#a78bfa" opacity="0.25" filter="url(#dp-glow)" />
 
-      {/* Insight callout */}
+      {/* ── Insight callout ────────────────────────────────────────────── */}
       <rect x="178" y="358" width="528" height="68" rx="12" fill="#1e2a42" stroke="#6366f1" strokeOpacity="0.5" />
       <rect x="178" y="358" width="4" height="68" rx="2" fill="url(#dp-accent)" />
       <text x="200" y="380" fontFamily="Inter, sans-serif" fontSize="11" fill="#a78bfa" letterSpacing="0.04em">

@@ -13,9 +13,9 @@
 // stabilizes.
 
 import Link from "next/link";
-import VerticalSelector from "@/components/VerticalSelector";
 import { softwareApplicationJsonLd } from "@/lib/seo";
 import DashboardPreview from "@/components/home/DashboardPreview";
+import VerticalMarquee from "@/components/home/VerticalMarquee";
 
 export default function HomePage() {
   return (
@@ -83,13 +83,16 @@ export default function HomePage() {
         </ol>
       </section>
 
-      {/* ── VERTICAL SELECTOR ────────────────────────────────────────────── */}
+      {/* ── VERTICAL MARQUEE ─────────────────────────────────────────────── */}
       <section className="home-verticals" id="verticals">
-        <div className="home-section-head">
+        <div className="home-section-head home-verticals-head">
           <span className="home-section-eyebrow">Choose your business</span>
           <h2 className="home-section-title">Ten verticals, with more on the way</h2>
+          <p className="home-section-sub">
+            Hover to pause. Click any tile to start modeling that business.
+          </p>
         </div>
-        <VerticalSelector />
+        <VerticalMarquee />
       </section>
 
       {/* ── FEATURES ─────────────────────────────────────────────────────── */}
