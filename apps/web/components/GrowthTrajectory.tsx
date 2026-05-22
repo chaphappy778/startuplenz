@@ -235,9 +235,10 @@ function GrowthChartSvg({
           );
         }
 
-        // Detail mode: full annotations.
+        // Detail mode: full annotations. ALL edge-text uses start/end anchoring
+        // so labels don't overhang the chart area (the "aunch" cut-off bug).
         const isNeg = p.profit < 0;
-        const valueAnchor: "start" | "middle" | "end" =
+        const anchor: "start" | "middle" | "end" =
           i === 0 ? "start"
             : i === points.length - 1 ? "end"
               : "middle";
@@ -256,7 +257,7 @@ function GrowthChartSvg({
             <text
               x={p.x}
               y={Math.max(p.y - 14, padT - 2)}
-              textAnchor={valueAnchor}
+              textAnchor={anchor}
               fontFamily="Inter, sans-serif"
               fontSize="13"
               fontWeight="700"
@@ -269,7 +270,7 @@ function GrowthChartSvg({
             <text
               x={p.x}
               y={padT + chartH + 20}
-              textAnchor="middle"
+              textAnchor={anchor}
               fontFamily="Inter, sans-serif"
               fontSize="11"
               fontWeight="600"
@@ -280,7 +281,7 @@ function GrowthChartSvg({
             <text
               x={p.x}
               y={padT + chartH + 34}
-              textAnchor="middle"
+              textAnchor={anchor}
               fontFamily="Inter, sans-serif"
               fontSize="10"
               fill="#8898b8"

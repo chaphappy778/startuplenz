@@ -1355,41 +1355,62 @@ a { color: inherit; text-decoration: none; }
 }
 
 .growth-phase {
+  position: relative;
   background: var(--bg-raised);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 12px 12px 14px;
+  padding: 12px 14px 14px 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  overflow: hidden;
 }
+
+/* Thin colored rail on the left edge — subtler than the old chunky pill badges. */
+.growth-phase::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+}
+
+.phase-launch::before   { background: var(--yellow); }
+.phase-traction::before { background: var(--orange); }
+.phase-scale::before    { background: var(--green); }
 
 .growth-phase-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 }
 
 .growth-phase-badge {
-  font-size: 0.62rem;
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-primary);
-  padding: 2px 7px;
-  background: rgba(99,102,241,0.18);
-  border-radius: 999px;
+  padding: 0;
+  background: transparent;
+  border-radius: 0;
 }
 
-.phase-launch   .growth-phase-badge { background: rgba(250,204,21,0.18); color: var(--yellow); }
-.phase-traction .growth-phase-badge { background: rgba(251,146,60,0.18); color: var(--orange); }
-.phase-scale    .growth-phase-badge { background: rgba(74,222,128,0.18); color: var(--green); }
+.phase-launch   .growth-phase-badge { color: var(--yellow); }
+.phase-traction .growth-phase-badge { color: var(--orange); }
+.phase-scale    .growth-phase-badge { color: var(--green); }
 
 .growth-phase-months {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-family: var(--font-body);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 0.68rem;
   color: var(--text-muted);
+  font-weight: 500;
 }
 
 .growth-phase-profit {
@@ -1709,9 +1730,7 @@ a { color: inherit; text-decoration: none; }
   gap: 6px;
 }
 
-.phase-launch   { border-left: 3px solid var(--yellow); }
-.phase-traction { border-left: 3px solid var(--orange); }
-.phase-scale    { border-left: 3px solid var(--green); }
+/* (legacy .growth-card phase borders removed — .growth-phase uses an inset rail) */
 
 .growth-header {
   display: flex;
