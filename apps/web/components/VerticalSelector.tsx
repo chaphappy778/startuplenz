@@ -9,6 +9,7 @@
 
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import VerticalIcon from "@/components/VerticalIcon";
 
 interface VerticalRow {
   id: string;
@@ -22,28 +23,6 @@ interface VerticalRow {
 
 interface Props {
   activeSlug?: string;
-}
-
-// Map icon_key strings from the DB to display icons. Falling back to a
-// neutral square so a missing icon_key never crashes the page.
-const ICON: Record<string, string> = {
-  "icon-scissors":  "✂️",
-  "icon-truck":     "🚚",
-  "icon-box":       "📦",
-  "icon-flame":     "🕯️",
-  "icon-shirt":     "👕",
-  "icon-laptop":    "💻",
-  "icon-tag":       "🏷️",
-  "icon-broom":     "🧹",
-  "icon-camera":    "📷",
-  "icon-paw":       "🐾",
-  "icon-house":     "🏠",
-  "icon-slime":     "🫧",
-  "handmade":       "🕯️",
-};
-function iconFor(key: string | null): string {
-  if (!key) return "🗂️";
-  return ICON[key] ?? "🗂️";
 }
 
 export default async function VerticalSelector({ activeSlug }: Props) {
@@ -79,7 +58,9 @@ export default async function VerticalSelector({ activeSlug }: Props) {
           const isReady = (inputCounts[v.id] ?? 0) > 0;
           const cardChildren = (
             <>
-              <span className="vertical-icon">{iconFor(v.icon_key)}</span>
+              <span className="vertical-icon-wrap">
+                <VerticalIcon iconKey={v.icon_key} className="vertical-icon-svg" />
+              </span>
               <span className="vertical-name">{v.display_name}</span>
               {v.description && (
                 <span className="vertical-desc">{v.description}</span>
