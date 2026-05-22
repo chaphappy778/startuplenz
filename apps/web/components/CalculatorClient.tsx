@@ -38,6 +38,10 @@ interface SavedPlanRef {
 
 interface Props {
   verticalSlug: string;
+  /** Optional display name for the calc top bar (e.g. "Slime Brand"). */
+  verticalDisplayName?: string;
+  /** Optional short tagline shown under the title in the top bar. */
+  verticalTagline?: string;
   sliders: SliderDef[];
   initialValues?: SliderValues;
   signedIn?: boolean;
@@ -48,6 +52,8 @@ interface Props {
 
 export default function CalculatorClient({
   verticalSlug,
+  verticalDisplayName,
+  verticalTagline,
   sliders,
   initialValues,
   signedIn = false,
@@ -252,7 +258,79 @@ export default function CalculatorClient({
   };
 
   return (
-    <section className="calc-main">
+    <section className="calc-main calc-main-v2">
+      {/* ── Top bar — vertical info on left, action buttons on right ── */}
+      <header className="calc-topbar">
+        <div className="calc-topbar-info">
+          <span className="calc-topbar-eyebrow">Vertical</span>
+          <h2 className="calc-topbar-title">
+            {verticalDisplayName ?? "Cost model"}
+          </h2>
+          {verticalTagline && (
+            <p className="calc-topbar-tagline">{verticalTagline}</p>
+          )}
+        </div>
+
+        <div className="calc-topbar-actions">
+          <button
+            type="button"
+            className="calc-topbar-btn"
+            onClick={handleShare}
+            aria-label="Share this scenario"
+          >
+            Share
+            {shareStatus === "copied" && (
+              <span className="calc-toolbar-flash"> · copied</span>
+            )}
+            {shareStatus === "failed" && (
+              <span className="calc-toolbar-flash failed"> · couldn’t copy</span>
+            )}
+          </button>
+          <button
+            type="button"
+            className="calc-topbar-btn"
+            onClick={openEmailDialog}
+            aria-label="Email me my plan"
+          >
+            Email plan
+          </button>
+          <button
+            type="button"
+            className="calc-topbar-btn primary"
+            onClick={handleSavePrimary}
+            disabled={isPending}
+          >
+            {savedPlan
+              ? isPending
+                ? "Updating…"
+                : "Save changes"
+              : signedIn
+                ? "Save plan"
+                : "Sign in to save"}
+          </button>
+          {savedPlan && (
+            <>
+              <button
+                type="button"
+                className="calc-topbar-btn"
+                onClick={handleSaveCopy}
+                disabled={isPending}
+              >
+                Save as copy
+              </button>
+              <button
+                type="button"
+                className="calc-topbar-btn calc-topbar-btn-danger"
+                onClick={handleDelete}
+                disabled={isPending}
+              >
+                Delete
+              </button>
+            </>
+          )}
+        </div>
+      </header>
+
       {loadedFromUrl && (
         <div className="calc-banner">
           Loaded from a shared link — edit anything to make it your own
@@ -260,101 +338,40 @@ export default function CalculatorClient({
         </div>
       )}
 
-      <div className="calc-toolbar">
-        <button
-          type="button"
-          className="calc-toolbar-btn"
-          onClick={handleShare}
-          aria-label="Share this scenario"
-        >
-          Share
-          {shareStatus === "copied" && (
-            <span className="calc-toolbar-flash"> · copied</span>
-          )}
-          {shareStatus === "failed" && (
-            <span className="calc-toolbar-flash failed"> · couldn’t copy</span>
-          )}
-        </button>
-        <button
-          type="button"
-          className="calc-toolbar-btn"
-          onClick={openEmailDialog}
-          aria-label="Email me my plan"
-        >
-          Email me my plan
-        </button>
-        <button
-          type="button"
-          className="calc-toolbar-btn primary"
-          onClick={handleSavePrimary}
-          disabled={isPending}
-        >
-          {savedPlan
-            ? isPending
-              ? "Updating…"
-              : "Save changes"
-            : signedIn
-              ? "Save plan"
-              : "Sign in to save"}
-        </button>
-        {savedPlan && (
-          <>
-            <button
-              type="button"
-              className="calc-toolbar-btn"
-              onClick={handleSaveCopy}
-              disabled={isPending}
-            >
-              Save as copy
-            </button>
-            <button
-              type="button"
-              className="calc-toolbar-btn calc-toolbar-btn-danger"
-              onClick={handleDelete}
-              disabled={isPending}
-            >
-              Delete
-            </button>
-          </>
-        )}
-        {signedIn && (
-          <a href="/plans" className="calc-toolbar-btn calc-toolbar-link">
-            My plans
-          </a>
-        )}
-      </div>
-      {saveError && (
-        <div className="calc-save-error" style={{ margin: "0 36px" }}>
-          {saveError}
+      {saveError && <div className="calc-save-error">{saveError}</div>}
+
+      {/* ── Main 2-col shell: slider rail (left) + results (right) ── */}
+      <div className="calc-shell">
+        <aside className="calc-rail">
+          <AssumptionsPanel
+            sliders={sliders}
+            values={values}
+            onChange={handleChange}
+          />
+        </aside>
+
+        <div className="calc-results">
+          {/* Headline KPI strip — the "what are the numbers" answer. */}
+          <MonthlySnapshot output={output} />
+
+          {/* Promoted insight callout — the "what does it mean" answer. */}
+          <InsightCallout text={output.insight} />
+
+          {/* Dashboard grid — donut + growth side by side. */}
+          <div className="dashboard-grid">
+            <CostBreakdown items={output.costBreakdown} />
+            <GrowthTrajectory growth={output.growth} />
+          </div>
+
+          <GoalSeekPanel
+            verticalSlug={verticalSlug}
+            sliders={sliders}
+            values={values}
+            onApply={handleChange}
+            initialTarget={initialGoalTarget}
+          />
         </div>
-      )}
-
-      {/* Headline KPI strip — the "what are the numbers" answer. */}
-      <MonthlySnapshot output={output} />
-
-      {/* Promoted insight callout — the "what does it mean" answer. */}
-      <InsightCallout text={output.insight} />
-
-      {/* Dashboard grid — donut on the left (dominant), growth on the right. */}
-      <div className="dashboard-grid">
-        <CostBreakdown items={output.costBreakdown} />
-        <GrowthTrajectory growth={output.growth} />
       </div>
-
-      {/* Supporting panels — "your assumptions" + "what would it take?" */}
-      <AssumptionsPanel
-        sliders={sliders}
-        values={values}
-        onChange={handleChange}
-      />
-
-      <GoalSeekPanel
-        verticalSlug={verticalSlug}
-        sliders={sliders}
-        values={values}
-        onApply={handleChange}
-        initialTarget={initialGoalTarget}
-      />
 
       {showEmailDialog && (
         <div className="calc-save-overlay" role="dialog">

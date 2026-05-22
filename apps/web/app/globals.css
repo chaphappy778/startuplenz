@@ -973,11 +973,15 @@ a { color: inherit; text-decoration: none; }
 }
 
 .kpi-value {
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 2.2vw, 2rem);
-  font-weight: 800;
+  /* Inter tabular-nums gives a consistent monospace-grid feel for
+     numerals so $12,840 / $3,205 / 24.9% / 412 all align visually. */
+  font-family: var(--font-body);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 1.65rem;
+  font-weight: 700;
   letter-spacing: -0.02em;
-  line-height: 1;
+  line-height: 1.1;
   color: var(--text-primary);
   position: relative;
   z-index: 1;
@@ -1126,9 +1130,11 @@ a { color: inherit; text-decoration: none; }
 }
 
 .donut-center-value {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
   font-size: 1.25rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--text-primary);
   margin-top: 2px;
@@ -1170,8 +1176,10 @@ a { color: inherit; text-decoration: none; }
   text-align: right;
 }
 .legend-value {
-  font-family: var(--font-display);
-  font-size: 0.92rem;
+  font-family: var(--font-body);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 0.86rem;
   font-weight: 600;
   color: var(--text-primary);
   text-align: right;
@@ -1242,9 +1250,11 @@ a { color: inherit; text-decoration: none; }
 }
 
 .growth-phase-profit {
-  font-family: var(--font-display);
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-family: var(--font-body);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 1.05rem;
+  font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
@@ -1256,6 +1266,287 @@ a { color: inherit; text-decoration: none; }
   font-size: 0.74rem;
   color: var(--text-secondary);
   line-height: 1.4;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   CALCULATOR PAGE v2 — top bar + sliders rail + results shell
+═══════════════════════════════════════════════════════════════════════════════ */
+
+.calc-main-v2 {
+  padding: 24px 32px 56px;
+  gap: 20px;
+  max-width: 1320px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ─── Top bar ────────────────────────────────────────────────────────────────── */
+
+.calc-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 18px 22px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  flex-wrap: wrap;
+}
+
+.calc-topbar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  flex: 1 1 320px;
+}
+
+.calc-topbar-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.calc-topbar-title {
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.calc-topbar-tagline {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 2px;
+  max-width: 720px;
+}
+
+.calc-topbar-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.calc-topbar-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.calc-topbar-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
+.calc-topbar-btn.primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-color: transparent;
+  color: #fff;
+  font-weight: 600;
+}
+
+.calc-topbar-btn.primary:hover:not(:disabled) { filter: brightness(1.08); }
+
+.calc-topbar-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.calc-topbar-btn-danger:hover:not(:disabled) {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+/* ─── Two-column shell (sliders rail + results) ──────────────────────────────── */
+
+.calc-shell {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.calc-rail {
+  position: sticky;
+  top: 80px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 16px;
+  scrollbar-width: thin;
+}
+
+.calc-rail::-webkit-scrollbar { width: 6px; }
+.calc-rail::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* AssumptionsPanel restyle when rendered inside the rail */
+.calc-rail .assumptions-panel,
+.calc-rail .card {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.calc-rail .panel-title {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.calc-rail .sliders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.calc-rail .slider-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calc-rail .slider-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.calc-rail .slider-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.calc-rail .slider-value {
+  font-family: var(--font-body);
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.calc-rail .slider-bounds {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-body);
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.66rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.calc-results {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* ─── Mobile ─────────────────────────────────────────────────────────────────── */
+
+@media (max-width: 980px) {
+  .calc-main-v2 { padding: 16px 16px 40px; }
+  .calc-shell { grid-template-columns: 1fr; }
+  .calc-rail {
+    position: static;
+    max-height: none;
+    overflow-y: visible;
+  }
+  .calc-topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .calc-topbar-actions { justify-content: flex-start; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   VERTICALS PAGE  (/verticals)
+═══════════════════════════════════════════════════════════════════════════════ */
+
+.verticals-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+  width: 100%;
+}
+
+.verticals-page-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.verticals-page-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  color: var(--text-primary);
+  max-width: 680px;
+}
+
+.verticals-page-sub {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 620px;
+}
+
+.verticals-page-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.verticals-page-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px;
+  text-align: left;
+}
+
+.verticals-page-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.verticals-page-card .vertical-name { margin-top: 0; }
+
+@media (max-width: 540px) {
+  .verticals-page { padding: 32px 16px 56px; }
+  .verticals-page-grid { grid-template-columns: 1fr; }
 }
 
 /* ─── Growth Trajectory ───────────────────────────────────────────────────────── */
@@ -1393,6 +1684,13 @@ a { color: inherit; text-decoration: none; }
 
 .model-page-header {
   padding: 24px 36px 0;
+}
+
+.model-page-back {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 18px 32px 0;
+  width: 100%;
 }
 
 .model-page-title {

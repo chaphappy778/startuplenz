@@ -23,7 +23,7 @@ export default function SiteFooter() {
         <nav className="site-footer-nav" aria-label="Footer">
           <div className="site-footer-col">
             <span className="site-footer-col-title">Explore</span>
-            <Link href="/" className="site-footer-link">Verticals</Link>
+            <Link href="/verticals" className="site-footer-link">Verticals</Link>
             <Link href="/compare" className="site-footer-link">Compare</Link>
           </div>
           <div className="site-footer-col">

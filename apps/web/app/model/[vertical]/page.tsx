@@ -88,14 +88,14 @@ export default async function VerticalModelPage({ params }: PageProps) {
 
   return (
     <main className="model-page">
-      <header className="model-page-header">
-        <Link href="/" className="page-back-link">All verticals</Link>
-        <h1 className="model-page-title">{verticalData.display_name} cost model</h1>
-        <p className="vertical-hero-paragraph">{content.heroParagraph}</p>
-      </header>
+      <div className="model-page-back">
+        <Link href="/verticals" className="page-back-link">All verticals</Link>
+      </div>
 
       <CalculatorClient
         verticalSlug={verticalData.slug}
+        verticalDisplayName={verticalData.display_name}
+        verticalTagline={content.heroParagraph}
         sliders={sliders}
         signedIn={!!user}
       />

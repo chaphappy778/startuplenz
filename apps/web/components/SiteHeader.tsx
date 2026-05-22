@@ -19,7 +19,7 @@ export default async function SiteHeader() {
         </Link>
 
         <nav className="site-nav">
-          <Link href="/" className="site-nav-link">Verticals</Link>
+          <Link href="/verticals" className="site-nav-link">Verticals</Link>
           <Link href="/compare" className="site-nav-link">Compare</Link>
           {user && (
             <>

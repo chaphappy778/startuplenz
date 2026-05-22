@@ -172,6 +172,8 @@ export default async function GoalPage({ params, searchParams }: PageProps) {
 
       <CalculatorClient
         verticalSlug={verticalData.slug}
+        verticalDisplayName={verticalData.display_name}
+        verticalTagline={`Target: ${targetLabel}/month net profit`}
         sliders={sliders}
         signedIn={!!user}
         initialGoalTarget={target}

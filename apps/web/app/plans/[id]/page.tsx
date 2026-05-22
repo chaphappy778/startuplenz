@@ -82,15 +82,13 @@ export default async function SavedPlanPage({ params }: PageProps) {
 
   return (
     <main className="model-page">
-      <header className="model-page-header">
+      <div className="model-page-back">
         <Link href="/plans" className="page-back-link">My plans</Link>
-        <h1 className="model-page-title">{plan.name}</h1>
-        <p className="model-page-subtitle">
-          {vertical.display_name} · saved plan
-        </p>
-      </header>
+      </div>
       <CalculatorClient
         verticalSlug={vertical.slug}
+        verticalDisplayName={plan.name}
+        verticalTagline={`${vertical.display_name} · saved plan`}
         sliders={sliders}
         initialValues={initialValues}
         signedIn={true}

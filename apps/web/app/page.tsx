@@ -32,7 +32,7 @@ export default function HomePage() {
           no signup.
         </p>
         <div className="hero-ctas">
-          <Link href="#verticals" className="hero-cta hero-cta-primary">
+          <Link href="/verticals" className="hero-cta hero-cta-primary">
             Browse verticals
           </Link>
           <Link href="#how-it-works" className="hero-cta hero-cta-ghost">
