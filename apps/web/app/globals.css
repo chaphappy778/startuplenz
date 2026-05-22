@@ -1196,14 +1196,17 @@ a { color: inherit; text-decoration: none; }
 /* ─── Growth trajectory (area chart + phase cards) ───────────────────────────── */
 
 .growth-chart {
-  height: 100px;
   background: rgba(99,102,241,0.04);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-sm);
-  padding: 6px 8px;
+  padding: 10px 12px;
 }
 
-.growth-chart-svg { width: 100%; height: 100%; display: block; }
+.growth-chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
 
 .growth-phase-grid {
   display: grid;
