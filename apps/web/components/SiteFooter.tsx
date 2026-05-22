@@ -31,6 +31,7 @@ export default function SiteFooter() {
             <Link href="/login" className="site-footer-link">Sign in</Link>
             <Link href="/signup" className="site-footer-link">Create account</Link>
             <Link href="/plans" className="site-footer-link">My plans</Link>
+            <Link href="/account" className="site-footer-link">Settings</Link>
           </div>
           <div className="site-footer-col">
             <span className="site-footer-col-title">About</span>

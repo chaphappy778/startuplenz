@@ -2290,3 +2290,294 @@ a { color: inherit; text-decoration: none; }
   .auth-card { padding: 22px; }
   .auth-title { font-size: 1.55rem; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   ACCOUNT / SETTINGS — /account
+═══════════════════════════════════════════════════════════════════════════════ */
+
+.account-page {
+  padding: 56px 24px 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.account-shell {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.account-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.account-sub {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+}
+
+.account-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-card-quiet {
+  background: transparent;
+}
+
+.account-section-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+
+/* ── Identity (avatar + name + email) ───────────────────────────────────────── */
+
+.account-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.account-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  flex-shrink: 0;
+}
+
+.account-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+}
+
+.account-identity-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.account-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.account-email {
+  font-size: 0.84rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Form ───────────────────────────────────────────────────────────────────── */
+
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.account-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.account-field-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.account-input {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.account-input::placeholder { color: var(--text-muted); }
+
+.account-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.account-input-readonly {
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+.account-field-hint {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.account-form-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.account-save-btn {
+  padding: 9px 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: filter 120ms ease;
+}
+
+.account-save-btn:hover:not(:disabled) { filter: brightness(1.08); }
+.account-save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.account-status-ok { font-size: 0.82rem; color: var(--green); }
+.account-status-error { font-size: 0.82rem; color: var(--red); }
+
+/* ── Subscription / rows ────────────────────────────────────────────────────── */
+
+.account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.account-row:last-of-type { border-bottom: none; }
+
+.account-row-label {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+}
+
+.account-row-value {
+  font-size: 0.92rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.account-tier-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.account-tier-free {
+  background: var(--bg-raised);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+.account-tier-pro {
+  background: rgba(99,102,241,0.18);
+  color: var(--accent2);
+  border: 1px solid rgba(99,102,241,0.4);
+}
+
+.account-tier-team {
+  background: rgba(74,222,128,0.12);
+  color: var(--green);
+  border: 1px solid rgba(74,222,128,0.3);
+}
+
+.account-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.account-action-link {
+  font-size: 0.86rem;
+  color: var(--accent2);
+  font-weight: 500;
+}
+
+.account-action-link:hover { text-decoration: underline; }
+
+/* ── Sign out ───────────────────────────────────────────────────────────────── */
+
+.account-help-text {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.account-signout-btn {
+  padding: 9px 16px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+  align-self: flex-start;
+}
+
+.account-signout-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+@media (max-width: 480px) {
+  .account-page { padding: 32px 16px 56px; }
+  .account-card { padding: 18px; }
+}

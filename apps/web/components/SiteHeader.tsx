@@ -22,7 +22,10 @@ export default async function SiteHeader() {
           <Link href="/" className="site-nav-link">Verticals</Link>
           <Link href="/compare" className="site-nav-link">Compare</Link>
           {user && (
-            <Link href="/plans" className="site-nav-link">My plans</Link>
+            <>
+              <Link href="/plans" className="site-nav-link">My plans</Link>
+              <Link href="/account" className="site-nav-link">Account</Link>
+            </>
           )}
           {isAdmin && (
             <Link href="/admin" className="site-nav-link site-nav-admin">Admin</Link>
