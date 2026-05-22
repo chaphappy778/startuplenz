@@ -6,6 +6,12 @@ import SiteFooter from "@/components/SiteFooter";
 
 export const metadata: Metadata = baseMetadata();
 
+// SiteHeader reads the auth cookie to show "Sign in" vs the user pill, so the
+// root layout must render fresh on every request. Without this, Next prerenders
+// the layout at build time (when there's no cookie) and serves the cached
+// "signed out" version even after a user logs in.
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">

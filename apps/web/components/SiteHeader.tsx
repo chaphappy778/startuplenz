@@ -28,9 +28,14 @@ export default async function SiteHeader() {
             <Link href="/admin" className="site-nav-link site-nav-admin">Admin</Link>
           )}
           {user ? (
-            <span className="site-nav-user" title={user.email ?? undefined}>
-              {(user.email ?? "Account").split("@")[0]}
-            </span>
+            <>
+              <span className="site-nav-user" title={user.email ?? undefined}>
+                {(user.email ?? "Account").split("@")[0]}
+              </span>
+              <form action="/auth/signout" method="post" className="site-nav-signout-form">
+                <button type="submit" className="site-nav-signout">Sign out</button>
+              </form>
+            </>
           ) : (
             <Link href="/login" className="site-nav-cta">Sign in</Link>
           )}
