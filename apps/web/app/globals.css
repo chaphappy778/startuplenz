@@ -1196,16 +1196,156 @@ a { color: inherit; text-decoration: none; }
 /* ─── Growth trajectory (area chart + phase cards) ───────────────────────────── */
 
 .growth-chart {
+  height: 110px;
   background: rgba(99,102,241,0.04);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-sm);
-  padding: 10px 12px;
+  padding: 8px 10px;
 }
 
 .growth-chart-svg {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
+}
+
+/* ─── Growth panel header (with expand button) ──────────────────────────────── */
+
+.growth-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-direction: row;
+}
+
+.growth-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  flex-shrink: 0;
+}
+
+.growth-expand-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.growth-expand-btn svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* ─── Detail overlay (modal) ────────────────────────────────────────────────── */
+
+.growth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(8, 12, 24, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: growthOverlayFade 120ms ease-out;
+}
+
+@keyframes growthOverlayFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.growth-overlay-card {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 28px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0 40px 80px -20px rgba(0,0,0,0.6);
+}
+
+.growth-overlay-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.growth-overlay-head .panel-title {
+  font-size: 1.35rem;
+  margin-top: 2px;
+}
+
+.growth-overlay-sub {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-top: 6px;
+  max-width: 540px;
+}
+
+.growth-overlay-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.growth-overlay-close:hover {
+  background: var(--bg-hover);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.growth-overlay-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.growth-overlay-chart {
+  background: rgba(99,102,241,0.05);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+}
+
+.growth-overlay-phases {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .growth-overlay-card { padding: 22px 18px 18px; }
+  .growth-overlay-phases { grid-template-columns: 1fr; }
 }
 
 .growth-phase-grid {
