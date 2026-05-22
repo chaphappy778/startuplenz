@@ -12,11 +12,33 @@ import { NextResponse, type NextRequest } from 'next/server'
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/'
+
+  // Next.js 16 — cookies() returns a Promise. Await before accessing.
+  const cookieStore = await cookies()
+
+  // Prefer the URL param when present. Fall back to the `oauth_next` cookie
+  // set by the login page before initiating OAuth, since Supabase sometimes
+  // drops query strings from the redirectTo URL. Default to home if neither
+  // exists.
+  const rawNext =
+    searchParams.get('next') ??
+    cookieStore.get('oauth_next')?.value ??
+    '/'
+  // Decode + sanity-check — only allow same-origin paths (prevent open redirect)
+  let next: string
+  try {
+    next = decodeURIComponent(rawNext)
+  } catch {
+    next = '/'
+  }
+  if (!next.startsWith('/') || next.startsWith('//')) next = '/'
+
+  // One-shot cookie: clear it on the way out.
+  if (cookieStore.get('oauth_next')) {
+    cookieStore.set('oauth_next', '', { maxAge: 0, path: '/' })
+  }
 
   if (code) {
-    // Next.js 16 — cookies() returns a Promise. Await before accessing.
-    const cookieStore = await cookies()
 
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,

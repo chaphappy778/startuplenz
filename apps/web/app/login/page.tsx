@@ -58,6 +58,11 @@ function LoginPageContent() {
 
   async function handleGoogleLogin() {
     setError(null);
+    // Stash the post-OAuth destination in a short-lived cookie. Supabase
+    // sometimes drops query strings from the redirectTo URL, so we can't
+    // rely on ?next= surviving the round-trip. The /auth/callback route
+    // reads this cookie as a fallback.
+    document.cookie = `oauth_next=${encodeURIComponent(next)}; max-age=600; path=/; SameSite=Lax`;
     const supabase = createClient();
 
     const { error } = await supabase.auth.signInWithOAuth({
