@@ -53,10 +53,13 @@ export async function GET() {
   const slugs = (verticals ?? []).map((v) => v.slug as string);
 
   const entries: Entry[] = [
-    { loc: `${SITE_URL}/`,        lastmod: now, changefreq: "weekly",  priority: 1.0 },
-    { loc: `${SITE_URL}/compare`, lastmod: now, changefreq: "monthly", priority: 0.5 },
-    { loc: `${SITE_URL}/login`,   lastmod: now, changefreq: "yearly",  priority: 0.3 },
-    { loc: `${SITE_URL}/signup`,  lastmod: now, changefreq: "yearly",  priority: 0.3 },
+    { loc: `${SITE_URL}/`,             lastmod: now, changefreq: "weekly",  priority: 1.0 },
+    { loc: `${SITE_URL}/verticals`,    lastmod: now, changefreq: "weekly",  priority: 0.9 },
+    { loc: `${SITE_URL}/about`,        lastmod: now, changefreq: "monthly", priority: 0.7 },
+    { loc: `${SITE_URL}/how-it-works`, lastmod: now, changefreq: "monthly", priority: 0.7 },
+    { loc: `${SITE_URL}/compare`,      lastmod: now, changefreq: "monthly", priority: 0.5 },
+    { loc: `${SITE_URL}/login`,        lastmod: now, changefreq: "yearly",  priority: 0.3 },
+    { loc: `${SITE_URL}/signup`,       lastmod: now, changefreq: "yearly",  priority: 0.3 },
   ];
 
   // Per-vertical model pages.

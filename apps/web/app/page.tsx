@@ -83,6 +83,48 @@ export default function HomePage() {
         </ol>
       </section>
 
+      {/* ── STORY PREVIEW ────────────────────────────────────────────────── */}
+      <section className="home-story">
+        <div className="home-story-grid">
+          <div className="home-story-card">
+            <span className="home-section-eyebrow">The story</span>
+            <h2 className="home-story-title">
+              Started as a slime-brand spreadsheet at our kitchen table
+            </h2>
+            <p className="home-story-body">
+              My wife was getting into slimes and wanted to know if a
+              brand of her own would actually pencil out. So she built a
+              calculator for it. I looked at what she&rsquo;d made and
+              realized the same approach would work for any DIY business
+              someone was considering. Ten verticals later, here we are
+              &mdash; built so other DIY founders can see what their idea
+              really costs to start.
+            </p>
+            <Link href="/about" className="home-story-link">
+              Read the full story →
+            </Link>
+          </div>
+
+          <div className="home-story-card">
+            <span className="home-section-eyebrow">How it works</span>
+            <h2 className="home-story-title">
+              A living calculator, not a frozen spreadsheet
+            </h2>
+            <p className="home-story-body">
+              The math under every vertical isn&rsquo;t hardcoded &mdash;
+              defaults live in a database and evolve as marketplace fees,
+              materials, and channel economics shift. When Etsy bumps its
+              fee or shipping rates change, the calculators update. The
+              living pathways are the backbone. The sliders are just the
+              surface.
+            </p>
+            <Link href="/how-it-works" className="home-story-link">
+              See the methodology →
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* ── VERTICAL MARQUEE ─────────────────────────────────────────────── */}
       <section className="home-verticals" id="verticals">
         <div className="home-section-head home-verticals-head">

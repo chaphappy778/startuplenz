@@ -35,6 +35,8 @@ export default function SiteFooter() {
           </div>
           <div className="site-footer-col">
             <span className="site-footer-col-title">About</span>
+            <Link href="/about" className="site-footer-link">The story</Link>
+            <Link href="/how-it-works" className="site-footer-link">How it works</Link>
             <a
               href="https://chaphaus.com"
               className="site-footer-link"
