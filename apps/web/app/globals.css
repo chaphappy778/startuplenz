@@ -252,15 +252,18 @@ a { color: inherit; text-decoration: none; }
 
 .home-section-eyebrow {
   display: inline-flex;
-  padding: 4px 10px;
+  align-items: center;
+  padding: 4px 12px;
   border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--bg-card);
-  color: var(--text-muted);
+  border: 1px solid rgba(99,102,241,0.35);
+  background:
+    linear-gradient(135deg, rgba(99,102,241,0.16), rgba(167,139,250,0.10));
+  color: var(--accent2);
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  box-shadow: 0 0 0 1px rgba(99,102,241,0.05) inset;
 }
 
 .home-section-title {
