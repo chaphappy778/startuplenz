@@ -2,9 +2,9 @@
 //
 // Receives Resend webhook events and lands them in two places:
 //
-//   1. email_events  — full audit log of the raw payload (forensics + buyer
+//   1. email_events , full audit log of the raw payload (forensics + buyer
 //      due-diligence pack later). One row per event.
-//   2. email_subscribers — aggregates so the common queries don't need to
+//   2. email_subscribers, aggregates so the common queries don't need to
 //      re-aggregate the log. opens_count, last_opened_at, etc.
 //
 // Resend uses Svix signing: svix-id + svix-timestamp + svix-signature headers
@@ -12,13 +12,13 @@
 // avoid a runtime dep on the svix SDK.
 //
 // Events handled (all from the Resend docs):
-//   email.sent             — Resend accepted the message for delivery
-//   email.delivered        — Recipient's mail server accepted it
-//   email.delivery_delayed — Temporary deferral; will be retried
-//   email.bounced          — Permanent bounce
-//   email.complained       — Marked as spam (auto-unsub on our side)
-//   email.opened           — Recipient opened (tracking pixel)
-//   email.clicked          — Recipient clicked a link (URL in payload)
+//   email.sent            , Resend accepted the message for delivery
+//   email.delivered       , Recipient's mail server accepted it
+//   email.delivery_delayed, Temporary deferral; will be retried
+//   email.bounced         , Permanent bounce
+//   email.complained      , Marked as spam (auto-unsub on our side)
+//   email.opened          , Recipient opened (tracking pixel)
+//   email.clicked         , Recipient clicked a link (URL in payload)
 
 import { NextResponse, type NextRequest } from "next/server";
 import { createHmac, timingSafeEqual } from "node:crypto";
@@ -79,7 +79,7 @@ function verifySvixSignature(
         return true;
       }
     } catch {
-      // length mismatch — continue
+      // length mismatch, continue
     }
   }
   return false;
@@ -118,7 +118,7 @@ function aggregatesForEvent(eventType: string, happenedAt: string): AggregateUpd
       break;
     case "complained":
       updates.set.complained = true;
-      // Spam complaints are an immediate unsub — required for deliverability.
+      // Spam complaints are an immediate unsub, required for deliverability.
       updates.set.unsubscribed_at = happenedAt;
       break;
     default:
@@ -174,7 +174,7 @@ export async function POST(req: NextRequest) {
 
   const supabase = createAdminClient();
 
-  // 1. Audit log — every event goes here, regardless of type. This is the
+  // 1. Audit log, every event goes here, regardless of type. This is the
   //    forensic trail buyers will eventually want to see.
   const { error: eventInsertErr } = await supabase.from("email_events").insert({
     email,
@@ -184,7 +184,7 @@ export async function POST(req: NextRequest) {
     happened_at: happenedAt,
   });
   if (eventInsertErr) {
-    // Log but don't fail the webhook — Resend will retry if we 500, which
+    // Log but don't fail the webhook, Resend will retry if we 500, which
     // we don't want for a logging hiccup.
     console.error("[resend webhook] event log failed:", eventInsertErr.message);
   }

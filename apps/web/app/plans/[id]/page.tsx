@@ -1,7 +1,7 @@
 // apps/web/app/plans/[id]/page.tsx
 //
 // Load a saved plan and render the calculator pre-populated with its values.
-// Auth-gated: only the plan owner can view (enforced by RLS — non-owners
+// Auth-gated: only the plan owner can view (enforced by RLS, non-owners
 // receive zero rows and get a 404).
 
 import Link from "next/link";

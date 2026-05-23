@@ -29,7 +29,7 @@ function fmtNumber(n: number): string {
 
 /**
  * Compares current profit to the model's launch projection. If sliders push
- * past the launch baseline, we show a "+/-XX% vs launch" trend pill — gives
+ * past the launch baseline, we show a "+/-XX% vs launch" trend pill, gives
  * the KPI tiles a sense of motion that abstract numbers alone can't.
  */
 function trendVsLaunch(current: number, launch: number): {
@@ -112,7 +112,7 @@ export default function MonthlySnapshot({ output }: Props) {
 }
 
 function marginContext(margin: number): string {
-  if (margin >= 0.35) return "Excellent — top quartile";
+  if (margin >= 0.35) return "Excellent, top quartile";
   if (margin >= 0.2) return "Healthy range";
   if (margin >= 0.1) return "Tight but workable";
   if (margin >= 0) return "Barely breaking even";

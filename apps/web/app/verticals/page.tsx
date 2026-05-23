@@ -26,7 +26,7 @@ interface VerticalRow {
 }
 
 export const metadata: Metadata = baseMetadata({
-  title: "All verticals — StartupLenz",
+  title: "All verticals, StartupLenz",
   description:
     "Browse every startup vertical we model. Pick one to see real margin, break-even, and cost breakdown for that specific business.",
 });
@@ -42,7 +42,7 @@ export default async function VerticalsPage() {
 
   const rows: VerticalRow[] = (verticals ?? []) as VerticalRow[];
 
-  // Check inputs configured for each vertical — "Soon" tiles for empty ones.
+  // Check inputs configured for each vertical, "Soon" tiles for empty ones.
   const inputCounts: Record<string, number> = {};
   await Promise.all(
     rows.map(async (v) => {
@@ -65,7 +65,7 @@ export default async function VerticalsPage() {
         </h1>
         <p className="verticals-page-sub">
           Each calculator is hand-tuned with real-world inputs for that
-          specific business — marketplace fees, materials cost, labor rates,
+          specific business, marketplace fees, materials cost, labor rates,
           channel mix. Pick one to start.
         </p>
       </header>

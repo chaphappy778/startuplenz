@@ -9,9 +9,9 @@ import Link from "next/link";
 import { baseMetadata, SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = baseMetadata({
-  title: "About StartupLenz — why this exists",
+  title: "About StartupLenz: why this exists",
   description:
-    "StartupLenz is a free, living cost calculator for DIY entrepreneurs, built by ChapHaus LLC. Here's the story — it started as a slime-brand spreadsheet at our kitchen table and grew into ten verticals.",
+    "StartupLenz is a free, living cost calculator for DIY entrepreneurs, built by ChapHaus LLC. Here is the story. It started as a slime-brand spreadsheet at our kitchen table and grew into ten verticals.",
 });
 
 const articleJsonLd = {
@@ -19,7 +19,7 @@ const articleJsonLd = {
   "@type": "AboutPage",
   name: "About StartupLenz",
   description:
-    "The story behind StartupLenz — a free, living cost calculator for DIY entrepreneurs.",
+    "The story behind StartupLenz, a free, living cost calculator for DIY entrepreneurs.",
   url: `${SITE_URL}/about`,
   publisher: { "@type": "Organization", name: "ChapHaus LLC" },
 };
@@ -35,7 +35,7 @@ export default function AboutPage() {
         <p className="prose-page-lede">
           StartupLenz is a free, living cost calculator for DIY entrepreneurs.
           The math under the hood evolves as marketplaces, materials, and
-          fees do &mdash; so you&rsquo;re modeling what your business actually
+          fees do, so you&rsquo;re modeling what your business actually
           costs <em>now</em>, not what it cost in some industry report from
           two years ago.
         </p>
@@ -45,7 +45,7 @@ export default function AboutPage() {
         <section>
           <h2>How this started</h2>
           <p>
-            My wife was getting into slimes &mdash; small-batch, hand-mixed,
+            My wife was getting into slimes. Small-batch, hand-mixed,
             looking at starting her own slime brand. We&rsquo;re both the
             kind of people who are always running the numbers on whatever
             we&rsquo;re thinking about next, so before she invested time and
@@ -57,9 +57,10 @@ export default function AboutPage() {
             I looked at what she&rsquo;d built and thought it was a kind of
             cool. The more I thought about it, the more I realized: <em>this
             same pattern would work for any DIY business someone was
-            seriously considering.</em> Could we model a food truck the same
+            seriously considering.</em>{" "}
+            Could we model a food truck the same
             way? A cleaning service? A subscription box? A handmade candle
-            brand? Turns out yes &mdash; once you commit to building one model
+            brand? Turns out yes. Once you commit to building one model
             per vertical instead of pretending they&rsquo;re all the same
             kind of business, it&rsquo;s very doable.
           </p>
@@ -98,8 +99,8 @@ export default function AboutPage() {
         <section>
           <h2>The thing that makes this different: it&rsquo;s alive</h2>
           <p>
-            Most cost calculators &mdash; including the ones in business
-            books and YouTube tutorials &mdash; are dead. They were built
+            Most cost calculators, including the ones in business
+            books and YouTube tutorials, are dead. They were built
             once with whatever data was current that year, published, and
             then they sat there. By the time you opened them, the platform
             fees had changed, materials had inflated, channel economics had
@@ -107,8 +108,8 @@ export default function AboutPage() {
           </p>
           <p>
             StartupLenz is built differently. The data under every vertical
-            &mdash; default fee rates, average shipping costs, industry
-            margin benchmarks, channel-mix splits &mdash; lives in our
+            (default fee rates, average shipping costs, industry
+            margin benchmarks, channel-mix splits) lives in our
             database, not hardcoded in a static spreadsheet. When Etsy bumps
             its fee, we update the default. When a major shipping carrier
             changes its rates, we update the default. When the average
@@ -119,8 +120,8 @@ export default function AboutPage() {
             now.
           </p>
           <p>
-            We built the living pathways &mdash; the database schema, the
-            content management tools, the publishing pipeline &mdash; so the
+            We built the living pathways: the database schema, the
+            content management tools, the publishing pipeline. The
             calculators can keep up with the markets they describe. That&rsquo;s
             the backbone. The user-facing sliders are just the surface.
           </p>
@@ -137,32 +138,33 @@ export default function AboutPage() {
             channel actually pays you the most.
           </p>
           <p>
-            <strong>Vertical-specific inputs.</strong> Every input field
-            exists because the data we&rsquo;ve gathered shows it matters.
-            We don&rsquo;t include &ldquo;office rent&rdquo; if the business
-            is normally run from a kitchen. We don&rsquo;t include
-            &ldquo;website hosting&rdquo; as a $50/month line item when
-            Shopify already takes a cut elsewhere. The shape of the inputs
-            matches how the business actually runs.
+            <strong>Vertical-specific inputs.</strong>{" "}
+            Every input field exists because the data we&rsquo;ve gathered
+            shows it matters. We don&rsquo;t include &ldquo;office
+            rent&rdquo; if the business is normally run from a kitchen. We
+            don&rsquo;t include &ldquo;website hosting&rdquo; as a $50/month
+            line item when Shopify already takes a cut elsewhere. The
+            shape of the inputs matches how the business actually runs.
           </p>
           <p>
-            <strong>Written-take insights.</strong> The paragraph below your
-            numbers is the most important thing on the page. It&rsquo;s not
-            a stock template &mdash; it&rsquo;s an opinionated read of your
-            specific numbers, generated by the vertical&rsquo;s model engine.
-            &ldquo;Healthy 24.9% margin &mdash; most slime brands at this
-            tier reinvest into bigger drops + paid creator collabs to
-            scale.&rdquo; The kind of thing a friend who&rsquo;d already
-            done it would tell you.
+            <strong>Written-take insights.</strong>{" "}
+            The paragraph below your numbers is the most important thing on
+            the page. It&rsquo;s not a stock template, it&rsquo;s an
+            opinionated read of your specific numbers, generated by the
+            vertical&rsquo;s model engine. &ldquo;Healthy 24.9% margin.
+            Most slime brands at this tier reinvest into bigger drops + paid
+            creator collabs to scale.&rdquo; The kind of thing a friend
+            who&rsquo;d already done it would tell you.
           </p>
           <p>
-            <strong>Free forever, for real.</strong> The core calculators
-            are free. No trial, no &ldquo;upgrade to see your full report,&rdquo;
-            no email gate before you see the numbers. Sign in if you want
-            to save plans across devices, but you never have to. We&rsquo;ll
-            add paid features eventually &mdash; alerts when a fee that
-            affects your saved plan changes, multi-user access, sector
-            benchmarks &mdash; but the core math will stay free.
+            <strong>Free forever, for real.</strong>{" "}
+            The core calculators are free. No trial, no &ldquo;upgrade to
+            see your full report,&rdquo; no email gate before you see the
+            numbers. Sign in if you want to save plans across devices, but
+            you never have to. We&rsquo;ll add paid features eventually
+            (alerts when a fee that affects your saved plan changes,
+            multi-user access, sector benchmarks) but the core math will
+            stay free.
           </p>
         </section>
 
@@ -176,17 +178,17 @@ export default function AboutPage() {
               third party? No.
             </li>
             <li>
-              <strong>We won&rsquo;t fabricate testimonials.</strong> Every
-              indie tool launches with three made-up Sarahs from imagined
-              companies. You&rsquo;ll see real testimonials here only when
-              we have real ones.
+              <strong>We won&rsquo;t fabricate testimonials.</strong>{" "}
+              Every indie tool launches with three made-up Sarahs from
+              imagined companies. You&rsquo;ll see real testimonials here
+              only when we have real ones.
             </li>
             <li>
               <strong>We won&rsquo;t add features that aren&rsquo;t
-              decision-useful.</strong> Pretty charts that don&rsquo;t change
-              what a founder does next are noise. If we add it, it&rsquo;s
-              because someone we trust said it would have changed how they
-              built their business.
+              decision-useful.</strong>{" "}
+              Pretty charts that don&rsquo;t change what a founder does
+              next are noise. If we add it, it&rsquo;s because someone we
+              trust said it would have changed how they built their business.
             </li>
             <li>
               <strong>We won&rsquo;t pretend to be a financial advisor.</strong>{" "}
@@ -201,13 +203,13 @@ export default function AboutPage() {
           <h2>Where this is going</h2>
           <p>
             We&rsquo;re always looking for the next category that makes
-            sense to model. Service businesses are coming next &mdash;
-            cleaning, lawncare, mobile auto-detail, beauty. After that,
+            sense to model. Service businesses are coming next: cleaning,
+            lawncare, mobile auto-detail, beauty. After that,
             probably food &amp; beverage outside the food-truck format
             (ghost kitchens, baked goods, micro-roasters). If you&rsquo;re
             running a vertical we haven&rsquo;t modeled yet and you&rsquo;d
             be willing to share what actually drives your P&amp;L, email us
-            &mdash; we&rsquo;ll prioritize yours.
+            and we&rsquo;ll prioritize yours.
           </p>
         </section>
 
@@ -227,8 +229,8 @@ export default function AboutPage() {
           <h2>Start with one of the calculators</h2>
           <p>
             Pick the vertical that&rsquo;s closest to what you&rsquo;re
-            modeling and start moving sliders. The math is honest &mdash;
-            and it&rsquo;s current.
+            modeling and start moving sliders. The math is honest, and
+            it&rsquo;s current.
           </p>
           <div className="prose-cta-buttons">
             <Link href="/verticals" className="hero-cta hero-cta-primary">

@@ -6,7 +6,7 @@
  * computeModel() now calls the real `@startuplenz/vertical-models/handmade`
  * engine and adapts its rich output shape to the simpler `ModelOutput` shape
  * the existing UI components consume. Live cost snapshots are not wired in
- * yet — that's Phase 3.5. When they are, `snapshots` should be passed as the
+ * yet, that's Phase 3.5. When they are, `snapshots` should be passed as the
  * second argument to `runModel()` and the live-data badge can be driven off
  * the `liveDataApplied` flags returned by the engine.
  */
@@ -23,7 +23,7 @@ import { runModel as runHouseFlipping } from "@startuplenz/vertical-models/house
 import { runModel as runSlimeBusiness } from "@startuplenz/vertical-models/slime-business";
 import type { CostItem, ModelOutput, SliderValues } from "./types";
 
-// ─── Insight builder (copied from the previous mock — same heuristic) ────────
+// ─── Insight builder (copied from the previous mock, same heuristic) ────────
 
 function buildInsight(margin: number, orders: number): string {
   if (margin >= 0.4)
@@ -31,11 +31,11 @@ function buildInsight(margin: number, orders: number): string {
   if (margin >= 0.25)
     return "Healthy margins for a small brand. Focus on growing order size to push profitability higher.";
   if (margin >= 0.1)
-    return "Margins are thin — look at reducing material or shipping costs before scaling volume.";
+    return "Margins are thin, look at reducing material or shipping costs before scaling volume.";
   if (margin >= 0)
     return "You're breaking even. One price increase or cost cut could flip this to profit quickly.";
   if (orders <= 0)
-    return "Volume is at zero — try increasing units per drop, drops per month, or your sell-through rate.";
+    return "Volume is at zero, try increasing units per drop, drops per month, or your sell-through rate.";
   return "You're losing money at this volume. Increase prices or reduce costs before launching.";
 }
 

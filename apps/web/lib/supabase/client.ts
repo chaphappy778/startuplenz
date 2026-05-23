@@ -1,9 +1,9 @@
 // apps/web/lib/supabase/client.ts
-// Browser-side Supabase client — singleton pattern so we never create
+// Browser-side Supabase client, singleton pattern so we never create
 // more than one GoTrue client per page load (avoids memory leaks).
 
 import { createBrowserClient } from "@supabase/ssr";
-import type { Database } from "@/types/supabase"; // generated types — adjust path if needed
+import type { Database } from "@/types/supabase"; // generated types, adjust path if needed
 
 let client: ReturnType<typeof createBrowserClient<Database>> | undefined;
 

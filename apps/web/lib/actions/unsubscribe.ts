@@ -14,7 +14,7 @@ export async function unsubscribeAction(formData: FormData) {
   const token = String(formData.get("token") ?? "");
   const verified = verifyUnsubscribeToken(token);
   if (!verified) {
-    // Token invalid — bounce to the same page without ?done=1
+    // Token invalid, bounce to the same page without ?done=1
     redirect("/unsubscribe");
   }
 

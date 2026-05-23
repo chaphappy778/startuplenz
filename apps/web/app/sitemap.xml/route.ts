@@ -1,7 +1,7 @@
 // apps/web/app/sitemap.xml/route.ts
 //
 // Hand-rolled XML sitemap. Replaces the previous `app/sitemap.ts` which
-// relied on Next's MetadataRoute.Sitemap serializer — that serializer
+// relied on Next's MetadataRoute.Sitemap serializer, that serializer
 // doesn't escape `&` to `&amp;` in URL query strings, which breaks XML
 // parsing the moment any /compare?a=X&b=Y URL appears.
 //
@@ -72,7 +72,7 @@ export async function GET() {
     });
   }
 
-  // Compare pairs — one canonical URL per unordered pair (alphabetical).
+  // Compare pairs, one canonical URL per unordered pair (alphabetical).
   // The `&` here is what broke the previous sitemap; xmlEscape handles it.
   for (let i = 0; i < slugs.length; i++) {
     for (let j = i + 1; j < slugs.length; j++) {
@@ -85,7 +85,7 @@ export async function GET() {
     }
   }
 
-  // Goal-seek SEO landing pages — common profit targets per vertical.
+  // Goal-seek SEO landing pages, common profit targets per vertical.
   const goalTargets = [1000, 2500, 5000, 10000, 25000];
   for (const slug of slugs) {
     for (const target of goalTargets) {

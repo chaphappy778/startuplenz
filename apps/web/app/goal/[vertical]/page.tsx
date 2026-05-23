@@ -117,7 +117,7 @@ export default async function GoalPage({ params, searchParams }: PageProps) {
       <main className="model-page">
         <header className="model-page-header">
           <Link href="/" className="page-back-link">All verticals</Link>
-          <h1 className="model-page-title">{verticalData.display_name} — coming soon</h1>
+          <h1 className="model-page-title">{verticalData.display_name}, coming soon</h1>
         </header>
         <p className="model-page-empty">
           No inputs configured yet for this vertical.
@@ -152,7 +152,7 @@ export default async function GoalPage({ params, searchParams }: PageProps) {
         <p className="vertical-hero-paragraph">
           The Goal Seek panel below is pre-filled with your target. Pick which
           lever to move and we&rsquo;ll show exactly what needs to change. The
-          full calculator is right below it — adjust anything, watch the
+          full calculator is right below it, adjust anything, watch the
           numbers update in real time.
         </p>
 

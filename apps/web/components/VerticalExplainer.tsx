@@ -1,7 +1,7 @@
 // apps/web/components/VerticalExplainer.tsx
 //
 // Long-form copy shown below the calculator on /model/[vertical].
-// This is the SEO meat — Google indexes this content, and the calculator
+// This is the SEO meat, Google indexes this content, and the calculator
 // above is the engagement payoff.
 
 import { faqPageJsonLd } from "@/lib/seo";

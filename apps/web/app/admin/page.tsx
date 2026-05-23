@@ -23,7 +23,7 @@ export default async function AdminHomePage() {
     <div>
       <header className="admin-header">
         <h1>Overview</h1>
-        <p className="admin-sub">Operator dashboard. Manual edits only — auto-update will layer in later.</p>
+        <p className="admin-sub">Operator dashboard. Manual edits only, auto-update will layer in later.</p>
       </header>
       <div className="admin-stats">
         {cards.map((c) => (

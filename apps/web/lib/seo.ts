@@ -1,5 +1,5 @@
 // apps/web/lib/seo.ts
-// Shared SEO helpers — site URL, default metadata, structured-data builders.
+// Shared SEO helpers, site URL, default metadata, structured-data builders.
 
 import type { Metadata } from "next";
 import { getVerticalContent } from "@/lib/verticalContent";
@@ -16,8 +16,8 @@ export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image`;
 export function baseMetadata(overrides?: Partial<Metadata>): Metadata {
   return {
     title: {
-      default: "StartupLenz — Live cost modeling for new businesses",
-      template: "%s — StartupLenz",
+      default: "StartupLenz, Live cost modeling for new businesses",
+      template: "%s, StartupLenz",
     },
     description:
       "Free, vertical-specific cost calculators for indie founders. Food trucks, candle makers, subscription boxes, print-on-demand, and more.",
@@ -27,7 +27,7 @@ export function baseMetadata(overrides?: Partial<Metadata>): Metadata {
       type: "website",
       url: SITE_URL,
       siteName: SITE_NAME,
-      title: "StartupLenz — Live cost modeling for new businesses",
+      title: "StartupLenz, Live cost modeling for new businesses",
       description:
         "Free, vertical-specific cost calculators for indie founders.",
       images: [{ url: DEFAULT_OG_IMAGE, width: 1200, height: 630 }],

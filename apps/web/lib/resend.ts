@@ -11,7 +11,7 @@ export function getResend(): Resend {
   const key = process.env.RESEND_API_KEY;
   if (!key) {
     throw new Error(
-      "RESEND_API_KEY is not set. Add it to apps/web/.env.local — see .env.local.example.",
+      "RESEND_API_KEY is not set. Add it to apps/web/.env.local, see .env.local.example.",
     );
   }
   cached = new Resend(key);

@@ -142,7 +142,7 @@ export default function InputsEditor({ rows: initialRows }: Props) {
                     width={70}
                   />
                 </td>
-                <td className="ai-center">{r.is_live_data ? "yes" : "—"}</td>
+                <td className="ai-center">{r.is_live_data ? "yes" : "-"}</td>
                 <td>
                   <TextField
                     value={r.help_text}

@@ -2,11 +2,11 @@
 //
 // Home page. Composed of:
 //   • Hero with eyebrow pill + gradient headline + dashboard preview
-//   • Stats row (4 numbers — what makes the tool substantial)
-//   • "How it works" — 3 numbered steps
-//   • VerticalSelector — the actual entry point into the calculator
-//   • Feature highlights — 4 cards detailing what you get
-//   • Lightweight FAQ — common questions about the tool
+//   • Stats row (4 numbers, what makes the tool substantial)
+//   • "How it works", 3 numbered steps
+//   • VerticalSelector, the actual entry point into the calculator
+//   • Feature highlights, 4 cards detailing what you get
+//   • Lightweight FAQ, common questions about the tool
 //
 // All sections are server-rendered and accessible without auth. Stat numbers
 // are static here for now; we'll wire them to Supabase counts when the data
@@ -28,7 +28,7 @@ export default function HomePage() {
         </h1>
         <p className="hero-sub">
           Pick your vertical. Move the sliders. See real margin, real
-          break-even, and exactly where every dollar goes — no spreadsheets,
+          break-even, and exactly where every dollar goes, no spreadsheets,
           no signup.
         </p>
         <div className="hero-ctas">
@@ -73,7 +73,7 @@ export default function HomePage() {
           <Step
             num="2"
             title="Move the sliders"
-            body="Drop in your real numbers — units sold, materials cost, hourly rate. Every input has a tooltip with industry context."
+            body="Drop in your real numbers, units sold, materials cost, hourly rate. Every input has a tooltip with industry context."
           />
           <Step
             num="3"
@@ -97,7 +97,7 @@ export default function HomePage() {
               calculator for it. I looked at what she&rsquo;d made and
               realized the same approach would work for any DIY business
               someone was considering. Ten verticals later, here we are
-              &mdash; built so other DIY founders can see what their idea
+             , built so other DIY founders can see what their idea
               really costs to start.
             </p>
             <Link href="/about" className="home-story-link">
@@ -111,7 +111,7 @@ export default function HomePage() {
               A living calculator, not a frozen spreadsheet
             </h2>
             <p className="home-story-body">
-              The math under every vertical isn&rsquo;t hardcoded &mdash;
+              The math under every vertical isn&rsquo;t hardcoded ,
               defaults live in a database and evolve as marketplace fees,
               materials, and channel economics shift. When Etsy bumps its
               fee or shipping rates change, the calculators update. The
@@ -146,15 +146,15 @@ export default function HomePage() {
         <div className="home-features-grid">
           <Feature
             title="Channel-aware revenue"
-            body="Etsy, TikTok Shop, your own site — each one has different fees and conversion. We model the split."
+            body="Etsy, TikTok Shop, your own site, each one has different fees and conversion. We model the split."
           />
           <Feature
             title="Cost breakdown that adds up"
-            body="Materials, packaging, labor, platform fees, ads — every line item with its dollar amount and percent of revenue."
+            body="Materials, packaging, labor, platform fees, ads, every line item with its dollar amount and percent of revenue."
           />
           <Feature
             title="Growth trajectory, not vibes"
-            body="Launch, traction, scale phases — each with projected profit so you know if it's worth the grind."
+            body="Launch, traction, scale phases, each with projected profit so you know if it's worth the grind."
           />
           <Feature
             title="A written take, not just charts"
@@ -180,7 +180,7 @@ export default function HomePage() {
           />
           <FaqItem
             q="Can I save my plans?"
-            a="Yes — sign in with Google or email and your plans persist across devices. Free accounts can save up to 3 plans across 3 verticals; that limit goes up over time."
+            a="Yes, sign in with Google or email and your plans persist across devices. Free accounts can save up to 3 plans across 3 verticals; that limit goes up over time."
           />
           <FaqItem
             q="What if my vertical isn't here?"

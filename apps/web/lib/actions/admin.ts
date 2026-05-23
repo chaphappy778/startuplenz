@@ -16,7 +16,7 @@ export interface SimpleResult {
 
 /**
  * Update a single input row's default_value (and optionally display fields).
- * Service-role write — gated by isAdmin().
+ * Service-role write, gated by isAdmin().
  */
 export async function updateInputField(input: {
   inputId: string;

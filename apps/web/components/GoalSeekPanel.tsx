@@ -2,7 +2,7 @@
 
 // apps/web/components/GoalSeekPanel.tsx
 //
-// "I want to make $X — what do I need to change?" Goal Seek with multi-lever
+// "I want to make $X, what do I need to change?" Goal Seek with multi-lever
 // support. The user picks a target net profit, then picks a primary lever
 // AND optionally up to two additional levers. Solver tries each in priority
 // order; if a lever alone can't hit the target, it locks at that lever's

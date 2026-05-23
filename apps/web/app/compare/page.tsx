@@ -26,8 +26,8 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const { a, b } = await searchParams;
   if (!a || !b) {
     return baseMetadata({
-      title: "Compare verticals — StartupLenz",
-      description: "Side-by-side cost comparison between any two startup verticals — free, no signup.",
+      title: "Compare verticals, StartupLenz",
+      description: "Side-by-side cost comparison between any two startup verticals, free, no signup.",
     });
   }
   const supabase = await createClient();
@@ -39,7 +39,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const bRow = data?.find((d) => d.slug === b);
   if (!aRow || !bRow) {
     return baseMetadata({
-      title: "Compare verticals — StartupLenz",
+      title: "Compare verticals, StartupLenz",
       description: "Side-by-side cost comparison between any two startup verticals.",
     });
   }
@@ -48,7 +48,7 @@ export async function generateMetadata({ searchParams }: PageProps): Promise<Met
   const [first, second] = [a, b].sort();
   const url = `${SITE_URL}/compare?a=${first}&b=${second}`;
   const ogImage = `${SITE_URL}/opengraph-image?vertical=${first}`;
-  const title = `${aRow.display_name} vs ${bRow.display_name} — startup cost comparison`;
+  const title = `${aRow.display_name} vs ${bRow.display_name}, startup cost comparison`;
   const description = `Side-by-side cost model for ${aRow.display_name} and ${bRow.display_name}. See which has the better margin at typical assumptions.`;
   return {
     title,
@@ -131,7 +131,7 @@ export default async function ComparePage({ searchParams }: PageProps) {
         </header>
         <section className="compare-picker">
           <p className="compare-picker-instruction">
-            Click two verticals — first becomes the left column, second becomes the right.
+            Click two verticals, first becomes the left column, second becomes the right.
           </p>
           <div className="compare-picker-grid">
             {(verticals ?? []).map((v) => (
@@ -225,7 +225,7 @@ export default async function ComparePage({ searchParams }: PageProps) {
 
   const takeaway = winner
     ? `At default assumptions, ${winner.vertical.display_name} nets ${fmtMoney(diff)}/mo more than ${winner === aResult ? bResult.vertical.display_name : aResult.vertical.display_name}.`
-    : "At default assumptions, both verticals produce the same monthly net profit. Margin and capital requirements differ — see the columns below.";
+    : "At default assumptions, both verticals produce the same monthly net profit. Margin and capital requirements differ, see the columns below.";
 
   return (
     <main className="compare-page">

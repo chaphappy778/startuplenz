@@ -1,6 +1,6 @@
 // apps/web/lib/supabase/admin.ts
 //
-// Service-role Supabase client. Bypasses RLS — use ONLY in server actions
+// Service-role Supabase client. Bypasses RLS, use ONLY in server actions
 // and route handlers that have already verified the caller is an admin
 // (see lib/auth.ts → isAdmin).
 //

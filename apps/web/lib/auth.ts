@@ -48,7 +48,7 @@ export async function requireUser(): Promise<User> {
 //
 // Admin status is determined by the user's email matching an entry in the
 // STARTUPLENZ_ADMIN_EMAILS env var (comma-separated, case-insensitive).
-// Server-only — the env var has no NEXT_PUBLIC_ prefix.
+// Server-only, the env var has no NEXT_PUBLIC_ prefix.
 
 function adminEmails(): string[] {
   return (process.env.STARTUPLENZ_ADMIN_EMAILS ?? "")

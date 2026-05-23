@@ -8,7 +8,7 @@
 //   3. Insert into email_subscribers via service-role (RLS is locked)
 //   4. Send the HTML email via Resend
 //
-// Failure modes are surfaced but write attempts continue best-effort —
+// Failure modes are surfaced but write attempts continue best-effort.
 // if the email send fails we still log the capture so we can re-send.
 
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -39,7 +39,7 @@ export async function captureEmail(input: {
     return { ok: false, error: "That email doesn't look right." };
   }
 
-  // ── 1. Resolve the vertical (anon read OK — public table) ─────────────
+  // ── 1. Resolve the vertical (anon read OK, public table) ─────────────
   const supabase = await createServerSupabase();
   const { data: vertical, error: vErr } = await supabase
     .from("verticals")
@@ -137,7 +137,7 @@ export async function captureEmail(input: {
       subject: message.subject,
       html: message.html,
       text: message.text,
-      // RFC-compliant unsubscribe headers — Gmail/Apple Mail show a one-click
+      // RFC-compliant unsubscribe headers, Gmail/Apple Mail show a one-click
       // unsub link in the UI when these are present.
       headers: {
         "List-Unsubscribe": `<${unsubscribeUrl}>`,

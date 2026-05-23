@@ -4,7 +4,7 @@
 // address to a server-known secret so users can't enumerate/unsub others.
 //
 // Format: <base64url(email)>.<hex(hmac-sha256(secret, email))>
-// Truncated to 16 hex chars — 64 bits of entropy is plenty for this use.
+// Truncated to 16 hex chars, 64 bits of entropy is plenty for this use.
 
 import { createHmac, timingSafeEqual } from "node:crypto";
 

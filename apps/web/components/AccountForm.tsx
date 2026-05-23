@@ -1,6 +1,6 @@
 // apps/web/components/AccountForm.tsx
 //
-// Small client form to update the user's display name. Email is read-only —
+// Small client form to update the user's display name. Email is read-only.
 // changing it would require a Supabase auth flow (re-confirm), which we
 // don't expose yet.
 
@@ -74,7 +74,7 @@ export default function AccountForm({ initialName, email }: AccountFormProps) {
           className="account-input account-input-readonly"
         />
         <span className="account-field-hint">
-          Email changes aren't supported yet — get in touch if you need this.
+          Email changes aren't supported yet, get in touch if you need this.
         </span>
       </div>
 

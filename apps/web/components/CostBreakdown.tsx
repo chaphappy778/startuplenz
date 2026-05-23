@@ -3,7 +3,7 @@
 // apps/web/components/CostBreakdown.tsx
 //
 // Donut chart visualization of the cost line items. Donut on the left,
-// legend on the right — same pattern as the home-page dashboard preview
+// legend on the right, same pattern as the home-page dashboard preview
 // but driven by real computed model output.
 //
 // The donut is built from SVG strokes (no Recharts dependency) so it stays
@@ -11,7 +11,7 @@
 
 import type { CostItem } from "@/lib/types";
 
-// Themed palette — chosen so adjacent slices have enough hue contrast that
+// Themed palette, chosen so adjacent slices have enough hue contrast that
 // they don't blend into each other on the donut.
 const COLORS = [
   "#a78bfa", // violet
@@ -42,7 +42,7 @@ export default function CostBreakdown({ items }: Props) {
   const total = items.reduce((s, i) => s + i.value, 0);
 
   // Convert each slice's percentage of total into a dasharray length over a
-  // circumference of 2πr (r=42, stroke=22 — same as the design). Offsets are
+  // circumference of 2πr (r=42, stroke=22, same as the design). Offsets are
   // cumulative so segments stack clockwise from the 12 o'clock position.
   const r = 42;
   const circumference = 2 * Math.PI * r; // ≈ 263.89

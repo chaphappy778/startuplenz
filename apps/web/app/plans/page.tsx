@@ -1,6 +1,6 @@
 // apps/web/app/plans/page.tsx
 //
-// "My plans" — list view of the signed-in user's saved plans, newest first.
+// "My plans", list view of the signed-in user's saved plans, newest first.
 
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -82,7 +82,7 @@ export default async function PlansIndexPage() {
                 <Link href={`/plans/${p.id}`} className="plans-row-main">
                   <span className="plans-row-name">{p.name}</span>
                   <span className="plans-row-meta">
-                    {v?.display_name ?? "—"} · updated {formatRelative(p.updated_at)}
+                    {v?.display_name ?? "-"} · updated {formatRelative(p.updated_at)}
                   </span>
                 </Link>
               </li>

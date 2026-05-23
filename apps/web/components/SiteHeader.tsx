@@ -1,6 +1,6 @@
 // apps/web/components/SiteHeader.tsx
 //
-// Global top navigation. Server component — fetches the current user once
+// Global top navigation. Server component, fetches the current user once
 // per request and shows the right CTA (sign in vs my plans / sign out).
 
 import Link from "next/link";

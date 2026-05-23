@@ -8,7 +8,7 @@
 //   • Sidebar with realistic labeled sliders (drops/month, units, etc.)
 //   • 4 KPI tiles across the top (revenue / profit / margin / orders)
 //   • Donut cost-breakdown with legend (donut LEFT, legend RIGHT, both
-//     contained inside the card — previous version overflowed)
+//     contained inside the card, previous version overflowed)
 //   • Area chart for growth trajectory
 //   • Insight callout banner across the bottom
 
@@ -112,7 +112,7 @@ export default function DashboardPreview() {
         COST BREAKDOWN
       </text>
 
-      {/* Donut — radius 40 + stroke 14 means outer extent 47px. Centered at
+      {/* Donut, radius 40 + stroke 14 means outer extent 47px. Centered at
           (242, 252) keeps it fully inside the card's left half (178→306). */}
       <g transform="translate(242 252)">
         <circle cx="0" cy="0" r="40" fill="none" stroke="#2a3a5c" strokeWidth="14" />
@@ -133,7 +133,7 @@ export default function DashboardPreview() {
       </g>
 
       {/* Legend in the right half of the card (x=306 → 420). Width per row
-          is ~110px — fits "Materials  34%" comfortably at 10pt. */}
+          is ~110px, fits "Materials  34%" comfortably at 10pt. */}
       {[
         { y: 198, color: "#a78bfa", label: "Materials",     pct: "34%" },
         { y: 224, color: "#fb923c", label: "Labor",         pct: "21%" },
@@ -182,7 +182,7 @@ export default function DashboardPreview() {
         INSIGHT
       </text>
       <text x="200" y="402" fontFamily="Inter, sans-serif" fontSize="12" fill="#f0f4ff">
-        Healthy 24.9% margin — most slime brands here reinvest into
+        Healthy 24.9% margin, most slime brands here reinvest into
       </text>
       <text x="200" y="418" fontFamily="Inter, sans-serif" fontSize="12" fill="#f0f4ff">
         bigger drops + paid creator collabs to scale faster.

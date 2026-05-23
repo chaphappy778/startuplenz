@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   // headers to the response the browser will actually receive.
   const response = NextResponse.redirect(`${origin}${next}`);
 
-  // One-shot oauth_next cookie — clear it on the way out.
+  // One-shot oauth_next cookie, clear it on the way out.
   if (cookieStore.get("oauth_next")) {
     response.cookies.set("oauth_next", "", { maxAge: 0, path: "/" });
   }

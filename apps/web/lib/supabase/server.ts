@@ -1,5 +1,5 @@
 // apps/web/lib/supabase/server.ts
-// Server-side Supabase client — uses cookies for session persistence.
+// Server-side Supabase client, uses cookies for session persistence.
 // Safe to call from Server Components, Route Handlers, and middleware.
 
 import { createServerClient } from "@supabase/ssr";

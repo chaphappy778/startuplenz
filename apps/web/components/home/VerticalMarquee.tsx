@@ -9,7 +9,7 @@
 // its start, the duplicated half is in the exact position the first half was,
 // so the eye doesn't see a jump.
 //
-// Server component — pure markup, no client JS. Pause-on-hover is pure CSS.
+// Server component, pure markup, no client JS. Pause-on-hover is pure CSS.
 
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";

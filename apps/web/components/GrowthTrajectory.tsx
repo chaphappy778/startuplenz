@@ -5,9 +5,9 @@
 // Visualizes the launch → traction → scale profit curve from the model.
 //
 // Two render modes:
-//   • Compact (default, inline) — small unlabeled area chart sitting above
+//   • Compact (default, inline), small unlabeled area chart sitting above
 //     the three phase cards. Visually matches the cost donut card.
-//   • Detailed (modal) — same data with full annotations: value badges
+//   • Detailed (modal), same data with full annotations: value badges
 //     above every dot, axis label, phase + month markers, labeled
 //     break-even line. Triggered by the "Expand" button in the panel head.
 
@@ -22,7 +22,7 @@ function fmt(n: number): string {
   }).format(n);
 }
 
-/** Compact label for chart annotations — $12,840 → "$12.8K". */
+/** Compact label for chart annotations, $12,840 → "$12.8K". */
 function fmtShort(n: number): string {
   const abs = Math.abs(n);
   if (abs >= 1000) {
@@ -80,7 +80,7 @@ export default function GrowthTrajectory({ growth }: Props) {
               <span className={`growth-phase-profit ${isPositive ? "pos" : "neg"}`}>
                 {fmt(phase.netProfit)}
               </span>
-              {/* Qualitative label lives only in the expanded overlay — keeps
+              {/* Qualitative label lives only in the expanded overlay, keeps
                   the inline cards short so the panel doesn't stretch. */}
             </div>
           );
@@ -115,7 +115,7 @@ function GrowthChartSvg({
   const min = Math.min(...values, 0);
   const range = max - min || 1;
 
-  // Geometry — detail mode reserves padding for headroom + axis labels.
+  // Geometry, detail mode reserves padding for headroom + axis labels.
   const W = 320;
   const H = detail ? 260 : 90;
   const padL = 12;

@@ -9,10 +9,10 @@
 // @startuplenz/vertical-models/handmade engine.
 //
 // Phase 4 additions:
-//   • initialValues prop — used when loading a saved plan or a ?q= shared URL
-//   • signedIn prop — enables/disables the Save button
-//   • Share button — copies a URL with ?q=<encoded values> to the clipboard
-//   • Save button — calls the savePlan server action and redirects to /plans/[id]
+//   • initialValues prop, used when loading a saved plan or a ?q= shared URL
+//   • signedIn prop, enables/disables the Save button
+//   • Share button, copies a URL with ?q=<encoded values> to the clipboard
+//   • Save button, calls the savePlan server action and redirects to /plans/[id]
 
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -132,7 +132,7 @@ export default function CalculatorClient({
       router.push(`/login?next=${encodeURIComponent(next)}`);
       return;
     }
-    // Owner of an existing plan — update in place, no dialog needed.
+    // Owner of an existing plan, update in place, no dialog needed.
     if (savedPlan) {
       setSaveError(null);
       startTransition(async () => {
@@ -213,7 +213,7 @@ export default function CalculatorClient({
         stage,
       });
       if (result.ok) setStageSaved(true);
-      // Don't surface the error if it fails — this is opt-in, nice-to-have data.
+      // Don't surface the error if it fails, this is opt-in, nice-to-have data.
     });
   };
 
@@ -259,7 +259,7 @@ export default function CalculatorClient({
 
   return (
     <section className="calc-main calc-main-v2">
-      {/* ── Top bar — vertical info on left, action buttons on right ── */}
+      {/* ── Top bar, vertical info on left, action buttons on right ── */}
       <header className="calc-topbar">
         <div className="calc-topbar-info">
           <span className="calc-topbar-eyebrow">Vertical</span>
@@ -333,7 +333,7 @@ export default function CalculatorClient({
 
       {loadedFromUrl && (
         <div className="calc-banner">
-          Loaded from a shared link — edit anything to make it your own
+          Loaded from a shared link, edit anything to make it your own
           {signedIn ? ". Save plan to keep your version." : "."}
         </div>
       )}
@@ -351,13 +351,13 @@ export default function CalculatorClient({
         </aside>
 
         <div className="calc-results">
-          {/* Headline KPI strip — the "what are the numbers" answer. */}
+          {/* Headline KPI strip, the "what are the numbers" answer. */}
           <MonthlySnapshot output={output} />
 
-          {/* Promoted insight callout — the "what does it mean" answer. */}
+          {/* Promoted insight callout, the "what does it mean" answer. */}
           <InsightCallout text={output.insight} />
 
-          {/* Dashboard grid — donut + growth side by side. */}
+          {/* Dashboard grid, donut + growth side by side. */}
           <div className="dashboard-grid">
             <CostBreakdown items={output.costBreakdown} />
             <GrowthTrajectory growth={output.growth} />
@@ -384,7 +384,7 @@ export default function CalculatorClient({
               <>
                 <h3 className="calc-save-title">Plan sent</h3>
                 <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 14 }}>
-                  Check <strong>{emailDraft.trim()}</strong> for your plan — usually arrives within a minute. If you don&rsquo;t see it, check spam.
+                  Check <strong>{emailDraft.trim()}</strong> for your plan, usually arrives within a minute. If you don&rsquo;t see it, check spam.
                 </p>
                 {emailMessage && (
                   <div className="calc-save-error">{emailMessage}</div>
@@ -393,8 +393,8 @@ export default function CalculatorClient({
                 <div className="stage-prompt">
                   <p className="stage-prompt-q">
                     {stageSaved
-                      ? "Got it — thanks for letting us know."
-                      : "One quick question — where are you in this process? (Optional, helps us send better content.)"}
+                      ? "Got it, thanks for letting us know."
+                      : "One quick question, where are you in this process? (Optional, helps us send better content.)"}
                   </p>
                   {!stageSaved && (
                     <div className="stage-prompt-options">
@@ -432,7 +432,7 @@ export default function CalculatorClient({
               <>
                 <h3 className="calc-save-title">Email me my plan</h3>
                 <p style={{ color: "var(--text-secondary)", fontSize: 13, marginBottom: 14 }}>
-                  We&rsquo;ll send you this plan as an email — your numbers, your assumptions, and a link to re-open and edit it later.
+                  We&rsquo;ll send you this plan as an email, your numbers, your assumptions, and a link to re-open and edit it later.
                 </p>
                 <label className="calc-save-label" htmlFor="calc-email-input">
                   Email
@@ -511,7 +511,7 @@ export default function CalculatorClient({
               placeholder={
                 saveMode === "copy"
                   ? `Copy of ${savedPlan?.name ?? "this plan"}`
-                  : "e.g. Handmade — base case"
+                  : "e.g. Handmade, base case"
               }
               autoFocus
               disabled={isPending}

@@ -11,7 +11,7 @@ export interface SliderDef {
   formulaKey: string; // maps to vertical model input
   isLiveData?: boolean; // true when the value can be overridden by a cost_snapshot
   sortOrder?: number; // ascending order for UI display
-  helpText?: string; // hover tooltip — what does this slider actually mean?
+  helpText?: string; // hover tooltip, what does this slider actually mean?
 }
 
 export interface VerticalDef {

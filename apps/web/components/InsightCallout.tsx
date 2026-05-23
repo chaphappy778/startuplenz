@@ -3,7 +3,7 @@
 // apps/web/components/InsightCallout.tsx
 //
 // "What to do next" written take from the model engine. This is the highest-
-// value element on the dashboard — surface it with weight: an accent left
+// value element on the dashboard, surface it with weight: an accent left
 // rail, an INSIGHT eyebrow tag, and a soft outer glow.
 
 interface Props {

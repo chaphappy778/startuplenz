@@ -13,7 +13,7 @@ import AccountForm from "@/components/AccountForm";
 export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "Account — StartupLenz",
+  title: "Account, StartupLenz",
   description: "Manage your StartupLenz account, profile, and subscription.",
 };
 
@@ -26,9 +26,9 @@ interface UserRow {
 }
 
 function formatDate(iso: string | null | undefined): string {
-  if (!iso) return "—";
+  if (!iso) return "-";
   const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "—";
+  if (Number.isNaN(d.getTime())) return "-";
   return d.toLocaleDateString(undefined, {
     month: "long",
     day: "numeric",
@@ -87,7 +87,7 @@ export default async function AccountPage() {
         <section className="account-card">
           <div className="account-identity">
             {profile.avatar_url ? (
-              // Allowing img here — avatars are remote (Google) and we don't
+              // Allowing img here, avatars are remote (Google) and we don't
               // want next/image's domain whitelist overhead for a single use.
               // eslint-disable-next-line @next/next/no-img-element
               <img

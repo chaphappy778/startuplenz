@@ -42,7 +42,7 @@ export default async function AdminInputsIndexPage() {
         <p className="admin-sub">
           Pick a vertical to edit its slider defaults. Changes save to
           <code> vertical_inputs.default_value</code> and take effect immediately
-          — no deploy required.
+         , no deploy required.
         </p>
       </header>
 

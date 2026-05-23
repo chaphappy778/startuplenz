@@ -2,7 +2,7 @@
 
 // apps/web/lib/actions/plans.ts
 //
-// Server actions for Phase 4 — saved plans persistence.
+// Server actions for Phase 4, saved plans persistence.
 //
 // Required preconditions:
 //   • User is authenticated (auth_user_id() in RLS returns non-null).
@@ -31,7 +31,7 @@ export interface SimpleResult {
  * Save a new plan for the current user.
  * Writes one row to saved_plans + one to plan_snapshots (version 1).
  *
- * Returns the new plan id on success. RLS does the auth check — we just
+ * Returns the new plan id on success. RLS does the auth check, we just
  * supply user_id via the auth_user_id() helper that already gates writes.
  */
 export async function savePlan(input: {
@@ -100,7 +100,7 @@ export async function savePlan(input: {
     computed_outputs: input.computedOutputs ?? {},
   });
   if (snapError) {
-    // The plan row landed but the snapshot didn't — surface but don't roll back,
+    // The plan row landed but the snapshot didn't, surface but don't roll back,
     // since the plan itself is recoverable.
     return {
       ok: true,

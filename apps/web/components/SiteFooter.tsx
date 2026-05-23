@@ -1,6 +1,6 @@
 // apps/web/components/SiteFooter.tsx
 //
-// Global footer. Static — no per-request data, so this stays a plain
+// Global footer. Static, no per-request data, so this stays a plain
 // server component with no IO.
 
 import Link from "next/link";
@@ -52,7 +52,7 @@ export default function SiteFooter() {
       <div className="site-footer-bottom">
         <span>© {year} ChapHaus LLC. All rights reserved.</span>
         <span className="site-footer-bottom-note">
-          Numbers are estimates — verify with your own accounting before making
+          Numbers are estimates, verify with your own accounting before making
           financial decisions.
         </span>
       </div>

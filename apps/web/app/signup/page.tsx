@@ -90,7 +90,7 @@ export default function SignupPage() {
         <div className="auth-intro">
           <h1 className="auth-title">Create your account</h1>
           <p className="auth-sub">
-            Start modeling startup costs — free, no credit card.
+            Start modeling startup costs, free, no credit card.
           </p>
         </div>
 

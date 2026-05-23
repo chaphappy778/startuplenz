@@ -6,7 +6,7 @@
 //   • What supabase.auth.getUser() returns
 //   • Which request headers / origin the server received
 //
-// SAFE to keep deployed — it only echoes the requesting user's own state
+// SAFE to keep deployed, it only echoes the requesting user's own state
 // and cookie NAMES (not values). No secrets are leaked.
 
 import { cookies, headers } from "next/headers";

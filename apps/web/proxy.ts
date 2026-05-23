@@ -24,7 +24,7 @@ export async function proxy(request: NextRequest) {
 
   // ── OAuth code rescue ───────────────────────────────────────────────────
   // If Supabase's Redirect URL allow-list rejects our requested callback URL,
-  // it falls back to the configured Site URL — which means the OAuth code
+  // it falls back to the configured Site URL, which means the OAuth code
   // ends up on (e.g.) `/?code=...` instead of `/auth/callback?code=...`.
   // Forward it through to the callback so the session still gets created.
   // We only do this when the PKCE verifier cookie is present, so legitimate

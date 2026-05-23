@@ -6,7 +6,7 @@
 //
 // Uses a numerical sweep + interpolation rather than analytic solving
 // because each vertical's model is a JS function with conditionals and
-// channel splits — too brittle to differentiate symbolically. The sweep
+// channel splits, too brittle to differentiate symbolically. The sweep
 // runs in ~ms even with 200 steps because each model evaluation is pure
 // arithmetic.
 
@@ -112,7 +112,7 @@ export function goalSeek(req: GoalSeekRequest): GoalSeekResult {
     return {
       ok: false,
       reason: "target_below_minimum",
-      message: `The lowest ${humanMetric(req.metric)} you can hit by varying ${slider.label} alone is ${formatMetric(metricMin, req.metric)}. Your target is below that — try a different lever.`,
+      message: `The lowest ${humanMetric(req.metric)} you can hit by varying ${slider.label} alone is ${formatMetric(metricMin, req.metric)}. Your target is below that, try a different lever.`,
       bounds: { minMetric: metricMin, maxMetric: metricMax },
     };
   }
@@ -208,7 +208,7 @@ export function describeSolution(result: GoalSeekSuccess, slider: SliderDef, tar
   const toStr = formatSliderValue(result.snappedValue, slider);
 
   if (direction === "keep") {
-    return `Already there — at ${slider.label} = ${toStr}, you're hitting your ${humanMetric(metric)} target of ${targetStr}.`;
+    return `Already there, at ${slider.label} = ${toStr}, you're hitting your ${humanMetric(metric)} target of ${targetStr}.`;
   }
 
   if (!Number.isFinite(result.pctChange)) {
@@ -231,13 +231,13 @@ function formatSliderValue(value: number, slider: SliderDef): string {
 }
 
 // ════════════════════════════════════════════════════════════════════════════
-// Multi-lever solver — sequential greedy
+// Multi-lever solver, sequential greedy
 // ════════════════════════════════════════════════════════════════════════════
 //
 // Why sequential rather than constrained-optimization: the model engines are
 // pure JS with conditionals and channel splits. Symbolic gradients are
 // brittle. A greedy walk through user-prioritized levers is also more
-// explainable to the user — "we tried price first; it wasn't enough, so we
+// explainable to the user, "we tried price first; it wasn't enough, so we
 // also bumped sell-through" maps directly to how a founder thinks about it.
 
 export interface GoalSeekChange {
@@ -258,7 +258,7 @@ export interface GoalSeekMultiFailure {
   ok: false;
   reason: GoalSeekFailure["reason"] | "unreachable_with_levers";
   message: string;
-  /** Changes we DID apply on the way to giving up — surfaces "we tried X" UI. */
+  /** Changes we DID apply on the way to giving up, surfaces "we tried X" UI. */
   changesAttempted?: GoalSeekChange[];
   bestAchievable?: number;
 }
@@ -305,7 +305,7 @@ export function goalSeekMulti(req: GoalSeekMultiRequest): GoalSeekMultiResult {
     };
   }
 
-  // Single-lever shortcut — defer to the original solver.
+  // Single-lever shortcut, defer to the original solver.
   if (req.varySliderKeys.length === 1) {
     const single = goalSeek({
       verticalSlug: req.verticalSlug,
@@ -393,7 +393,7 @@ export function goalSeekMulti(req: GoalSeekMultiRequest): GoalSeekMultiResult {
         key,
       );
 
-      // Already at the helpful extreme? Don't waste a "lever slot" — let the
+      // Already at the helpful extreme? Don't waste a "lever slot", let the
       // next iteration take a shot.
       if (extreme === workingValues[key]) {
         if (isLast) {
@@ -438,7 +438,7 @@ export function goalSeekMulti(req: GoalSeekMultiRequest): GoalSeekMultiResult {
         };
       }
     } else {
-      // Slider not found / no signal — bubble up and stop.
+      // Slider not found / no signal, bubble up and stop.
       return {
         ok: false,
         reason: single.reason,
@@ -448,7 +448,7 @@ export function goalSeekMulti(req: GoalSeekMultiRequest): GoalSeekMultiResult {
     }
   }
 
-  // Fallthrough — shouldn't really hit this branch given the loop above, but
+  // Fallthrough, shouldn't really hit this branch given the loop above, but
   // keep a safe default so the function always returns.
   const finalOutput = computeModel(workingValues, req.verticalSlug);
   return {
@@ -466,7 +466,7 @@ export function describeMultiSolution(
   target: number,
   metric: GoalMetric,
 ): string {
-  if (changes.length === 0) return "No changes needed — you're already on target.";
+  if (changes.length === 0) return "No changes needed, you're already on target.";
 
   const parts = changes.map((c) => {
     const slider = sliders.find((s) => s.key === c.sliderKey);

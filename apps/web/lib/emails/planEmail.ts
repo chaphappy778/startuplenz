@@ -1,7 +1,7 @@
 // apps/web/lib/emails/planEmail.ts
 //
 // Builds the HTML + plain-text bodies for the "your plan" email. Uses inline
-// styles only — most email clients ignore <style> blocks. Tested target
+// styles only, most email clients ignore <style> blocks. Tested target
 // width is 600px (Gmail / Apple Mail / Outlook all render fine at that).
 //
 // Future: a PDF version. For now the email itself IS the artifact.
@@ -16,7 +16,7 @@ interface BuildPlanEmailArgs {
   output: ModelOutput;
   shareUrl: string;
   siteUrl: string;
-  /** Absolute URL — included in the footer to satisfy CAN-SPAM. */
+  /** Absolute URL, included in the footer to satisfy CAN-SPAM. */
   unsubscribeUrl: string;
 }
 
@@ -51,11 +51,11 @@ export function buildPlanEmail(args: BuildPlanEmailArgs): PlanEmailContent {
   const { verticalDisplayName, sliders, values, output, shareUrl, siteUrl, unsubscribeUrl } = args;
 
   const margin = fmtPct(output.profitMargin);
-  const subject = `Your ${verticalDisplayName} cost model — ${fmtMoney(output.netProfit)}/mo at ${margin} margin`;
+  const subject = `Your ${verticalDisplayName} cost model, ${fmtMoney(output.netProfit)}/mo at ${margin} margin`;
 
   // ─── Plain text fallback ────────────────────────────────────────────────
   const textLines = [
-    `Your ${verticalDisplayName} cost model — saved from StartupLenz`,
+    `Your ${verticalDisplayName} cost model, saved from StartupLenz`,
     `--------------------------------------------------------------`,
     ``,
     `Monthly snapshot`,
@@ -78,7 +78,7 @@ export function buildPlanEmail(args: BuildPlanEmailArgs): PlanEmailContent {
   textLines.push("");
   textLines.push(`Don't want these emails? Unsubscribe: ${unsubscribeUrl}`);
   textLines.push("");
-  textLines.push("— StartupLenz, an indie project from ChapHaus");
+  textLines.push("StartupLenz, an indie project from ChapHaus");
   const text = textLines.join("\n");
 
   // ─── HTML body (inline styles) ──────────────────────────────────────────

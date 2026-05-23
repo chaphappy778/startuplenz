@@ -1,6 +1,6 @@
 // apps/web/components/VerticalSelector.tsx
 //
-// Server component — reads active verticals from Supabase and renders a tile
+// Server component, reads active verticals from Supabase and renders a tile
 // per row. Tiles where the vertical has no `vertical_inputs` rows yet are
 // marked "Soon" so they don't 404 when clicked.
 //
