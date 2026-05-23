@@ -1462,10 +1462,14 @@ a { color: inherit; text-decoration: none; }
 .phase-scale::before    { background: var(--green); }
 
 .growth-phase-head {
+  /* Stack badge on top of months so they read as a single unit, with the
+     money value below. Previous space-between row layout looked fine on
+     mobile but spread the badge and months far apart on full-width 3-col
+     cards, making them feel disconnected. */
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
 }
 
 .growth-phase-badge {
