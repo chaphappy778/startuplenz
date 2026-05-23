@@ -1,5 +1,9 @@
 /* ─── Google Fonts ──────────────────────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=Inter:wght@400;500;600&display=swap');
+/* Inter is used for both body and display — heavier weights (700–900) handle
+   headlines, lighter (400–600) handle body. Dropped Syne entirely; its
+   distinctive caps were hard to read at small display sizes on mobile.
+   Single-family setup also cuts the font payload roughly in half. */
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 /* ─── Design tokens ─────────────────────────────────────────────────────────── */
 :root {
@@ -28,9 +32,9 @@
   --radius:  12px;
   --radius-sm: 8px;
 
-  --font-display: 'Syne', sans-serif;
-  --font-mono:    'DM Mono', monospace;
-  --font-body:    'Inter', sans-serif;
+  --font-display: 'Inter', system-ui, sans-serif;
+  --font-mono:    'DM Mono', ui-monospace, monospace;
+  --font-body:    'Inter', system-ui, sans-serif;
 }
 
 /* ─── Reset ──────────────────────────────────────────────────────────────────── */
