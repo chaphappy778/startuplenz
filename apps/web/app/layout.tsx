@@ -3,6 +3,8 @@ import "./globals.css";
 import { baseMetadata } from "@/lib/seo";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = baseMetadata();
 
@@ -21,6 +23,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="site-main">{children}</div>
           <SiteFooter />
         </div>
+        {/* Vercel Web Analytics + Speed Insights. Free tier covers initial
+            traffic comfortably. Privacy-friendly (no cookies, no PII).
+            View dashboards under the project on vercel.com → Analytics tab. */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
