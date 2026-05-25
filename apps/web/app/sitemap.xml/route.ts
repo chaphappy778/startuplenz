@@ -9,6 +9,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { SITE_URL } from "@/lib/seo";
+import { getAllPostsSorted } from "@/lib/blog";
 
 type ChangeFreq = "weekly" | "monthly" | "yearly";
 
@@ -57,10 +58,21 @@ export async function GET() {
     { loc: `${SITE_URL}/verticals`,    lastmod: now, changefreq: "weekly",  priority: 0.9 },
     { loc: `${SITE_URL}/about`,        lastmod: now, changefreq: "monthly", priority: 0.7 },
     { loc: `${SITE_URL}/how-it-works`, lastmod: now, changefreq: "monthly", priority: 0.7 },
+    { loc: `${SITE_URL}/blog`,         lastmod: now, changefreq: "weekly",  priority: 0.8 },
     { loc: `${SITE_URL}/compare`,      lastmod: now, changefreq: "monthly", priority: 0.5 },
     { loc: `${SITE_URL}/login`,        lastmod: now, changefreq: "yearly",  priority: 0.3 },
     { loc: `${SITE_URL}/signup`,       lastmod: now, changefreq: "yearly",  priority: 0.3 },
   ];
+
+  // Individual blog posts, dated to their post date.
+  for (const post of getAllPostsSorted()) {
+    entries.push({
+      loc: `${SITE_URL}/blog/${post.slug}`,
+      lastmod: post.date,
+      changefreq: "monthly",
+      priority: 0.7,
+    });
+  }
 
   // Per-vertical model pages.
   for (const slug of slugs) {

@@ -73,6 +73,36 @@ export default function AboutPage() {
         </section>
 
         <section>
+          <h2>First product</h2>
+          <p>
+            This is the first product I&rsquo;ve ever shipped to real users.
+          </p>
+          <p>
+            I&rsquo;m not a serial founder with a backlog of SaaS ideas
+            waiting for the right moment. I had a problem at my kitchen
+            table &mdash; a partner who wanted to know if a real business
+            would pencil out &mdash; and a spreadsheet she&rsquo;d built
+            that I thought was useful enough to expand. So I expanded it.
+          </p>
+          <p>
+            I&rsquo;m saying it out loud because I think it matters. Most
+            cost-calculator tools you&rsquo;ll find on the web are built
+            either by big SaaS shops trying to fill an SEO niche, or by
+            no-name affiliate operations trying to capture a download for
+            an email list. The math in them is often whatever the
+            contractor pulled from a 2019 blog post.
+          </p>
+          <p>
+            StartupLenz isn&rsquo;t that. It&rsquo;s a real person, living
+            with a partner who actually runs the kinds of businesses we
+            model, building the tool we both wished existed when she sat
+            down to do the slime math. If it gets to ten thousand users,
+            it&rsquo;ll still be that. If it gets to ten, it&rsquo;ll
+            still be that.
+          </p>
+        </section>
+
+        <section>
           <h2>The problem we&rsquo;re solving</h2>
           <p>
             Every business-cost calculator I&rsquo;d ever opened was either
