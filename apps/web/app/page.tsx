@@ -16,6 +16,7 @@ import Link from "next/link";
 import { softwareApplicationJsonLd } from "@/lib/seo";
 import DashboardPreview from "@/components/home/DashboardPreview";
 import VerticalMarquee from "@/components/home/VerticalMarquee";
+import PulseTeaser from "@/components/home/PulseTeaser";
 
 export default function HomePage() {
   return (
@@ -124,6 +125,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ── PULSE TEASER ─────────────────────────────────────────────────── */}
+      <PulseTeaser />
 
       {/* ── VERTICAL MARQUEE ─────────────────────────────────────────────── */}
       <section className="home-verticals" id="verticals">

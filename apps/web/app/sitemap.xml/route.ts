@@ -59,6 +59,7 @@ export async function GET() {
     { loc: `${SITE_URL}/about`,        lastmod: now, changefreq: "monthly", priority: 0.7 },
     { loc: `${SITE_URL}/how-it-works`, lastmod: now, changefreq: "monthly", priority: 0.7 },
     { loc: `${SITE_URL}/blog`,         lastmod: now, changefreq: "weekly",  priority: 0.8 },
+    { loc: `${SITE_URL}/pulse`,        lastmod: now, changefreq: "weekly",  priority: 0.6 },
     { loc: `${SITE_URL}/compare`,      lastmod: now, changefreq: "monthly", priority: 0.5 },
     { loc: `${SITE_URL}/login`,        lastmod: now, changefreq: "yearly",  priority: 0.3 },
     { loc: `${SITE_URL}/signup`,       lastmod: now, changefreq: "yearly",  priority: 0.3 },

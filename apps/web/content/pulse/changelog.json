@@ -1,0 +1,55 @@
+{
+  "comment": "Hand-curated changelog of meaningful data updates. Newest first. Each entry: date (ISO yyyy-mm-dd), kind (one of: launch | vertical | data | engine | feature), title (short), description (1-2 sentences), verticalSlug (optional). The /pulse page reads this file at build/request time. Add new entries to the top when defaults change in a way that matters to founders.",
+  "entries": [
+    {
+      "date": "2026-05-21",
+      "kind": "vertical",
+      "title": "Slime Brand vertical shipped",
+      "description": "Added the slime-brand model engine with TikTok Shop fees, temperature-pack costs, and drop-based selling cadence. 18 inputs, channel-aware split across TikTok Shop, Etsy, and own-site.",
+      "verticalSlug": "slime-business"
+    },
+    {
+      "date": "2026-05-21",
+      "kind": "feature",
+      "title": "Direct-sales channel for handmade brands",
+      "description": "The handmade-craft model can now split revenue across Etsy, TikTok Shop, AND your own site. The own-site channel uses standard card-processing (2.9%) baked in, so founders don't forget that cost.",
+      "verticalSlug": "handmade-craft"
+    },
+    {
+      "date": "2026-05-21",
+      "kind": "data",
+      "title": "Help-text tooltips on every input",
+      "description": "Every slider across all 10 verticals now has industry context attached. Hover the ? icon to see what the input means and what realistic ranges look like for that business."
+    },
+    {
+      "date": "2026-05-15",
+      "kind": "vertical",
+      "title": "House Flipping vertical shipped",
+      "description": "Added the house-flipping model engine: ARV, rehab cost, hard-money rates, holding costs, agent commissions, the works."
+    },
+    {
+      "date": "2026-05-06",
+      "kind": "vertical",
+      "title": "Cleaning Service vertical shipped",
+      "description": "Recurring-revenue cleaning service model: per-clean pricing, route density, subcontractor labor split, insurance + supplies, and customer churn."
+    },
+    {
+      "date": "2026-04-22",
+      "kind": "engine",
+      "title": "Multi-lever Goal Seek",
+      "description": "The Goal Seek panel now solves across multiple sliders at once. Pick up to 3 levers in priority order; it tries each in turn until your target lands."
+    },
+    {
+      "date": "2026-04-08",
+      "kind": "data",
+      "title": "TikTok Shop fee refresh",
+      "description": "Updated TikTok Shop transaction-fee defaults to reflect the platform's revised structure. Affects slime, handmade-craft, candle, and reseller verticals."
+    },
+    {
+      "date": "2026-03-21",
+      "kind": "launch",
+      "title": "StartupLenz v1 launched",
+      "description": "First 7 verticals, channel-aware revenue math, growth trajectory model, written-take insight engine. The kitchen-table spreadsheet officially became a tool."
+    }
+  ]
+}

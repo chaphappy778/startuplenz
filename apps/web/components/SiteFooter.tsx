@@ -25,6 +25,7 @@ export default function SiteFooter() {
             <span className="site-footer-col-title">Explore</span>
             <Link href="/verticals" className="site-footer-link">Verticals</Link>
             <Link href="/compare" className="site-footer-link">Compare</Link>
+            <Link href="/pulse" className="site-footer-link">Data Pulse</Link>
             <Link href="/blog" className="site-footer-link">Blog</Link>
           </div>
           <div className="site-footer-col">
