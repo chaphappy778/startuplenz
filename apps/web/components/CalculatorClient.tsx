@@ -29,7 +29,18 @@ import { deletePlan, savePlan, updatePlan } from "@/lib/actions/plans";
 import { captureEmail } from "@/lib/actions/emailCapture";
 import { setSubscriberStage, type SubscriberStage } from "@/lib/actions/profile";
 import { buildShareUrl, decodeValuesFromParam } from "@/lib/planUrl";
+import { houseFlippingOverridesForState } from "@/lib/stateDefaults";
 import type { SliderDef, SliderValues } from "@/lib/types";
+
+interface StateDefaultRow {
+  state_code: string;
+  state_name: string;
+  property_tax_rate_pct: number;
+  insurance_avg_per_month: number;
+  realtor_commission_pct: number;
+  median_arv: number;
+  typical_holding_months: number;
+}
 
 interface SavedPlanRef {
   id: string;
@@ -48,6 +59,13 @@ interface Props {
   savedPlan?: SavedPlanRef;
   /** Optional initial goal-seek target (used by /goal/[vertical] landing pages). */
   initialGoalTarget?: number;
+  /**
+   * Optional state-defaults list. Only passed for location-sensitive
+   * verticals (today: house-flipping). When the user picks a state from
+   * the dropdown, location-dependent sliders auto-shift to the values
+   * computed in lib/stateDefaults.
+   */
+  stateDefaults?: StateDefaultRow[];
 }
 
 export default function CalculatorClient({
@@ -59,6 +77,7 @@ export default function CalculatorClient({
   signedIn = false,
   savedPlan,
   initialGoalTarget,
+  stateDefaults,
 }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -81,6 +100,7 @@ export default function CalculatorClient({
   }, [sliders, initialValues, searchParams]);
 
   const [values, setValues] = useState<SliderValues>(startingValues);
+  const [selectedState, setSelectedState] = useState<string>("");
   const [shareStatus, setShareStatus] = useState<"" | "copied" | "failed">("");
   const [saveError, setSaveError] = useState<string | null>(null);
   const [planNameDraft, setPlanNameDraft] = useState<string>(
@@ -102,6 +122,21 @@ export default function CalculatorClient({
 
   const handleChange = (key: string, value: number) => {
     setValues((prev) => ({ ...prev, [key]: value }));
+  };
+
+  /**
+   * State-picker handler. When the user selects a state from the dropdown
+   * (house-flipping vertical only today), we compute the per-input
+   * overrides and apply them in one update so the calculator re-renders
+   * once instead of per-slider.
+   */
+  const handleStateChange = (code: string) => {
+    setSelectedState(code);
+    if (!stateDefaults || code === "") return;
+    const row = stateDefaults.find((r) => r.state_code === code);
+    if (!row) return;
+    const overrides = houseFlippingOverridesForState(row);
+    setValues((prev) => ({ ...prev, ...overrides }));
   };
 
   const handleShare = async () => {
@@ -339,6 +374,36 @@ export default function CalculatorClient({
       )}
 
       {saveError && <div className="calc-save-error">{saveError}</div>}
+
+      {/* State picker. Only rendered for location-sensitive verticals
+          (house-flipping today). Selecting a state shifts purchase price,
+          ARV, holding costs, commission, and holding months to the
+          state's actuals. */}
+      {stateDefaults && stateDefaults.length > 0 && (
+        <div className="calc-state-picker">
+          <label className="calc-state-picker-label" htmlFor="calc-state-select">
+            <span className="calc-state-eyebrow">Customize for your state</span>
+            <span className="calc-state-help">
+              This vertical is location-sensitive. Picking your state
+              pre-fills property tax, insurance, median home values,
+              realtor commission, and typical holding time for your area.
+            </span>
+          </label>
+          <select
+            id="calc-state-select"
+            className="calc-state-select"
+            value={selectedState}
+            onChange={(e) => handleStateChange(e.target.value)}
+          >
+            <option value="">National average (no state selected)</option>
+            {stateDefaults.map((s) => (
+              <option key={s.state_code} value={s.state_code}>
+                {s.state_name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* ── Main 2-col shell: slider rail (left) + results (right) ── */}
       <div className="calc-shell">

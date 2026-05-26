@@ -9,6 +9,7 @@ import CalculatorClient from "@/components/CalculatorClient";
 import VerticalExplainer from "@/components/VerticalExplainer";
 import { getVerticalContent } from "@/lib/verticalContent";
 import { verticalMetadata } from "@/lib/seo";
+import { getAllStateDefaults, type StateDefaultRow } from "@/lib/stateDefaults";
 import type { SliderDef } from "@/lib/types";
 
 interface PageProps {
@@ -86,6 +87,14 @@ export default async function VerticalModelPage({ params }: PageProps) {
     helpText: row.help_text ?? undefined,
   }));
 
+  // Location-aware verticals get a state-defaults table passed in. Today
+  // only house-flipping uses it; future location-sensitive verticals can
+  // opt in by adding their slug to the list below.
+  let stateDefaults: StateDefaultRow[] | null = null;
+  if (verticalData.slug === "house-flipping") {
+    stateDefaults = await getAllStateDefaults();
+  }
+
   return (
     <main className="model-page">
       <div className="model-page-back">
@@ -98,6 +107,7 @@ export default async function VerticalModelPage({ params }: PageProps) {
         verticalTagline={content.heroParagraph}
         sliders={sliders}
         signedIn={!!user}
+        stateDefaults={stateDefaults ?? undefined}
       />
 
       <VerticalExplainer
