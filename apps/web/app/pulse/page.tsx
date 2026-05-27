@@ -16,6 +16,7 @@ import {
   getPulseStats,
   pulseKindLabel,
 } from "@/lib/pulse";
+import PulseCounter from "@/components/PulseCounter";
 
 export const dynamic = "force-dynamic";
 
@@ -29,27 +30,21 @@ export default async function PulsePage() {
   const stats = await getPulseStats();
   const entries = getAllPulseEntries();
 
-  const lastUpdateText =
-    stats.daysSinceLastUpdate === null
-      ? "No updates yet"
-      : stats.daysSinceLastUpdate === 0
-        ? "Updated today"
-        : stats.daysSinceLastUpdate === 1
-          ? "Updated yesterday"
-          : `Updated ${stats.daysSinceLastUpdate} days ago`;
-
   return (
     <main className="pulse-page">
       <header className="pulse-page-header">
         <div className="pulse-status">
           <span className="pulse-status-dot" aria-hidden="true" />
-          <span className="pulse-status-label">LIVE DATA</span>
+          <span className="pulse-status-label">LIVE DATA &middot; TIME SINCE LAST UPDATE</span>
         </div>
-        <h1 className="pulse-page-title">{lastUpdateText}</h1>
+        <PulseCounter
+          lastUpdatedIso={stats.lastUpdatedIso}
+          lastUpdatedDisplay={stats.lastUpdatedDisplay}
+        />
         <p className="pulse-page-lede">
-          StartupLenz is a living calculator. The defaults under every model
-          &mdash; marketplace fees, materials costs, channel mix percentages
-          &mdash; evolve as the markets do. Here&rsquo;s the trail.
+          StartupLenz is a living calculator. The defaults under every model,
+          marketplace fees, materials costs, channel mix percentages, evolve
+          as the markets do. Here&rsquo;s the trail.
         </p>
       </header>
 
