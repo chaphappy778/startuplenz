@@ -29,7 +29,7 @@ import { deletePlan, savePlan, updatePlan } from "@/lib/actions/plans";
 import { captureEmail } from "@/lib/actions/emailCapture";
 import { setSubscriberStage, type SubscriberStage } from "@/lib/actions/profile";
 import { buildShareUrl, decodeValuesFromParam } from "@/lib/planUrl";
-import { houseFlippingOverridesForState } from "@/lib/stateDefaults";
+import { houseFlippingOverridesForState } from "@/lib/stateDefaultsShared";
 import type { SliderDef, SliderValues } from "@/lib/types";
 
 interface StateDefaultRow {
