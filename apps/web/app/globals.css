@@ -2245,15 +2245,15 @@ a { color: inherit; text-decoration: none; }
   display: inline-flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  min-width: 86px;
-  padding: 14px 18px 12px;
+  gap: 8px;
+  min-width: 92px;
+  padding: 16px 20px 14px;
   border-radius: 14px;
   background:
-    linear-gradient(180deg, rgba(99,102,241,0.10), rgba(74,222,128,0.06)),
-    var(--surface, rgba(255,255,255,0.65));
-  border: 1px solid rgba(99,102,241,0.18);
-  box-shadow: 0 1px 0 rgba(255,255,255,0.4) inset, 0 6px 24px -12px rgba(99,102,241,0.25);
+    linear-gradient(180deg, rgba(99,102,241,0.18), rgba(167,139,250,0.10)),
+    var(--bg-card);
+  border: 1px solid rgba(99,102,241,0.35);
+  box-shadow: 0 6px 24px -12px rgba(99,102,241,0.45);
 }
 
 .pulse-counter-value {
@@ -2265,24 +2265,25 @@ a { color: inherit; text-decoration: none; }
 }
 
 .pulse-counter-unit {
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: var(--accent2);
 }
 
 .pulse-counter-divider {
   font-size: clamp(2.2rem, 5vw, 3rem);
   font-weight: 600;
-  color: rgba(99,102,241,0.45);
+  color: var(--accent2);
+  opacity: 0.6;
   line-height: 1;
   padding-bottom: 22px;
   user-select: none;
 }
 
 .pulse-counter-sub {
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
   letter-spacing: 0.01em;
 }
@@ -2290,8 +2291,8 @@ a { color: inherit; text-decoration: none; }
 .pulse-counter-empty {
   padding: 16px 22px;
   border-radius: 12px;
-  background: var(--surface, rgba(255,255,255,0.6));
-  border: 1px dashed rgba(99,102,241,0.25);
+  background: var(--bg-card);
+  border: 1px dashed rgba(99,102,241,0.35);
 }
 
 .pulse-counter-empty-text {
