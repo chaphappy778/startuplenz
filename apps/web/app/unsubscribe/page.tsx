@@ -4,6 +4,7 @@
 // confirm button calls a server action that marks the email as
 // unsubscribed across every email_subscribers row for that address.
 
+import type { Metadata } from "next";
 import Link from "next/link";
 import { verifyUnsubscribeToken } from "@/lib/unsubscribeToken";
 import { unsubscribeAction } from "@/lib/actions/unsubscribe";
@@ -13,6 +14,12 @@ interface PageProps {
 }
 
 export const dynamic = "force-dynamic";
+
+// Transactional, token-gated page. Never index.
+export const metadata: Metadata = {
+  title: "Unsubscribe, StartupLenz",
+  robots: { index: false, follow: false },
+};
 
 export default async function UnsubscribePage({ searchParams }: PageProps) {
   const { t, done } = await searchParams;

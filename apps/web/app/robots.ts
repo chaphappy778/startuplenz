@@ -9,7 +9,21 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/api", "/auth/callback"],
+        // Crawl-budget triage: keep Google focused on canonical content
+        // (homepage, /verticals, /model/*, /about, /how-it-works, /pulse,
+        // /blog/*, /compare, /goal/*). Block authenticated / transactional
+        // surfaces that have no SEO value and were bloating the
+        // "Discovered — currently not indexed" queue in GSC.
+        disallow: [
+          "/admin",
+          "/api",
+          "/auth",
+          "/account",
+          "/plans",
+          "/login",
+          "/signup",
+          "/unsubscribe",
+        ],
       },
     ],
     sitemap: `${SITE_URL}/sitemap.xml`,

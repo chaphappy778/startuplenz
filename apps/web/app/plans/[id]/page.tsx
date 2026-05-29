@@ -4,12 +4,19 @@
 // Auth-gated: only the plan owner can view (enforced by RLS, non-owners
 // receive zero rows and get a 404).
 
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
 import CalculatorClient from "@/components/CalculatorClient";
 import type { SliderDef, SliderValues } from "@/lib/types";
+
+// Per-user private plans, no SEO value.
+export const metadata: Metadata = {
+  title: "Saved plan, StartupLenz",
+  robots: { index: false, follow: false },
+};
 
 interface PageProps {
   params: Promise<{ id: string }>;

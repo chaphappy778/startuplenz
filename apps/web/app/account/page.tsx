@@ -15,6 +15,7 @@ export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Account, StartupLenz",
   description: "Manage your StartupLenz account, profile, and subscription.",
+  robots: { index: false, follow: false },
 };
 
 interface UserRow {

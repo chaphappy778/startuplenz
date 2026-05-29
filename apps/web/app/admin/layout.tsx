@@ -1,10 +1,19 @@
 // apps/web/app/admin/layout.tsx
 // Gates every page under /admin behind the isAdmin() check.
 
+import type { Metadata } from "next";
 import Link from "next/link";
 import { requireAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
+
+// Internal tool, never index. The robots.txt disallow is the primary line
+// of defense; this meta tag is belt-and-suspenders so that any /admin/*
+// URL that Google manages to reach despite robots is still tagged noindex.
+export const metadata: Metadata = {
+  title: "Admin, StartupLenz",
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminLayout({
   children,

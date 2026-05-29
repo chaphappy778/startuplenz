@@ -61,8 +61,9 @@ export async function GET() {
     { loc: `${SITE_URL}/blog`,         lastmod: now, changefreq: "weekly",  priority: 0.8 },
     { loc: `${SITE_URL}/pulse`,        lastmod: now, changefreq: "weekly",  priority: 0.6 },
     { loc: `${SITE_URL}/compare`,      lastmod: now, changefreq: "monthly", priority: 0.5 },
-    { loc: `${SITE_URL}/login`,        lastmod: now, changefreq: "yearly",  priority: 0.3 },
-    { loc: `${SITE_URL}/signup`,       lastmod: now, changefreq: "yearly",  priority: 0.3 },
+    // /login and /signup intentionally NOT listed here. They're auth
+    // surfaces with zero SEO value and a robots-noindex directive; keeping
+    // them out of the sitemap stops Google from "Discovering" them.
   ];
 
   // Individual blog posts, dated to their post date.

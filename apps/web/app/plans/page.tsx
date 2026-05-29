@@ -2,10 +2,17 @@
 //
 // "My plans", list view of the signed-in user's saved plans, newest first.
 
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getUser } from "@/lib/auth";
+
+// Auth-gated user data, no SEO value.
+export const metadata: Metadata = {
+  title: "My plans, StartupLenz",
+  robots: { index: false, follow: false },
+};
 
 interface PlanRow {
   id: string;
