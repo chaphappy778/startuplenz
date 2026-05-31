@@ -1,9 +1,11 @@
-/* ─── Google Fonts ──────────────────────────────────────────────────────────── */
-/* Inter is used for both body and display — heavier weights (700–900) handle
-   headlines, lighter (400–600) handle body. Dropped Syne entirely; its
-   distinctive caps were hard to read at small display sizes on mobile.
-   Single-family setup also cuts the font payload roughly in half. */
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800;900&display=swap');
+/* ─── Fonts ─────────────────────────────────────────────────────────────────
+   Inter and DM Mono are now loaded via next/font/google in app/layout.tsx,
+   which self-hosts the woff2 files, preloads them, and sets the CSS
+   variables --font-display and --font-mono on the html element. The previous
+   @import to fonts.googleapis.com was render-blocking and added ~2.5s to
+   FCP on the homepage; removing it is the single biggest perf win on the
+   site. Do not re-add the @import.
+   ──────────────────────────────────────────────────────────────────────── */
 
 /* ─── Design tokens ─────────────────────────────────────────────────────────── */
 :root {
@@ -32,9 +34,10 @@
   --radius:  12px;
   --radius-sm: 8px;
 
-  --font-display: 'Inter', system-ui, sans-serif;
-  --font-mono:    'DM Mono', ui-monospace, monospace;
-  --font-body:    'Inter', system-ui, sans-serif;
+  /* Fallback if next/font CSS variables somehow don't load. In normal
+     operation these get overridden by the next/font-generated CSS variable
+     on the html element. */
+  --font-body: var(--font-display, 'Inter', system-ui, sans-serif);
 }
 
 /* ─── Reset ──────────────────────────────────────────────────────────────────── */
