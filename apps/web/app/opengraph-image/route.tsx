@@ -10,6 +10,7 @@
 
 import { ImageResponse } from "next/og";
 import { getVerticalContent } from "@/lib/verticalContent";
+import { SITE_URL } from "@/lib/seo";
 
 export const runtime = "edge";
 export const contentType = "image/png";
@@ -19,10 +20,11 @@ export async function GET(req: Request) {
   const verticalSlug = searchParams.get("vertical");
   const content = verticalSlug ? getVerticalContent(verticalSlug) : null;
 
-  const title = content?.seoTitle ?? "StartupLenz";
+  const title = content?.seoTitle ?? "Know what your business will actually cost.";
   const subtitle =
     content?.seoDescription ??
-    "Free, vertical-specific startup cost calculators for indie founders.";
+    "Free cost calculators for indie DIY founders. Pick your vertical, move the sliders, see the truth.";
+  const logoUrl = `${SITE_URL}/brand/logo_badge_up.png`;
 
   return new ImageResponse(
     (
@@ -32,45 +34,69 @@ export async function GET(req: Request) {
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
-          padding: "72px 80px",
+          position: "relative",
+          // Layered background: dark navy base + soft violet/indigo glows in
+          // opposite corners give depth without competing with content.
           background:
-            "linear-gradient(135deg, #0f1422 0%, #182037 60%, #1f2942 100%)",
+            "radial-gradient(circle at 85% 18%, rgba(167,139,250,0.20) 0%, rgba(167,139,250,0) 48%), radial-gradient(circle at 12% 88%, rgba(99,102,241,0.22) 0%, rgba(99,102,241,0) 50%), linear-gradient(135deg, #0a0f1f 0%, #141a2e 60%, #1a2138 100%)",
           color: "#f0f4ff",
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
+        {/* Top brand bar — real Up badge + wordmark */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 18,
+            padding: "56px 80px 0",
+          }}
+        >
+          <img
+            src={logoUrl}
+            width="92"
+            height="92"
             style={{
-              width: 56,
-              height: 56,
-              borderRadius: 12,
-              background: "linear-gradient(135deg, #6366f1, #a78bfa)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              fontSize: 26,
-              fontWeight: 800,
+              borderRadius: 22,
+              boxShadow: "0 8px 24px rgba(99,102,241,0.35)",
+            }}
+          />
+          <span
+            style={{
+              fontSize: 32,
+              fontWeight: 700,
+              color: "#f0f4ff",
+              letterSpacing: "-0.5px",
             }}
           >
-            ◆
-          </div>
-          <span style={{ fontSize: 26, fontWeight: 600, color: "#95a4c8" }}>
             StartupLenz
           </span>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+        {/* Middle — headline + subtitle */}
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            padding: "0 80px",
+            gap: 22,
+          }}
+        >
           <h1
             style={{
-              fontSize: 64,
+              fontSize: 68,
               lineHeight: 1.05,
-              fontWeight: 700,
-              letterSpacing: "-0.02em",
+              fontWeight: 800,
+              letterSpacing: "-0.025em",
               margin: 0,
-              maxWidth: 980,
+              maxWidth: 1000,
+              // Gradient text using webkit clipping — works in Satori
+              backgroundImage:
+                "linear-gradient(135deg, #ffffff 0%, #e9d5ff 60%, #a78bfa 100%)",
+              backgroundClip: "text",
+              color: "transparent",
             }}
           >
             {title}
@@ -78,27 +104,80 @@ export async function GET(req: Request) {
           <p
             style={{
               fontSize: 28,
-              color: "#95a4c8",
-              lineHeight: 1.35,
+              color: "#8c9bbf",
+              lineHeight: 1.4,
               margin: 0,
-              maxWidth: 980,
+              maxWidth: 1000,
+              fontWeight: 400,
             }}
           >
             {subtitle}
           </p>
+
+          {/* Feature pills — only shown on the default (non-vertical) image */}
+          {!content && (
+            <div
+              style={{
+                display: "flex",
+                gap: 12,
+                marginTop: 20,
+                flexWrap: "wrap",
+              }}
+            >
+              {["10 verticals", "Channel-aware math", "Free forever"].map((label) => (
+                <span
+                  key={label}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    padding: "10px 18px",
+                    fontSize: 19,
+                    fontWeight: 600,
+                    color: "#c7d0e8",
+                    background: "rgba(99,102,241,0.14)",
+                    border: "1px solid rgba(167,139,250,0.32)",
+                    borderRadius: 999,
+                  }}
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
+        {/* Bottom — url + live-data accent */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            color: "#5a6a8d",
+            padding: "0 80px 56px",
             fontSize: 22,
+            color: "#5a6a8d",
           }}
         >
-          <span>startuplenz.com</span>
-          <span style={{ color: "#a78bfa" }}>● Live cost modeling</span>
+          <span style={{ fontWeight: 500 }}>startuplenz.com</span>
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              color: "#a78bfa",
+              fontWeight: 600,
+            }}
+          >
+            <span
+              style={{
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                background: "#4ade80",
+                boxShadow: "0 0 10px rgba(74,222,128,0.8)",
+              }}
+            />
+            Live cost modeling
+          </span>
         </div>
       </div>
     ),
