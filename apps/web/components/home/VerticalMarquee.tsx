@@ -23,31 +23,34 @@ interface VerticalRow {
   icon_key: string | null;
   is_active: boolean;
   sort_order: number;
+  // Supabase returns related-table aggregates as a nested array
+  vertical_inputs: { count: number }[] | null;
 }
 
 export default async function VerticalMarquee() {
   const supabase = await createClient();
 
+  // Single round-trip: fetch all active verticals AND their input counts
+  // via Supabase's PostgREST nested-aggregate syntax. The previous version
+  // ran one query for verticals plus N more (one per vertical) for input
+  // counts, which was 11 sequential calls for the current 10-vertical set.
+  // This folds it to 1.
   const { data: verticals } = await supabase
     .from("verticals")
-    .select("id, slug, display_name, description, icon_key, is_active, sort_order")
+    .select(
+      "id, slug, display_name, description, icon_key, is_active, sort_order, vertical_inputs(count)",
+    )
     .eq("is_active", true)
     .order("sort_order", { ascending: true });
 
   const rows: VerticalRow[] = (verticals ?? []) as VerticalRow[];
 
-  // For each vertical, check if it has any inputs configured. Not-ready
-  // tiles are shown but rendered as inert (no link) with a "Soon" badge.
+  // Build the same input-count map the rest of this component expects,
+  // sourced from the joined data rather than per-vertical lookups.
   const inputCounts: Record<string, number> = {};
-  await Promise.all(
-    rows.map(async (v) => {
-      const { count } = await supabase
-        .from("vertical_inputs")
-        .select("id", { count: "exact", head: true })
-        .eq("vertical_id", v.id);
-      inputCounts[v.id] = count ?? 0;
-    }),
-  );
+  for (const v of rows) {
+    inputCounts[v.id] = v.vertical_inputs?.[0]?.count ?? 0;
+  }
 
   if (rows.length === 0) {
     return (
