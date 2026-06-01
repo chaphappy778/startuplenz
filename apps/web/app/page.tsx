@@ -180,7 +180,7 @@ export default function HomePage() {
           />
           <FaqItem
             q="Where do the numbers come from?"
-            a="Each vertical's model is hand-tuned from real founder interviews, public marketplace data (Etsy, TikTok Shop fee structures), and industry reports. We update assumptions as the landscape shifts."
+            a="Each vertical's model is hand-tuned from public marketplace data (Etsy, TikTok Shop fee structures, etc.), industry reports, and a careful audit of how operators in each space actually structure their costs. Assumptions get updated as the landscape shifts."
           />
           <FaqItem
             q="Can I save my plans?"
