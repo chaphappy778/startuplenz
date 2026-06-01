@@ -3,7 +3,7 @@ title: "Why we built StartupLenz"
 slug: "why-we-built-startuplenz"
 date: 2026-05-24
 description: "StartupLenz started as a slime-brand spreadsheet at our kitchen table. Here's the longer version of why it grew into ten verticals, and what makes a 'living calculator' different from every other cost tool you've opened."
-author: "Jennifer Chapman"
+author: "James Chapman"
 canonical: "https://www.startuplenz.com/blog/why-we-built-startuplenz"
 ---
 
