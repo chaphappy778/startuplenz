@@ -459,6 +459,177 @@ export function goalSeekMulti(req: GoalSeekMultiRequest): GoalSeekMultiResult {
   };
 }
 
+// ════════════════════════════════════════════════════════════════════════════
+// Balanced multi-lever solver — grid search across all selected levers
+// ════════════════════════════════════════════════════════════════════════════
+//
+// Why balanced rather than sequential greedy: when a user selects multiple
+// levers they're explicitly saying "I'll move all of these." Sequential greedy
+// hits the target with the primary alone whenever possible and never touches
+// the others, which makes the secondary selections feel ignored. Balanced
+// search finds the combination that (a) hits the target and (b) minimizes
+// the sum of squared % changes across the selected levers — biasing toward
+// "everyone moves a little" rather than "one moves a lot."
+//
+// Complexity: N-dimensional grid. We use 30 steps/dim for 2 levers (~900
+// model evals), 18 steps/dim for 3 levers (~5800 evals). Each model eval is
+// pure arithmetic so total runtime is well under 500ms on typical hardware.
+
+const BALANCED_STEPS_2D = 30;
+const BALANCED_STEPS_3D = 18;
+
+export function goalSeekBalanced(req: GoalSeekMultiRequest): GoalSeekMultiResult {
+  if (req.varySliderKeys.length === 0) {
+    return {
+      ok: false,
+      reason: "no_signal",
+      message: "Pick at least one lever to adjust.",
+    };
+  }
+
+  // Single-lever shortcut — the 1-D solver already handles this well.
+  if (req.varySliderKeys.length === 1) {
+    return goalSeekMulti(req); // falls through to single-lever path inside
+  }
+
+  // Resolve the selected sliders (drop any unknown keys gracefully).
+  const sliders = req.varySliderKeys
+    .map((key) => req.sliders.find((s) => s.key === key))
+    .filter((s): s is SliderDef => s !== undefined);
+
+  if (sliders.length < 2) {
+    return goalSeekMulti(req);
+  }
+
+  const dim = sliders.length;
+  const stepsPerDim = dim === 2 ? BALANCED_STEPS_2D : BALANCED_STEPS_3D;
+
+  // Pre-compute sample arrays per dimension.
+  const samplesPerDim = sliders.map((s) => {
+    const points: number[] = [];
+    const span = s.max - s.min;
+    for (let i = 0; i <= stepsPerDim; i++) {
+      points.push(s.min + (span * i) / stepsPerDim);
+    }
+    return points;
+  });
+
+  const originalValues = sliders.map((s) =>
+    Number(req.values[s.key] ?? s.defaultValue),
+  );
+
+  // Tolerance for "hits target": 1% of target or 1 unit, whichever is larger.
+  const tolerance = Math.max(0.01 * Math.abs(req.target), 1);
+
+  // Cost function. We track two scores per cell:
+  //   - distance from target (always meaningful)
+  //   - sum-of-squared % changes (only meaningful once we have a hit)
+  // The best cell is selected in two passes baked into a single loop:
+  //   1. If any cell hits target within tolerance, pick the hitting cell
+  //      with the smallest sum-of-squared % changes.
+  //   2. If no cell hits, pick the cell closest to target (fallback).
+
+  let bestHit: {
+    vals: number[];
+    metric: number;
+    sumSqPct: number;
+  } | null = null;
+  let bestNear: {
+    vals: number[];
+    metric: number;
+    dist: number;
+  } | null = null;
+
+  const indices = new Array(dim).fill(0);
+  const testVals: SliderValues = { ...req.values };
+
+  // Multi-dim odometer walk over the grid
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const currentVals: number[] = new Array(dim);
+    for (let d = 0; d < dim; d++) {
+      const v = samplesPerDim[d][indices[d]];
+      currentVals[d] = v;
+      testVals[sliders[d].key] = v;
+    }
+
+    const output = computeModel(testVals, req.verticalSlug);
+    const metric = extractMetric(output, req.metric);
+    const dist = Math.abs(metric - req.target);
+
+    if (dist <= tolerance) {
+      // Hits target — score by sum-of-squared % changes
+      let sumSq = 0;
+      for (let d = 0; d < dim; d++) {
+        const orig = originalValues[d];
+        const pct = orig !== 0 ? ((currentVals[d] - orig) / orig) * 100 : 0;
+        sumSq += pct * pct;
+      }
+      if (bestHit === null || sumSq < bestHit.sumSqPct) {
+        bestHit = { vals: currentVals.slice(), metric, sumSqPct: sumSq };
+      }
+    } else if (bestHit === null) {
+      // Fallback bookkeeping (only matters if no cell hits target)
+      if (bestNear === null || dist < bestNear.dist) {
+        bestNear = { vals: currentVals.slice(), metric, dist };
+      }
+    }
+
+    // Increment odometer
+    let d = dim - 1;
+    while (d >= 0) {
+      indices[d]++;
+      if (indices[d] <= stepsPerDim) break;
+      indices[d] = 0;
+      d--;
+    }
+    if (d < 0) break;
+  }
+
+  const winner = bestHit ?? bestNear;
+  if (!winner) {
+    return {
+      ok: false,
+      reason: "no_signal",
+      message: "Couldn't evaluate any combinations for these levers.",
+    };
+  }
+
+  // Snap each found value to its slider's step and recompute the metric
+  // with snapped values (since snapping can shift the result slightly).
+  const changes: GoalSeekChange[] = sliders.map((s, i) => {
+    const snapped = snapToStep(winner.vals[i], s);
+    return {
+      sliderKey: s.key,
+      originalValue: originalValues[i],
+      snappedValue: snapped,
+      pctChange: pctChangeOf(originalValues[i], snapped),
+    };
+  });
+
+  const finalValues: SliderValues = { ...req.values };
+  for (const c of changes) finalValues[c.sliderKey] = c.snappedValue;
+  const finalOutput = computeModel(finalValues, req.verticalSlug);
+  const achieved = extractMetric(finalOutput, req.metric);
+
+  if (bestHit !== null && Math.abs(achieved - req.target) <= tolerance * 2) {
+    return {
+      ok: true,
+      changes,
+      achievedMetric: achieved,
+      resultingOutput: finalOutput,
+    };
+  }
+
+  return {
+    ok: false,
+    reason: "unreachable_with_levers",
+    message: `Even with these ${dim} levers, the closest reachable ${humanMetric(req.metric)} is ${formatMetric(achieved, req.metric)} (target ${formatMetric(req.target, req.metric)}). Try adding another lever or relaxing the target.`,
+    changesAttempted: changes,
+    bestAchievable: achieved,
+  };
+}
+
 /** Build a human-readable summary of a multi-lever solution. */
 export function describeMultiSolution(
   changes: GoalSeekChange[],

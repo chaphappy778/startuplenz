@@ -3377,6 +3377,17 @@ a { color: inherit; text-decoration: none; }
 }
 
 /* Secondary lever chip panel */
+.goal-seek-balanced-hint {
+  font-size: 0.86rem;
+  color: var(--text-secondary);
+  margin: 4px 0 0;
+  padding: 10px 14px;
+  background: rgba(99, 102, 241, 0.06);
+  border-left: 2px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  line-height: 1.5;
+}
+
 .goal-seek-secondaries {
   display: flex;
   flex-direction: column;

@@ -14,13 +14,14 @@
 import { useMemo, useState } from "react";
 import {
   describeMultiSolution,
-  goalSeekMulti,
+  goalSeekBalanced,
   type GoalSeekChange,
   type GoalSeekMultiResult,
 } from "@/lib/goalSeek";
 import type { SliderDef, SliderValues } from "@/lib/types";
 
-const MAX_LEVERS = 3;
+const MAX_LEVERS = 3; // primary + up to 2 additional
+const NONE_VALUE = "__none__";
 
 interface Props {
   verticalSlug: string;
@@ -74,16 +75,31 @@ export default function GoalSeekPanel({
     (initialTarget ?? 5000).toString(),
   );
   const [primaryKey, setPrimaryKey] = useState<string>(solvable[0]?.key ?? "");
-  const [secondaryKeys, setSecondaryKeys] = useState<string[]>([]);
+  // Two explicit secondary slots. Empty string = "None" (slot unused).
+  const [secondaryKey, setSecondaryKey] = useState<string>("");
+  const [tertiaryKey, setTertiaryKey] = useState<string>("");
   const [result, setResult] = useState<GoalSeekMultiResult | null>(null);
 
-  const toggleSecondary = (key: string) => {
-    setSecondaryKeys((prev) => {
-      if (prev.includes(key)) return prev.filter((k) => k !== key);
-      // -1 because primary is already counted toward MAX_LEVERS
-      if (prev.length >= MAX_LEVERS - 1) return prev;
-      return [...prev, key];
-    });
+  // Whenever the primary changes, drop any secondary/tertiary slot that
+  // would now be a duplicate. Order preserved across slots.
+  const handlePrimaryChange = (key: string) => {
+    setPrimaryKey(key);
+    setSecondaryKey((prev) => (prev === key ? "" : prev));
+    setTertiaryKey((prev) => (prev === key ? "" : prev));
+    setResult(null);
+  };
+
+  const handleSecondaryChange = (raw: string) => {
+    const key = raw === NONE_VALUE ? "" : raw;
+    setSecondaryKey(key);
+    // If tertiary now matches secondary, clear tertiary
+    setTertiaryKey((prev) => (key && prev === key ? "" : prev));
+    setResult(null);
+  };
+
+  const handleTertiaryChange = (raw: string) => {
+    const key = raw === NONE_VALUE ? "" : raw;
+    setTertiaryKey(key);
     setResult(null);
   };
 
@@ -97,11 +113,14 @@ export default function GoalSeekPanel({
       });
       return;
     }
-    // Strip duplicates and any secondary that matches primary, keep order.
-    const allKeys = [primaryKey, ...secondaryKeys.filter((k) => k !== primaryKey)];
+    // Build the ordered, deduped lever list. Primary always first; secondary
+    // and tertiary appended only if non-empty and not already in the list.
+    const allKeys = [primaryKey];
+    if (secondaryKey && !allKeys.includes(secondaryKey)) allKeys.push(secondaryKey);
+    if (tertiaryKey && !allKeys.includes(tertiaryKey)) allKeys.push(tertiaryKey);
 
     setResult(
-      goalSeekMulti({
+      goalSeekBalanced({
         verticalSlug,
         sliders,
         values,
@@ -121,10 +140,18 @@ export default function GoalSeekPanel({
 
   if (solvable.length === 0) return null;
 
-  // Secondary candidates = all solvable except the current primary.
-  const secondaryCandidates = solvable.filter((s) => s.key !== primaryKey);
+  // Available options for the secondary slot = anything solvable that isn't
+  // currently in the primary or tertiary slot. Same logic for tertiary,
+  // excluding the secondary slot instead.
+  const secondaryOptions = solvable.filter(
+    (s) => s.key !== primaryKey && s.key !== tertiaryKey,
+  );
+  const tertiaryOptions = solvable.filter(
+    (s) => s.key !== primaryKey && s.key !== secondaryKey,
+  );
   const targetNum = Number(target);
   const targetForDescription = Number.isFinite(targetNum) ? targetNum : 0;
+  const secondaryCount = (secondaryKey ? 1 : 0) + (tertiaryKey ? 1 : 0);
 
   return (
     <section className="goal-seek-panel goal-seek-panel-v2">
@@ -162,14 +189,43 @@ export default function GoalSeekPanel({
           <select
             className="goal-seek-select"
             value={primaryKey}
-            onChange={(e) => {
-              setPrimaryKey(e.target.value);
-              // If user picks a primary that was also in secondaries, drop it from there.
-              setSecondaryKeys((prev) => prev.filter((k) => k !== e.target.value));
-              setResult(null);
-            }}
+            onChange={(e) => handlePrimaryChange(e.target.value)}
           >
             {solvable.map((s) => (
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="goal-seek-field">
+          <span className="goal-seek-label">Secondary lever (optional)</span>
+          <select
+            className="goal-seek-select"
+            value={secondaryKey || NONE_VALUE}
+            onChange={(e) => handleSecondaryChange(e.target.value)}
+          >
+            <option value={NONE_VALUE}>— None —</option>
+            {secondaryOptions.map((s) => (
+              <option key={s.key} value={s.key}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="goal-seek-field">
+          <span className="goal-seek-label">Tertiary lever (optional)</span>
+          <select
+            className="goal-seek-select"
+            value={tertiaryKey || NONE_VALUE}
+            onChange={(e) => handleTertiaryChange(e.target.value)}
+            disabled={!secondaryKey}
+            title={!secondaryKey ? "Pick a secondary lever first" : undefined}
+          >
+            <option value={NONE_VALUE}>— None —</option>
+            {tertiaryOptions.map((s) => (
               <option key={s.key} value={s.key}>
                 {s.label}
               </option>
@@ -182,36 +238,12 @@ export default function GoalSeekPanel({
         </button>
       </div>
 
-      <div className="goal-seek-secondaries">
-        <div className="goal-seek-secondaries-head">
-          <span className="goal-seek-secondaries-label">
-            Also willing to adjust
-          </span>
-          <span className="goal-seek-secondaries-count">
-            {secondaryKeys.length} / {MAX_LEVERS - 1} selected
-          </span>
-        </div>
-        <div className="goal-seek-chip-grid">
-          {secondaryCandidates.map((s) => {
-            const active = secondaryKeys.includes(s.key);
-            const disabled =
-              !active && secondaryKeys.length >= MAX_LEVERS - 1;
-            return (
-              <button
-                key={s.key}
-                type="button"
-                onClick={() => toggleSecondary(s.key)}
-                className={`goal-chip ${active ? "active" : ""} ${disabled ? "disabled" : ""}`}
-                disabled={disabled}
-                aria-pressed={active}
-              >
-                {active && <span className="goal-chip-check">✓</span>}
-                {s.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      {secondaryCount > 0 && (
+        <p className="goal-seek-balanced-hint">
+          With {secondaryCount + 1} levers selected, the solver will balance the
+          change across all of them instead of pushing just one.
+        </p>
+      )}
 
       {result && <GoalSeekResultPanel
         result={result}
