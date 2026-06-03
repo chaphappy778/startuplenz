@@ -12,49 +12,63 @@
       "owner": "user",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-4rem84",
+      "status": "up_next"
     },
     {
       "text": "Tomorrow: at desk — push migrations 014–021 to remote Supabase via `npx supabase db push`. Adds 4 new vertical seeds, hygiene, and email_subscribers table.",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-ldevcy",
+      "status": "up_next"
     },
     {
       "text": "Add STARTUPLENZ_ADMIN_EMAILS=jenniferchapman177@gmail.com to apps/web/.env.local so /admin works.",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-30n7jb",
+      "status": "up_next"
     },
     {
       "text": "Decide on pricing — keep Pro at $19, drop to $14.99, or annual-only $9.99 equivalent. Likely deferred since the new strategy is free + email capture.",
       "owner": "decision",
       "done": false,
       "added_by": "user",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-g9wtty",
+      "status": "up_next"
     },
     {
       "text": "Decide if/when to deploy to Vercel (everything is dev-only right now). Triggers Google indexing the new SEO pages once live.",
       "owner": "decision",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-vo3ct9",
+      "status": "up_next"
     },
     {
       "text": "After deploy: submit sitemap.xml to Google Search Console at https://search.google.com/search-console (verify domain ownership first).",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-ebrnwn",
+      "status": "up_next"
     },
     {
       "text": "Visual / layout pass across all 8 vertical model pages — your eyeball pass while watching it hot-reload in VS Code.",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-zxqv02",
+      "status": "up_next"
     },
     {
       "text": "Compare-two-verticals view at /compare built. 36 ordered-pair sitemap entries added. House-flipping vertical (#9) added, modeled, seeded, with content + SEO.",
@@ -62,14 +76,18 @@
       "done": true,
       "done_at": "2026-05-15",
       "added_by": "cowork",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-y0ash7",
+      "status": "done"
     },
     {
       "text": "Tomorrow at desk: push migration 022_house_flipping_seed.sql via `npx supabase db push` (you have the DB password set up). Then restart dev server to pick up the new vertical.",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-15"
+      "added_at": "2026-05-15",
+      "id": "t-mpvrbl6c-pw3f0f",
+      "status": "up_next"
     },
     {
       "text": "Goal Seek panel built — embedded on every /model/[vertical] page. Users set a $/mo target, pick a lever to move, click Solve, apply. Plus 45 new SEO landing pages at /goal/[vertical]?net=[1000|2500|5000|10000|25000] targeting 'how to make $X with [vertical]' queries.",
@@ -77,7 +95,9 @@
       "done": true,
       "done_at": "2026-05-15",
       "added_by": "cowork",
-      "added_at": "2026-05-15"
+      "added_at": "2026-05-15",
+      "id": "t-mpvrbl6c-tmqplw",
+      "status": "done"
     },
     {
       "text": "List-asset foundations shipped: open/click tracking via Resend webhooks, email_events audit table, progressive profiling (stage), HMAC-signed unsubscribe flow + List-Unsubscribe headers for one-click unsub. Required CAN-SPAM compliance + the data buyers will pay for in 2-3 years.",
@@ -85,7 +105,9 @@
       "done": true,
       "done_at": "2026-05-15",
       "added_by": "cowork",
-      "added_at": "2026-05-15"
+      "added_at": "2026-05-15",
+      "id": "t-mpvrbl6c-vac0qh",
+      "status": "done"
     },
     {
       "text": "10th vertical added: Slime Brand. TikTok Shop heavy, drops-based, temp-pack shipping. Tuned to actual indie slime economics — Jennifer's domain expertise from SlimeLog informed the defaults + content.",
@@ -93,14 +115,18 @@
       "done": true,
       "done_at": "2026-05-21",
       "added_by": "cowork",
-      "added_at": "2026-05-21"
+      "added_at": "2026-05-21",
+      "id": "t-mpvrbl6c-rn2ma6",
+      "status": "done"
     },
     {
       "text": "Push migrations 027 + 028 + 029 (slime + help-text + direct-sales channel): `./scripts/db-push.sh`",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-21"
+      "added_at": "2026-05-21",
+      "id": "t-mpvrbl6c-tlah4f",
+      "status": "up_next"
     },
     {
       "text": "Direct-sales channel added to slime + handmade — own-site sales (Shopify, Big Cartel, IG-link checkout) modeled as a third channel paying only 2.9% card processing. Materially higher margin than Etsy or TikTok Shop.",
@@ -108,7 +134,9 @@
       "done": true,
       "done_at": "2026-05-21",
       "added_by": "cowork",
-      "added_at": "2026-05-21"
+      "added_at": "2026-05-21",
+      "id": "t-mpvrbl6c-isjgfl",
+      "status": "done"
     },
     {
       "text": "Slider tooltips shipped — `help_text` column on vertical_inputs, populated for all 160+ inputs across the 10 verticals. Renders as a hoverable `?` next to each slider label. Admin can edit help text per row from /admin/inputs/[slug].",
@@ -116,80 +144,135 @@
       "done": true,
       "done_at": "2026-05-21",
       "added_by": "cowork",
-      "added_at": "2026-05-21"
+      "added_at": "2026-05-21",
+      "id": "t-mpvrbl6c-b8e4j3",
+      "status": "done"
     },
     {
       "text": "Tomorrow at desk — push migration 023_email_events_and_profile.sql via `npx supabase db push`. Then set up the Resend webhook at https://resend.com/webhooks pointing at https://startuplenz.com/api/webhooks/resend (production) with the signing secret. Add RESEND_WEBHOOK_SECRET to .env.local + Vercel env vars. Add UNSUBSCRIBE_SECRET too (any random string).",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-15"
+      "added_at": "2026-05-15",
+      "id": "t-mpvrbl6c-oq6wp4",
+      "status": "up_next"
     },
     {
       "text": "Design polish: audit and remove emoji used inside the app UI (buttons, pills, headers, modal titles). Keep emoji on the home page vertical tiles only. Add SVG icons where genuinely needed. Prompt ready.",
       "owner": "claude-code",
       "done": false,
       "added_by": "user",
-      "added_at": "2026-05-15"
+      "added_at": "2026-05-15",
+      "id": "t-mpvrbl6c-264w00",
+      "status": "up_next"
     },
     {
       "text": "First blog post — once email capture is rolling, write a launch post explaining the calculator and the strategy. Prompt ready.",
       "owner": "claude-code",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-5q2mbu",
+      "status": "up_next"
     },
     {
       "text": "Commit all Phase 1–5 work + hub config + docs to git in logical batches.",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
-      "added_at": "2026-05-06"
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-jpcjlx",
+      "status": "up_next"
     },
     {
       "text": "Phase 2+3 wired — visit /model/handmade-craft, 16 sliders drive the right-side numbers",
-      "done": true, "done_at": "2026-05-06",
-      "owner": "claude-code", "added_by": "cowork", "added_at": "2026-05-06"
+      "done": true,
+      "done_at": "2026-05-06",
+      "owner": "claude-code",
+      "added_by": "cowork",
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-muh48o",
+      "status": "done"
     },
     {
       "text": "Schema hygiene migration 13 applied",
-      "done": true, "done_at": "2026-05-06",
-      "owner": "user", "added_by": "cowork", "added_at": "2026-05-06"
+      "done": true,
+      "done_at": "2026-05-06",
+      "owner": "user",
+      "added_by": "cowork",
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-6zx82f",
+      "status": "done"
     },
     {
       "text": "Phase 4 — saved_plans persistence + ?q= share URLs + /plans index + edit-in-place + delete",
-      "done": true, "done_at": "2026-05-06",
-      "owner": "cowork", "added_by": "cowork", "added_at": "2026-05-06"
+      "done": true,
+      "done_at": "2026-05-06",
+      "owner": "cowork",
+      "added_by": "cowork",
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-nt5nrz",
+      "status": "done"
     },
     {
       "text": "Seed + model 3 more verticals: food-truck, subscription-box, candle-bath-body",
-      "done": true, "done_at": "2026-05-06",
-      "owner": "cowork", "added_by": "cowork", "added_at": "2026-05-06"
+      "done": true,
+      "done_at": "2026-05-06",
+      "owner": "cowork",
+      "added_by": "cowork",
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-3vefva",
+      "status": "done"
     },
     {
       "text": "Admin dashboard at /admin/inputs — edit any input default in one click",
-      "done": true, "done_at": "2026-05-06",
-      "owner": "cowork", "added_by": "cowork", "added_at": "2026-05-06"
+      "done": true,
+      "done_at": "2026-05-06",
+      "owner": "cowork",
+      "added_by": "cowork",
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-b3wp5j",
+      "status": "done"
     },
     {
       "text": "VerticalSelector reads from DB — no more hardcoded list, no more 404 tiles",
-      "done": true, "done_at": "2026-05-06",
-      "owner": "cowork", "added_by": "cowork", "added_at": "2026-05-06"
+      "done": true,
+      "done_at": "2026-05-06",
+      "owner": "cowork",
+      "added_by": "cowork",
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-j1a3uw",
+      "status": "done"
     },
     {
       "text": "4 DIY verticals added: print-on-demand, digital-products, reseller, cleaning-service",
-      "done": true, "done_at": "2026-05-06",
-      "owner": "cowork", "added_by": "cowork", "added_at": "2026-05-06"
+      "done": true,
+      "done_at": "2026-05-06",
+      "owner": "cowork",
+      "added_by": "cowork",
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-280lfa",
+      "status": "done"
     },
     {
       "text": "Email capture built end-to-end (Resend + email_subscribers table + modal)",
-      "done": true, "done_at": "2026-05-06",
-      "owner": "cowork", "added_by": "cowork", "added_at": "2026-05-06"
+      "done": true,
+      "done_at": "2026-05-06",
+      "owner": "cowork",
+      "added_by": "cowork",
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-hfg2na",
+      "status": "done"
     },
     {
       "text": "SEO foundations — per-vertical metadata, OG images, sitemap, robots, Schema.org, ~3k words of explainer + FAQ content",
-      "done": true, "done_at": "2026-05-06",
-      "owner": "cowork", "added_by": "cowork", "added_at": "2026-05-06"
+      "done": true,
+      "done_at": "2026-05-06",
+      "owner": "cowork",
+      "added_by": "cowork",
+      "added_at": "2026-05-06",
+      "id": "t-mpvrbl6c-fw4h3e",
+      "status": "done"
     },
     {
       "id": "mou80l7kvogk",
@@ -197,7 +280,8 @@
       "owner": "decision",
       "done": false,
       "added_by": "inbox",
-      "added_at": "2026-05-06T15:37:15.872Z"
+      "added_at": "2026-05-06T15:37:15.872Z",
+      "status": "up_next"
     }
   ],
   "prompts": [

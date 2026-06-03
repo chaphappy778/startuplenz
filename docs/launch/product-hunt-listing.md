@@ -1,6 +1,6 @@
 # Product Hunt launch — listing copy
 
-Schedule for a **Tuesday, Wednesday, or Thursday** launch. Mondays and Fridays underperform. Pick a date ~7&ndash;10 days out so you have time to (a) line up a hunter if you want one, (b) tee up your social and IH post to fire on launch day.
+Schedule for a **Tuesday, Wednesday, or Thursday** launch. Mondays and Fridays underperform. Pick a date about 7-10 days out so you have time to (a) line up a hunter if you want one, (b) tee up your social and IH post to fire on launch day.
 
 ## Product details
 
@@ -20,7 +20,7 @@ Schedule for a **Tuesday, Wednesday, or Thursday** launch. Mondays and Fridays u
 
 https://www.startuplenz.com
 
-### Topics (pick 3&ndash;5 from PH's list)
+### Topics (pick 3-5 from PH's list)
 
 - No-Code
 - Productivity
@@ -30,7 +30,7 @@ https://www.startuplenz.com
 
 ## Description (max 260 chars)
 
-> StartupLenz models the real cost of starting an indie business: 10 verticals (slime, food truck, candle, subscription box, & more), 15&ndash;25 inputs per model, channel-aware revenue math, written insights. Defaults update as marketplaces change. Free, no signup.
+> StartupLenz models the real cost of starting an indie business: 10 verticals (slime, food truck, candle, subscription box, & more), 15-25 inputs per model, channel-aware revenue math, written insights. Defaults update as marketplaces change. Free, no signup.
 
 (Char count: 258.)
 
@@ -44,36 +44,36 @@ It started as my wife's slime-brand spreadsheet.
 
 She was getting into slimes and wanted to know if her own brand would actually pencil out, so before investing she modeled it: materials, packaging, TikTok Shop fees, summer heat-pack costs (real line item, slime ships poorly in heat). The works.
 
-I looked at what she'd built and realized the same approach would work for any DIY business someone was considering. A food truck, a cleaning service, a subscription box, a handmade candle line. Each one has 3&ndash;5 specific levers that the generic calculators miss, and those levers are usually what makes the difference between "this works" and "this loses money for two years."
+I looked at what she'd built and realized the same approach would work for any DIY business someone was considering. A food truck, a cleaning service, a subscription box, a handmade candle line. Each one has 3-5 specific levers that the generic calculators miss, and those levers are usually what makes the difference between "this works" and "this loses money for two years."
 
-So we built it out. Ten verticals so far: handmade, slime, food truck, candle/bath & body, subscription box, print-on-demand, digital products, reseller, cleaning service, and house flipping. Each has its own model engine with the quirks that matter for that specific business.
+So I built it out. Ten verticals so far: handmade, slime, food truck, candle/bath & body, subscription box, print-on-demand, digital products, reseller, cleaning service, and house flipping. Each has its own model engine with the quirks that matter for that specific business.
 
 ### What's different about this one
 
 Most cost calculators on the web were built once, published, and then ignored while marketplace fees and material costs drifted out from under them. The defaults get less accurate every month.
 
-StartupLenz is built differently. All the defaults &mdash; fee rates, shipping costs, channel mix percentages, materials cost ranges &mdash; live in a database, not hardcoded. When Etsy bumps its fee or TikTok Shop's average sell-through shifts, we update the default and every user from then on sees the current number. Models are versioned so changes are traceable.
+StartupLenz is built differently. All the defaults (fee rates, shipping costs, channel mix percentages, materials cost ranges) live in a database, not hardcoded. When Etsy bumps its fee or TikTok Shop's average sell-through shifts, the default gets updated and every user from then on sees the current number. Models are versioned so changes are traceable.
 
-We call it the "living calculator" approach. The user-facing sliders are just the surface. The living pathways underneath are the backbone.
+I call it the "living calculator" approach. The user-facing sliders are just the surface. The living pathways underneath are the backbone.
 
-### A few things we deliberately don't do
+### A few things I deliberately don't do
 
 - No email gate before you see your numbers. The calculator works the moment you land.
-- No fake testimonials from invented Sarahs.
+- No fake testimonials from invented personas.
 - No "upgrade to see your full report." Core math is free forever.
 - No financial advice. This is a planning tool, not a brokerage.
 
-### What we'd love your help with
+### What I'd love your help with
 
-- **Try the slime calculator** &mdash; if you've ever operated in handmade / TikTok Shop / small-batch DTC, are the defaults reasonable? Tell me what's off.
-- **Tell us what to model next.** Service businesses are coming (cleaning, lawncare, mobile auto-detail, beauty). What else do you wish existed?
-- **Tell us where the math is wrong.** Email hello@startuplenz.com or comment here. Every honest correction makes the tool better for the next founder who opens it.
+- **Try the slime calculator.** If you've ever operated in handmade / TikTok Shop / small-batch DTC, are the defaults reasonable? Tell me what's off.
+- **Tell me what to model next.** Service businesses are coming (cleaning, lawncare, mobile auto-detail, beauty). What else do you wish existed?
+- **Tell me where the math is wrong.** Email hello@startuplenz.com or comment here. Every honest correction makes the tool better for the next founder who opens it.
 
 Long-form version of the why: https://www.startuplenz.com/about
 
 Methodology deep-dive: https://www.startuplenz.com/how-it-works
 
-Thanks for reading — looking forward to your feedback.
+Thanks for reading. Looking forward to your feedback.
 
 ## Screenshots to grab (5 total, in this order)
 
@@ -89,7 +89,7 @@ Each PH gallery image renders at 1270x760. Use Cmd+Shift+4 on Mac, then crop in 
 
 > Launching StartupLenz on Product Hunt today.
 >
-> Free, living cost calculators for 10 indie business verticals. Started as my wife's slime-brand spreadsheet. The defaults aren't hardcoded — they update as marketplaces shift.
+> Free, living cost calculators for 10 indie business verticals. Started as my wife's slime-brand spreadsheet. The defaults aren't hardcoded, they update as marketplaces shift.
 >
 > Would love your support 🚀
 >
@@ -97,6 +97,6 @@ Each PH gallery image renders at 1270x760. Use Cmd+Shift+4 on Mac, then crop in 
 
 ## Hunter strategy (optional but recommended)
 
-Reach out to a hunter with 1k+ followers in the indie/founder space 3&ndash;4 days before launch. Standard pitch: "Launching X on Y date, here's the link, would love if you'd hunt it." They post the launch, you reply with the maker comment. ~2x average traffic vs. self-hunted launches.
+Reach out to a hunter with 1k+ followers in the indie/founder space 3-4 days before launch. Standard pitch: "Launching X on Y date, here's the link, would love if you'd hunt it." They post the launch, you reply with the maker comment. ~2x average traffic vs. self-hunted launches.
 
 If no hunter, self-hunt is fine. The product speaks for itself.
