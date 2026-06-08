@@ -7,10 +7,18 @@
 // Note: this lives at /opengraph-image (a regular route) rather than as
 // the file-based opengraph-image.tsx so it can be shared across pages
 // via the SITE_URL/opengraph-image?vertical=X pattern.
+//
+// The brand lockup (StartupLenz wordmark with the colored UP badge) is
+// inlined below as a base64 data URI. Satori running on the edge has no
+// network access guarantees, and reaching back to our own /brand/ folder
+// over HTTPS during image render is a flaky dependency we don't need.
+// Inlining keeps the route self-contained, removes the round-trip, and
+// makes the previous brand-asset rename (when files were moved/removed)
+// incapable of silently breaking the social card again.
 
 import { ImageResponse } from "next/og";
 import { getVerticalContent } from "@/lib/verticalContent";
-import { SITE_URL } from "@/lib/seo";
+import { LOCKUP_INDIGO_PNG_B64 } from "./lockup";
 
 export const runtime = "edge";
 export const contentType = "image/png";
@@ -24,7 +32,9 @@ export async function GET(req: Request) {
   const subtitle =
     content?.seoDescription ??
     "Free cost calculators for indie DIY founders. Pick your vertical, move the sliders, see the truth.";
-  const logoUrl = `${SITE_URL}/brand/logo_badge_up.png`;
+
+  // Inline data URI — Satori reads the bytes directly, no edge → origin fetch.
+  const lockupSrc = `data:image/png;base64,${LOCKUP_INDIGO_PNG_B64}`;
 
   return new ImageResponse(
     (
@@ -43,34 +53,20 @@ export async function GET(req: Request) {
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
-        {/* Top brand bar — real Up badge + wordmark */}
+        {/* Top brand bar — full StartupLenz lockup. The lockup PNG already
+            contains the wordmark plus the green/red UP badge in the middle,
+            so we no longer render a separate "StartupLenz" text label. The
+            source PNG is 200×200 with the wordmark centered roughly 80%
+            wide and 35% tall, so rendering at 260 wide is enough to make
+            the wordmark read at preview size without dominating the card. */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 18,
-            padding: "56px 80px 0",
+            padding: "16px 60px 0",
           }}
         >
-          <img
-            src={logoUrl}
-            width="92"
-            height="92"
-            style={{
-              borderRadius: 22,
-              boxShadow: "0 8px 24px rgba(99,102,241,0.35)",
-            }}
-          />
-          <span
-            style={{
-              fontSize: 32,
-              fontWeight: 700,
-              color: "#f0f4ff",
-              letterSpacing: "-0.5px",
-            }}
-          >
-            StartupLenz
-          </span>
+          <img src={lockupSrc} width="260" height="260" />
         </div>
 
         {/* Middle — headline + subtitle */}
