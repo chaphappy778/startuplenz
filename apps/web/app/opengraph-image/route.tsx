@@ -8,17 +8,17 @@
 // the file-based opengraph-image.tsx so it can be shared across pages
 // via the SITE_URL/opengraph-image?vertical=X pattern.
 //
-// The brand lockup (StartupLenz wordmark with the colored UP badge) is
-// inlined below as a base64 data URI. Satori running on the edge has no
-// network access guarantees, and reaching back to our own /brand/ folder
-// over HTTPS during image render is a flaky dependency we don't need.
-// Inlining keeps the route self-contained, removes the round-trip, and
-// makes the previous brand-asset rename (when files were moved/removed)
-// incapable of silently breaking the social card again.
+// Brand-asset note: Satori (the renderer inside next/og) reliably loads
+// images via URL fetch but its data-URI path has been flaky for our
+// PNGs in 16.x — even after stripping ancillary chunks. So we load the
+// brand lockup over HTTPS from /brand/logo_lockup_indigo.png. The asset
+// must exist at that path; if it ever gets renamed, this card will
+// silently fall back to the headline-only layout (no logo) rather than
+// erroring.
 
 import { ImageResponse } from "next/og";
 import { getVerticalContent } from "@/lib/verticalContent";
-import { LOCKUP_INDIGO_PNG_B64 } from "./lockup";
+import { SITE_URL } from "@/lib/seo";
 
 export const runtime = "edge";
 export const contentType = "image/png";
@@ -32,9 +32,7 @@ export async function GET(req: Request) {
   const subtitle =
     content?.seoDescription ??
     "Free cost calculators for indie DIY founders. Pick your vertical, move the sliders, see the truth.";
-
-  // Inline data URI — Satori reads the bytes directly, no edge → origin fetch.
-  const lockupSrc = `data:image/png;base64,${LOCKUP_INDIGO_PNG_B64}`;
+  const lockupUrl = `${SITE_URL}/brand/logo_lockup_indigo.png`;
 
   return new ImageResponse(
     (
@@ -58,8 +56,7 @@ export async function GET(req: Request) {
             UP badge baked onto an indigo background, so we no longer
             render a separate "StartupLenz" text label. Rendering at 200×200
             with rounded corners + a soft glow makes the indigo background
-            read as a deliberate brand chip in the top-left rather than a
-            stray colored rectangle. */}
+            read as a deliberate brand chip in the top-left. */}
         <div
           style={{
             display: "flex",
@@ -68,7 +65,7 @@ export async function GET(req: Request) {
           }}
         >
           <img
-            src={lockupSrc}
+            src={lockupUrl}
             width="200"
             height="200"
             style={{
