@@ -53,20 +53,30 @@ export async function GET(req: Request) {
           fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
-        {/* Top brand bar — full StartupLenz lockup. The lockup PNG already
-            contains the wordmark plus the green/red UP badge in the middle,
-            so we no longer render a separate "StartupLenz" text label. The
-            source PNG is 200×200 with the wordmark centered roughly 80%
-            wide and 35% tall, so rendering at 260 wide is enough to make
-            the wordmark read at preview size without dominating the card. */}
+        {/* Top brand bar — full StartupLenz lockup rendered as a chip.
+            The lockup PNG already contains the wordmark plus the green/red
+            UP badge baked onto an indigo background, so we no longer
+            render a separate "StartupLenz" text label. Rendering at 200×200
+            with rounded corners + a soft glow makes the indigo background
+            read as a deliberate brand chip in the top-left rather than a
+            stray colored rectangle. */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            padding: "16px 60px 0",
+            padding: "44px 0 0 60px",
           }}
         >
-          <img src={lockupSrc} width="260" height="260" />
+          <img
+            src={lockupSrc}
+            width="200"
+            height="200"
+            style={{
+              display: "block",
+              borderRadius: 28,
+              boxShadow: "0 10px 30px rgba(99,102,241,0.40)",
+            }}
+          />
         </div>
 
         {/* Middle — headline + subtitle */}
