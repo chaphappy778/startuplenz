@@ -12,7 +12,8 @@
     "./reseller": "./reseller/model.js",
     "./cleaning-service": "./cleaning-service/model.js",
     "./house-flipping": "./house-flipping/model.js",
-    "./slime-business": "./slime-business/model.js"
+    "./slime-business": "./slime-business/model.js",
+    "./power-washing": "./power-washing/model.js"
   },
   "license": "UNLICENSED",
   "private": true,
