@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter, DM_Mono } from "next/font/google";
 import "./globals.css";
 import { baseMetadata, SITE_URL } from "@/lib/seo";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -53,6 +55,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             View dashboards under the project on vercel.com → Analytics tab. */}
         <Analytics />
         <SpeedInsights />
+        {/* GA4 via gtag. Renders nothing if NEXT_PUBLIC_GA_ID isn't set,
+            so local dev without the env var is a no-op. Wrapped in
+            Suspense because GoogleAnalytics calls useSearchParams,
+            which Next 16 requires under a Suspense boundary. */}
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
       </body>
     </html>
   );
