@@ -11,7 +11,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import VerticalIcon from "@/components/VerticalIcon";
-import { baseMetadata } from "@/lib/seo";
+import { baseMetadata, SITE_URL } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +29,7 @@ export const metadata: Metadata = baseMetadata({
   title: "All verticals, StartupLenz",
   description:
     "Browse every startup vertical we model. Pick one to see real margin, break-even, and cost breakdown for that specific business.",
+  alternates: { canonical: `${SITE_URL}/verticals` },
 });
 
 export default async function VerticalsPage() {

@@ -12,7 +12,13 @@ export const SITE_NAME = "StartupLenz";
 
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image`;
 
-/** Common metadata applied to every page; pages can extend/override. */
+/** Common metadata applied to every page; pages can extend/override.
+ *
+ *  IMPORTANT: do not set a default canonical here. A global canonical
+ *  on the base would make every page that inherits this metadata
+ *  advertise the homepage as its canonical URL, which causes Google to
+ *  drop every non-home URL as a duplicate. Each page that calls
+ *  baseMetadata() must pass its own `alternates: { canonical: ... }`. */
 export function baseMetadata(overrides?: Partial<Metadata>): Metadata {
   return {
     title: {
@@ -22,7 +28,6 @@ export function baseMetadata(overrides?: Partial<Metadata>): Metadata {
     description:
       "Free, vertical-specific cost calculators for indie founders. Food trucks, candle makers, subscription boxes, print-on-demand, and more.",
     metadataBase: new URL(SITE_URL),
-    alternates: { canonical: SITE_URL },
     openGraph: {
       type: "website",
       url: SITE_URL,

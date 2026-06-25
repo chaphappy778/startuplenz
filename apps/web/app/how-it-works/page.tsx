@@ -13,6 +13,7 @@ export const metadata: Metadata = baseMetadata({
   title: "How StartupLenz works: a living calculator, not a frozen spreadsheet",
   description:
     "How each vertical's cost model is built, where the data comes from, how we keep it current as markets and fees evolve, and what we deliberately don't model. The honest version.",
+  alternates: { canonical: `${SITE_URL}/how-it-works` },
 });
 
 const articleJsonLd = {

@@ -10,7 +10,7 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { baseMetadata } from "@/lib/seo";
+import { baseMetadata, SITE_URL } from "@/lib/seo";
 import {
   getAllPulseEntries,
   getPulseStats,
@@ -24,6 +24,7 @@ export const metadata: Metadata = baseMetadata({
   title: "Data Pulse — StartupLenz",
   description:
     "What changed and when. StartupLenz is a living calculator: defaults update as marketplaces, materials, and channel economics shift. This page shows the trail.",
+  alternates: { canonical: `${SITE_URL}/pulse` },
 });
 
 export default async function PulsePage() {

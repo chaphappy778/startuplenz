@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, DM_Mono } from "next/font/google";
 import "./globals.css";
-import { baseMetadata } from "@/lib/seo";
+import { baseMetadata, SITE_URL } from "@/lib/seo";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Analytics } from "@vercel/analytics/next";
@@ -27,7 +27,11 @@ const dmMono = DM_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = baseMetadata();
+// Homepage canonical. Pages further down the tree set their own
+// alternates.canonical to override.
+export const metadata: Metadata = baseMetadata({
+  alternates: { canonical: SITE_URL },
+});
 
 // SiteHeader reads the auth cookie to show "Sign in" vs the user pill, so the
 // root layout must render fresh on every request. Without this, Next prerenders

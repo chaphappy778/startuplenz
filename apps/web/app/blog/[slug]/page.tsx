@@ -25,11 +25,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return baseMetadata({
       title: "Post not found — StartupLenz",
       description: "The post you're looking for doesn't exist.",
+      alternates: { canonical: `${SITE_URL}/blog` },
     });
   }
+  const canonical = post.canonical ?? `${SITE_URL}/blog/${post.slug}`;
   return baseMetadata({
     title: `${post.title} — StartupLenz`,
     description: post.description,
+    alternates: { canonical },
   });
 }
 

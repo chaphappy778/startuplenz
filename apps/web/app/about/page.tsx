@@ -12,6 +12,7 @@ export const metadata: Metadata = baseMetadata({
   title: "About StartupLenz: why this exists",
   description:
     "StartupLenz is a free, living cost calculator for DIY entrepreneurs, built by ChapHaus LLC. Here is the story. It started as a slime-brand spreadsheet at our kitchen table and grew into ten verticals.",
+  alternates: { canonical: `${SITE_URL}/about` },
 });
 
 const articleJsonLd = {

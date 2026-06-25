@@ -5,13 +5,14 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { baseMetadata } from "@/lib/seo";
+import { baseMetadata, SITE_URL } from "@/lib/seo";
 import { getAllPostsSorted } from "@/lib/blog";
 
 export const metadata: Metadata = baseMetadata({
   title: "Blog — StartupLenz",
   description:
     "Founder writing from StartupLenz: indie business economics, vertical deep-dives, and what we've learned modeling real-world startup costs.",
+  alternates: { canonical: `${SITE_URL}/blog` },
 });
 
 export default function BlogIndexPage() {
