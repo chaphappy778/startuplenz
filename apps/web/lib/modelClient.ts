@@ -21,6 +21,7 @@ import { runModel as runReseller } from "@startuplenz/vertical-models/reseller";
 import { runModel as runCleaningService } from "@startuplenz/vertical-models/cleaning-service";
 import { runModel as runHouseFlipping } from "@startuplenz/vertical-models/house-flipping";
 import { runModel as runSlimeBusiness } from "@startuplenz/vertical-models/slime-business";
+import { runModel as runPowerWashing } from "@startuplenz/vertical-models/power-washing";
 import type { CostItem, ModelOutput, SliderValues } from "./types";
 
 // ─── Insight builder (copied from the previous mock, same heuristic) ────────
@@ -174,6 +175,8 @@ export function computeModel(values: SliderValues, vertical: string): ModelOutpu
       return runHouseFlipping(values, {}) as unknown as ModelOutput;
     case "slime-business":
       return runSlimeBusiness(values, {}) as unknown as ModelOutput;
+    case "power-washing":
+      return runPowerWashing(values, {}) as unknown as ModelOutput;
     default:
       return emptyOutput();
   }
