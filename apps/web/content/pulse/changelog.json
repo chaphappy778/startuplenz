@@ -2,6 +2,12 @@
   "comment": "Hand-curated changelog of meaningful data updates. Newest first. Each entry: date (ISO yyyy-mm-dd, treated as the SHIPPED date — when it became live to users, not when it was authored), kind (one of: launch | vertical | data | engine | feature), title (short), description (1-2 sentences), verticalSlug (optional). The /pulse page reads this file at build/request time. Add new entries to the top when defaults change in a way that matters to founders.",
   "entries": [
     {
+      "date": "2026-06-25",
+      "kind": "data",
+      "title": "30-day default-value audit, five updates landed",
+      "description": "Cross-checked every priced default against current market sources. Most held. The five that drifted got bumped: TikTok Shop combined fee dropped to 6% (from 9%) after the platform restructured to a flat referral, digital-products marketplace fee raised to 10% (Gumroad/Etsy/Shopify blended), cleaning insurance corrected to $60/mo (the prior $180 only made sense bundled with commercial auto), slime materials trimmed to $2.75/unit (current bulk PVA pricing), and realtor commission updated to 5.7% (post-NAR-settlement drift)."
+    },
+    {
       "date": "2026-06-24",
       "kind": "vertical",
       "title": "Power Washing vertical shipped",
