@@ -22,6 +22,7 @@ import CostBreakdown from "@/components/CostBreakdown";
 import GoalSeekPanel from "@/components/GoalSeekPanel";
 import GrowthTrajectory from "@/components/GrowthTrajectory";
 import InsightCallout from "@/components/InsightCallout";
+import RulesCheck from "@/components/RulesCheck";
 import MonthlySnapshot from "@/components/MonthlySnapshot";
 
 import { computeModel } from "@/lib/modelClient";
@@ -421,6 +422,11 @@ export default function CalculatorClient({
 
           {/* Promoted insight callout, the "what does it mean" answer. */}
           <InsightCallout text={output.insight} />
+
+          {/* Rules-of-thumb checklist. Currently only the house-flipping
+              model populates this; other verticals leave it undefined and
+              RulesCheck renders nothing. */}
+          <RulesCheck items={output.rulesCheck} />
 
           {/* Dashboard grid, donut + growth side by side. */}
           <div className="dashboard-grid">

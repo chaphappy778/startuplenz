@@ -17,6 +17,184 @@
 
 const round = (n) => Math.round(n);
 
+/**
+ * Build the rules-of-thumb checklist that flippers use to sanity-check a deal
+ * outside the spreadsheet. These are the same five heuristics most active
+ * flippers will rattle off if you ask them how they evaluate a property in
+ * five seconds. Surfacing them structurally (pass / warn / fail) lets the
+ * calculator teach as it scores — a user can change one input and watch a
+ * rule flip color in real time, which is more honest than a single narrative
+ * insight sentence.
+ *
+ * Each rule returns:
+ *   rule    — display name
+ *   status  — "pass" | "warn" | "fail"
+ *   message — one-line explanation of the user's specific number
+ *   detail  — what the rule means and why it exists (used by tooltips / blog)
+ */
+function buildRulesCheck(args) {
+  const {
+    arv,
+    purchasePrice,
+    rehabWithBuffer,
+    rehabBufferPct,
+    profitPerFlip,
+    margin,
+    holdingMonths,
+    cocReturnAnnual,
+  } = args;
+  const rules = [];
+  const round = (n) => Math.round(n);
+
+  // No ARV or purchase price — the calculator isn't usable yet. Return a
+  // neutral placeholder so the UI still renders the card structure.
+  if (arv <= 0 || purchasePrice <= 0) {
+    return [{
+      rule: "Rules of thumb",
+      status: "warn",
+      message: "Enter purchase price and ARV to see how this deal scores.",
+      detail: "The calculator runs five standard checks once the basic numbers are in.",
+    }];
+  }
+
+  // ── 1. 70% Rule ──────────────────────────────────────────────────────────
+  // Max Allowable Offer = ARV × 70% − rehab. The 30% buffer covers holding,
+  // financing, selling fees, and the flipper's profit. This is the single
+  // most cited rule in the field; almost every active flipper applies it.
+  const maxOfferByRule = arv * 0.70 - rehabWithBuffer;
+  const overpaidVsRule = purchasePrice - maxOfferByRule;
+  if (overpaidVsRule <= 0) {
+    rules.push({
+      rule: "70% Rule",
+      status: "pass",
+      message: `Offer is $${Math.abs(round(overpaidVsRule)).toLocaleString()} under the max allowable.`,
+      detail: "Max Allowable Offer = ARV × 70% − rehab. Used by most active flippers as a first-pass deal filter.",
+    });
+  } else if (overpaidVsRule <= 5000) {
+    rules.push({
+      rule: "70% Rule",
+      status: "warn",
+      message: `Offer is $${round(overpaidVsRule).toLocaleString()} over the max — thin cushion.`,
+      detail: "Max Allowable Offer = ARV × 70% − rehab. You're slightly above the heuristic. Works if your ARV is conservative.",
+    });
+  } else {
+    rules.push({
+      rule: "70% Rule",
+      status: "fail",
+      message: `Offer is $${round(overpaidVsRule).toLocaleString()} over the max — high risk if market softens.`,
+      detail: "Max Allowable Offer = ARV × 70% − rehab. Above this line, your margin depends on the market staying strong.",
+    });
+  }
+
+  // ── 2. Gross Margin ≥ 20% ────────────────────────────────────────────────
+  // Profit / ARV. Below 20% one surprise eats the flip; below 10% the deal
+  // is functionally a coin flip with extra steps.
+  const marginPct = margin * 100;
+  if (marginPct >= 20) {
+    rules.push({
+      rule: "Margin ≥ 20%",
+      status: "pass",
+      message: `Margin is ${marginPct.toFixed(1)}% — room for surprises.`,
+      detail: "Gross margin = profit ÷ ARV. 20% is the cushion most flippers want before they sign.",
+    });
+  } else if (marginPct >= 10) {
+    rules.push({
+      rule: "Margin ≥ 20%",
+      status: "warn",
+      message: `Margin is ${marginPct.toFixed(1)}% — tight. One surprise hurts.`,
+      detail: "Gross margin = profit ÷ ARV. Between 10–20% works in steady markets but absorbs little risk.",
+    });
+  } else {
+    rules.push({
+      rule: "Margin ≥ 20%",
+      status: "fail",
+      message: `Margin is ${marginPct.toFixed(1)}% — razor thin or negative.`,
+      detail: "Gross margin = profit ÷ ARV. Below 10% one bad surprise (foundation, roof, mold) puts the flip underwater.",
+    });
+  }
+
+  // ── 3. Holding ≤ 6 months ────────────────────────────────────────────────
+  // Past 6 months the carry costs compound and the local market's seasonality
+  // becomes a real risk. Most successful flippers target ≤ 5 months end to end.
+  if (holdingMonths > 0 && holdingMonths <= 5) {
+    rules.push({
+      rule: "Holding ≤ 6 months",
+      status: "pass",
+      message: `${holdingMonths.toFixed(1)} months — within range.`,
+      detail: "Each extra month adds interest, taxes, insurance, and utilities. Most successful flips close inside 5 months.",
+    });
+  } else if (holdingMonths > 0 && holdingMonths <= 6) {
+    rules.push({
+      rule: "Holding ≤ 6 months",
+      status: "warn",
+      message: `${holdingMonths.toFixed(1)} months — at the edge of the window.`,
+      detail: "Each extra month adds interest, taxes, insurance, and utilities. Past 6 months, seasonality risk also kicks in.",
+    });
+  } else if (holdingMonths > 6) {
+    rules.push({
+      rule: "Holding ≤ 6 months",
+      status: "fail",
+      message: `${holdingMonths.toFixed(1)} months — carry costs are eating profit.`,
+      detail: "Each extra month adds interest, taxes, insurance, and utilities. Compresses margins fast past month 6.",
+    });
+  }
+
+  // ── 4. Rehab Contingency ≥ 15% ──────────────────────────────────────────
+  // Walls and foundations hide things. Experienced flippers carry 15–20%
+  // contingency on top of the bid because the bid is wrong about something.
+  if (rehabBufferPct >= 15) {
+    rules.push({
+      rule: "Rehab Contingency ≥ 15%",
+      status: "pass",
+      message: `${rehabBufferPct.toFixed(0)}% buffer — surprise-tolerant.`,
+      detail: "Rehab estimates miss something on most flips. 15–20% buffer is the floor for an experienced operator.",
+    });
+  } else if (rehabBufferPct >= 10) {
+    rules.push({
+      rule: "Rehab Contingency ≥ 15%",
+      status: "warn",
+      message: `${rehabBufferPct.toFixed(0)}% buffer — covers small surprises only.`,
+      detail: "Rehab estimates miss something on most flips. Under 15% buffer, mid-sized surprises eat the margin.",
+    });
+  } else {
+    rules.push({
+      rule: "Rehab Contingency ≥ 15%",
+      status: "fail",
+      message: `${rehabBufferPct.toFixed(0)}% buffer — one surprise wipes it.`,
+      detail: "Rehab estimates miss something on most flips. Under 10% buffer is functionally no buffer at all.",
+    });
+  }
+
+  // ── 5. Cash-on-Cash > 20% annualized ────────────────────────────────────
+  // The benchmark that says the work and risk are worth it vs. a passive
+  // alternative. The math accounts for actual cash exposure, not just
+  // sticker profit.
+  if (cocReturnAnnual >= 20) {
+    rules.push({
+      rule: "Cash-on-Cash > 20%",
+      status: "pass",
+      message: `${cocReturnAnnual.toFixed(1)}% annualized — strong return for the work.`,
+      detail: "Cash-on-cash = annual profit ÷ cash out of pocket. Above 20% beats most passive alternatives at this risk level.",
+    });
+  } else if (cocReturnAnnual >= 10) {
+    rules.push({
+      rule: "Cash-on-Cash > 20%",
+      status: "warn",
+      message: `${cocReturnAnnual.toFixed(1)}% annualized — fine, not exciting.`,
+      detail: "Cash-on-cash = annual profit ÷ cash out of pocket. 10–20% works but the marginal flip vs. passive deployment gets harder to justify.",
+    });
+  } else {
+    rules.push({
+      rule: "Cash-on-Cash > 20%",
+      status: "fail",
+      message: `${cocReturnAnnual.toFixed(1)}% annualized — the work isn't paying.`,
+      detail: "Cash-on-cash = annual profit ÷ cash out of pocket. Below 10% is hard to justify against passive alternatives at the same risk.",
+    });
+  }
+
+  return rules;
+}
+
 function buildInsight(profit, margin, arv, purchasePrice, rehabWithContingency, holdingMonths) {
   // 70% rule check
   const maxOfferByRule = arv * 0.70 - rehabWithContingency;
@@ -145,6 +323,16 @@ function runModel(v, _snap = {}) {
       pct: arv > 0 ? x.value / arv : 0,
     })),
     insight: buildInsight(profitPerFlip, margin, arv, purchasePrice, rehabWithBuffer, holdingMonths),
+    rulesCheck: buildRulesCheck({
+      arv,
+      purchasePrice,
+      rehabWithBuffer,
+      rehabBufferPct,
+      profitPerFlip,
+      margin,
+      holdingMonths,
+      cocReturnAnnual,
+    }),
   };
 }
 

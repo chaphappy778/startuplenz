@@ -1,6 +1,6 @@
 {
   "name": "StartupLenz",
-  "tagline": "Vertical-specific startup cost modeling — TurboTax for startup budgets",
+  "tagline": "Vertical-specific startup cost modeling \u2014 TurboTax for startup budgets",
   "status": "building",
   "email": "hello@startuplenz.com",
   "gmail_url": "https://mail.google.com/mail/u/0/#search/to%3Astartuplenz",
@@ -8,22 +8,39 @@
   "production_url": "https://startuplenz.com",
   "todos": [
     {
-      "text": "Tomorrow: at desk — set RESEND_API_KEY + RESEND_FROM_ADDRESS in apps/web/.env.local, verify chaphaus.com sender at resend.com/domains if not done, then npm install + restart dev server.",
+      "id": "t-sl-og-lockup",
+      "text": "OG card still rendering with empty top-left even after switching from data URI to URL fetch for /brand/logo_lockup_indigo.png. Tried: clean RGB re-encode, clean RGBA re-encode, both verified valid via PIL. Next things to try: (1) inline SVG version of the lockup (Satori handles SVG natively, dodges the whole PNG decode path); (2) check Vercel deploy logs for Satori errors on the edge route; (3) test with a simpler PNG from public/ to see if URL-fetched images render at all on the current next/og 16.x. Site card currently shows headline + subtitle + feature pills + bottom URL, just no logo chip.",
+      "status": "up_next",
+      "priority": "medium",
+      "added_at": "2026-06-08",
+      "added_by": "cowork",
+      "owner": "claude",
+      "tags": [
+        "og",
+        "branding",
+        "bug"
+      ],
+      "ticket": "SU-1"
+    },
+    {
+      "text": "Tomorrow: at desk \u2014 set RESEND_API_KEY + RESEND_FROM_ADDRESS in apps/web/.env.local, verify chaphaus.com sender at resend.com/domains if not done, then npm install + restart dev server.",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-4rem84",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-2"
     },
     {
-      "text": "Tomorrow: at desk — push migrations 014–021 to remote Supabase via `npx supabase db push`. Adds 4 new vertical seeds, hygiene, and email_subscribers table.",
+      "text": "Tomorrow: at desk \u2014 push migrations 014\u2013021 to remote Supabase via `npx supabase db push`. Adds 4 new vertical seeds, hygiene, and email_subscribers table.",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-ldevcy",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-3"
     },
     {
       "text": "Add STARTUPLENZ_ADMIN_EMAILS=jenniferchapman177@gmail.com to apps/web/.env.local so /admin works.",
@@ -32,16 +49,18 @@
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-30n7jb",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-4"
     },
     {
-      "text": "Decide on pricing — keep Pro at $19, drop to $14.99, or annual-only $9.99 equivalent. Likely deferred since the new strategy is free + email capture.",
+      "text": "Decide on pricing \u2014 keep Pro at $19, drop to $14.99, or annual-only $9.99 equivalent. Likely deferred since the new strategy is free + email capture.",
       "owner": "decision",
       "done": false,
       "added_by": "user",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-g9wtty",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-5"
     },
     {
       "text": "Decide if/when to deploy to Vercel (everything is dev-only right now). Triggers Google indexing the new SEO pages once live.",
@@ -50,7 +69,8 @@
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-vo3ct9",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-6"
     },
     {
       "text": "After deploy: submit sitemap.xml to Google Search Console at https://search.google.com/search-console (verify domain ownership first).",
@@ -59,16 +79,18 @@
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-ebrnwn",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-7"
     },
     {
-      "text": "Visual / layout pass across all 8 vertical model pages — your eyeball pass while watching it hot-reload in VS Code.",
+      "text": "Visual / layout pass across all 8 vertical model pages \u2014 your eyeball pass while watching it hot-reload in VS Code.",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-zxqv02",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-8"
     },
     {
       "text": "Compare-two-verticals view at /compare built. 36 ordered-pair sitemap entries added. House-flipping vertical (#9) added, modeled, seeded, with content + SEO.",
@@ -78,7 +100,8 @@
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-y0ash7",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-9"
     },
     {
       "text": "Tomorrow at desk: push migration 022_house_flipping_seed.sql via `npx supabase db push` (you have the DB password set up). Then restart dev server to pick up the new vertical.",
@@ -87,17 +110,19 @@
       "added_by": "cowork",
       "added_at": "2026-05-15",
       "id": "t-mpvrbl6c-pw3f0f",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-10"
     },
     {
-      "text": "Goal Seek panel built — embedded on every /model/[vertical] page. Users set a $/mo target, pick a lever to move, click Solve, apply. Plus 45 new SEO landing pages at /goal/[vertical]?net=[1000|2500|5000|10000|25000] targeting 'how to make $X with [vertical]' queries.",
+      "text": "Goal Seek panel built \u2014 embedded on every /model/[vertical] page. Users set a $/mo target, pick a lever to move, click Solve, apply. Plus 45 new SEO landing pages at /goal/[vertical]?net=[1000|2500|5000|10000|25000] targeting 'how to make $X with [vertical]' queries.",
       "owner": "cowork",
       "done": true,
       "done_at": "2026-05-15",
       "added_by": "cowork",
       "added_at": "2026-05-15",
       "id": "t-mpvrbl6c-tmqplw",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-11"
     },
     {
       "text": "List-asset foundations shipped: open/click tracking via Resend webhooks, email_events audit table, progressive profiling (stage), HMAC-signed unsubscribe flow + List-Unsubscribe headers for one-click unsub. Required CAN-SPAM compliance + the data buyers will pay for in 2-3 years.",
@@ -107,17 +132,19 @@
       "added_by": "cowork",
       "added_at": "2026-05-15",
       "id": "t-mpvrbl6c-vac0qh",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-12"
     },
     {
-      "text": "10th vertical added: Slime Brand. TikTok Shop heavy, drops-based, temp-pack shipping. Tuned to actual indie slime economics — Jennifer's domain expertise from SlimeLog informed the defaults + content.",
+      "text": "10th vertical added: Slime Brand. TikTok Shop heavy, drops-based, temp-pack shipping. Tuned to actual indie slime economics \u2014 Jennifer's domain expertise from SlimeLog informed the defaults + content.",
       "owner": "cowork",
       "done": true,
       "done_at": "2026-05-21",
       "added_by": "cowork",
       "added_at": "2026-05-21",
       "id": "t-mpvrbl6c-rn2ma6",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-13"
     },
     {
       "text": "Push migrations 027 + 028 + 029 (slime + help-text + direct-sales channel): `./scripts/db-push.sh`",
@@ -126,36 +153,40 @@
       "added_by": "cowork",
       "added_at": "2026-05-21",
       "id": "t-mpvrbl6c-tlah4f",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-14"
     },
     {
-      "text": "Direct-sales channel added to slime + handmade — own-site sales (Shopify, Big Cartel, IG-link checkout) modeled as a third channel paying only 2.9% card processing. Materially higher margin than Etsy or TikTok Shop.",
+      "text": "Direct-sales channel added to slime + handmade \u2014 own-site sales (Shopify, Big Cartel, IG-link checkout) modeled as a third channel paying only 2.9% card processing. Materially higher margin than Etsy or TikTok Shop.",
       "owner": "cowork",
       "done": true,
       "done_at": "2026-05-21",
       "added_by": "cowork",
       "added_at": "2026-05-21",
       "id": "t-mpvrbl6c-isjgfl",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-15"
     },
     {
-      "text": "Slider tooltips shipped — `help_text` column on vertical_inputs, populated for all 160+ inputs across the 10 verticals. Renders as a hoverable `?` next to each slider label. Admin can edit help text per row from /admin/inputs/[slug].",
+      "text": "Slider tooltips shipped \u2014 `help_text` column on vertical_inputs, populated for all 160+ inputs across the 10 verticals. Renders as a hoverable `?` next to each slider label. Admin can edit help text per row from /admin/inputs/[slug].",
       "owner": "cowork",
       "done": true,
       "done_at": "2026-05-21",
       "added_by": "cowork",
       "added_at": "2026-05-21",
       "id": "t-mpvrbl6c-b8e4j3",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-16"
     },
     {
-      "text": "Tomorrow at desk — push migration 023_email_events_and_profile.sql via `npx supabase db push`. Then set up the Resend webhook at https://resend.com/webhooks pointing at https://startuplenz.com/api/webhooks/resend (production) with the signing secret. Add RESEND_WEBHOOK_SECRET to .env.local + Vercel env vars. Add UNSUBSCRIBE_SECRET too (any random string).",
+      "text": "Tomorrow at desk \u2014 push migration 023_email_events_and_profile.sql via `npx supabase db push`. Then set up the Resend webhook at https://resend.com/webhooks pointing at https://startuplenz.com/api/webhooks/resend (production) with the signing secret. Add RESEND_WEBHOOK_SECRET to .env.local + Vercel env vars. Add UNSUBSCRIBE_SECRET too (any random string).",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
       "added_at": "2026-05-15",
       "id": "t-mpvrbl6c-oq6wp4",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-17"
     },
     {
       "text": "Design polish: audit and remove emoji used inside the app UI (buttons, pills, headers, modal titles). Keep emoji on the home page vertical tiles only. Add SVG icons where genuinely needed. Prompt ready.",
@@ -164,35 +195,39 @@
       "added_by": "user",
       "added_at": "2026-05-15",
       "id": "t-mpvrbl6c-264w00",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-18"
     },
     {
-      "text": "First blog post — once email capture is rolling, write a launch post explaining the calculator and the strategy. Prompt ready.",
+      "text": "First blog post \u2014 once email capture is rolling, write a launch post explaining the calculator and the strategy. Prompt ready.",
       "owner": "claude-code",
       "done": false,
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-5q2mbu",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-19"
     },
     {
-      "text": "Commit all Phase 1–5 work + hub config + docs to git in logical batches.",
+      "text": "Commit all Phase 1\u20135 work + hub config + docs to git in logical batches.",
       "owner": "user",
       "done": false,
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-jpcjlx",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-20"
     },
     {
-      "text": "Phase 2+3 wired — visit /model/handmade-craft, 16 sliders drive the right-side numbers",
+      "text": "Phase 2+3 wired \u2014 visit /model/handmade-craft, 16 sliders drive the right-side numbers",
       "done": true,
       "done_at": "2026-05-06",
       "owner": "claude-code",
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-muh48o",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-21"
     },
     {
       "text": "Schema hygiene migration 13 applied",
@@ -202,17 +237,19 @@
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-6zx82f",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-22"
     },
     {
-      "text": "Phase 4 — saved_plans persistence + ?q= share URLs + /plans index + edit-in-place + delete",
+      "text": "Phase 4 \u2014 saved_plans persistence + ?q= share URLs + /plans index + edit-in-place + delete",
       "done": true,
       "done_at": "2026-05-06",
       "owner": "cowork",
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-nt5nrz",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-23"
     },
     {
       "text": "Seed + model 3 more verticals: food-truck, subscription-box, candle-bath-body",
@@ -222,27 +259,30 @@
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-3vefva",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-24"
     },
     {
-      "text": "Admin dashboard at /admin/inputs — edit any input default in one click",
+      "text": "Admin dashboard at /admin/inputs \u2014 edit any input default in one click",
       "done": true,
       "done_at": "2026-05-06",
       "owner": "cowork",
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-b3wp5j",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-25"
     },
     {
-      "text": "VerticalSelector reads from DB — no more hardcoded list, no more 404 tiles",
+      "text": "VerticalSelector reads from DB \u2014 no more hardcoded list, no more 404 tiles",
       "done": true,
       "done_at": "2026-05-06",
       "owner": "cowork",
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-j1a3uw",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-26"
     },
     {
       "text": "4 DIY verticals added: print-on-demand, digital-products, reseller, cleaning-service",
@@ -252,7 +292,8 @@
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-280lfa",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-27"
     },
     {
       "text": "Email capture built end-to-end (Resend + email_subscribers table + modal)",
@@ -262,52 +303,55 @@
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-hfg2na",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-28"
     },
     {
-      "text": "SEO foundations — per-vertical metadata, OG images, sitemap, robots, Schema.org, ~3k words of explainer + FAQ content",
+      "text": "SEO foundations \u2014 per-vertical metadata, OG images, sitemap, robots, Schema.org, ~3k words of explainer + FAQ content",
       "done": true,
       "done_at": "2026-05-06",
       "owner": "cowork",
       "added_by": "cowork",
       "added_at": "2026-05-06",
       "id": "t-mpvrbl6c-fw4h3e",
-      "status": "done"
+      "status": "done",
+      "ticket": "SU-29"
     },
     {
       "id": "mou80l7kvogk",
-      "text": "Random idea — explore polished merch site as parent landing",
+      "text": "Random idea \u2014 explore polished merch site as parent landing",
       "owner": "decision",
       "done": false,
       "added_by": "inbox",
       "added_at": "2026-05-06T15:37:15.872Z",
-      "status": "up_next"
+      "status": "up_next",
+      "ticket": "SU-30"
     }
   ],
   "prompts": [
     {
       "title": "Compare-two-verticals view",
       "target": "claude-code",
-      "notes": "Builds the /compare?a=X&b=Y route — long-tail SEO for \"X vs Y\" searches.",
-      "body": "Build a new route at /compare in apps/web/app. It should:\n\n1. Read ?a=<slug>&b=<slug> from searchParams. If either is missing or invalid, render a picker UI listing all active verticals so the user can choose two.\n2. For each vertical, server-side: fetch the verticals row, fetch its vertical_inputs (ordered by sort_order), run computeModel() with default values, and collect the resulting ModelOutput.\n3. Render a side-by-side responsive layout: two columns at desktop, stacked at mobile. Each column shows the vertical name, the snapshot cards (gross / cogs / net / margin), the 3-phase growth trajectory, the cost breakdown, and the insight. A shared section above the columns compares them: \"Which earns more at default assumptions?\" with a single-line takeaway.\n4. Add generateMetadata that builds an SEO title like \"<Vertical A> vs <Vertical B> — startup cost comparison\" and a meta description summarizing the bigger profit at defaults.\n5. Add /compare to app/sitemap.ts: generate one entry per ordered pair of active verticals (so handmade-craft vs food-truck, handmade-craft vs subscription-box, etc.) — that's a lot of URLs which is the SEO point.\n6. Reuse the existing MonthlySnapshot / CostBreakdown / GrowthTrajectory / InsightCallout components — don't reinvent.\n7. Add the compare page to robots.txt as crawlable.\n\nDo not touch the existing /model/[vertical] route. Don't add new dependencies."
+      "notes": "Builds the /compare?a=X&b=Y route \u2014 long-tail SEO for \"X vs Y\" searches.",
+      "body": "Build a new route at /compare in apps/web/app. It should:\n\n1. Read ?a=<slug>&b=<slug> from searchParams. If either is missing or invalid, render a picker UI listing all active verticals so the user can choose two.\n2. For each vertical, server-side: fetch the verticals row, fetch its vertical_inputs (ordered by sort_order), run computeModel() with default values, and collect the resulting ModelOutput.\n3. Render a side-by-side responsive layout: two columns at desktop, stacked at mobile. Each column shows the vertical name, the snapshot cards (gross / cogs / net / margin), the 3-phase growth trajectory, the cost breakdown, and the insight. A shared section above the columns compares them: \"Which earns more at default assumptions?\" with a single-line takeaway.\n4. Add generateMetadata that builds an SEO title like \"<Vertical A> vs <Vertical B> \u2014 startup cost comparison\" and a meta description summarizing the bigger profit at defaults.\n5. Add /compare to app/sitemap.ts: generate one entry per ordered pair of active verticals (so handmade-craft vs food-truck, handmade-craft vs subscription-box, etc.) \u2014 that's a lot of URLs which is the SEO point.\n6. Reuse the existing MonthlySnapshot / CostBreakdown / GrowthTrajectory / InsightCallout components \u2014 don't reinvent.\n7. Add the compare page to robots.txt as crawlable.\n\nDo not touch the existing /model/[vertical] route. Don't add new dependencies."
     },
     {
-      "title": "First blog post — launch post",
+      "title": "First blog post \u2014 launch post",
       "target": "claude-code",
       "notes": "Set up a blog scaffold and write the inaugural post explaining the strategy.",
-      "body": "Set up a minimal blog under apps/web/app/blog. Requirements:\n\n1. Posts as MDX files in apps/web/content/posts/<slug>.mdx. Each post has frontmatter for title, description, publishedAt, slug.\n2. /blog renders an index of all posts (newest first).\n3. /blog/[slug] renders a single post.\n4. Add posts to app/sitemap.ts.\n5. Add generateMetadata + og:image to each post page.\n6. Style minimally to match the rest of the dark theme.\n7. Add one starter post at content/posts/why-startuplenz.mdx — Jennifer will edit. The placeholder content: \"Why we built StartupLenz — and why it's free,\" 600–800 words covering: the calculator is the lead magnet, not the product; honest cost data matters; here's what each vertical models; how email capture works; why the email list is the actual asset.\n\nUse @next/mdx for MDX support. Keep it dependency-light. No external CMS. Posts are checked into git."
+      "body": "Set up a minimal blog under apps/web/app/blog. Requirements:\n\n1. Posts as MDX files in apps/web/content/posts/<slug>.mdx. Each post has frontmatter for title, description, publishedAt, slug.\n2. /blog renders an index of all posts (newest first).\n3. /blog/[slug] renders a single post.\n4. Add posts to app/sitemap.ts.\n5. Add generateMetadata + og:image to each post page.\n6. Style minimally to match the rest of the dark theme.\n7. Add one starter post at content/posts/why-startuplenz.mdx \u2014 Jennifer will edit. The placeholder content: \"Why we built StartupLenz \u2014 and why it's free,\" 600\u2013800 words covering: the calculator is the lead magnet, not the product; honest cost data matters; here's what each vertical models; how email capture works; why the email list is the actual asset.\n\nUse @next/mdx for MDX support. Keep it dependency-light. No external CMS. Posts are checked into git."
     },
     {
       "title": "Emoji audit + SVG icon pass",
       "target": "claude-code",
-      "notes": "Jennifer dislikes emoji inside app UI — pills, buttons, modal titles, banners. She's fine with them on the home page vertical tiles (the big-icon-per-tile pattern). This prompt does a clean sweep.",
-      "body": "Audit and clean up emoji usage in the StartupLenz app UI. The rule is: NO emoji inline with text, in buttons, in pills, in modal titles, in banners, or in toolbar labels. Emoji is acceptable in two places only:\n\n1. The home page vertical tiles in apps/web/components/VerticalSelector.tsx (the big icon per tile — keep these).\n2. Inside emails sent via Resend (apps/web/lib/emails/) — those are external comms where emoji is conventional. Leave them alone unless I say otherwise.\n\nDo this in three steps:\n\nSTEP 1 — Audit. Grep the entire apps/web/ directory for emoji characters using a wide unicode range. Specifically: `[\\u{1F300}-\\u{1FAFF}\\u{2600}-\\u{27BF}]` matches the most common ranges. Report a list of every file and line where emoji appears, organized by file. EXCLUDE: VerticalSelector.tsx, anything under lib/emails/, the .env files, and node_modules / .next.\n\nSTEP 2 — Remove. For each emoji-in-UI hit:\n- If the emoji was decorative next to a label, just delete it and keep the label.\n- If the emoji was conveying a status or affordance (e.g., the ▸/▾ chevrons on the prompt accordion, the ✓ on a checkmark), replace it with a small inline SVG. Use a single shared `<Icon name=\"...\" />` component in components/Icon.tsx with a tiny set of paths: arrow-left, arrow-right, check, plus, x, copy, mail, share, download, trash. 16×16 currentColor SVGs, ~10 lines of JSX each.\n- Modal titles like \"Plan sent\" or \"Save this plan\" stay text-only — no icon needed.\n\nSTEP 3 — Verify. Run `npm run type-check` to confirm clean. Visit each app route in dev (home, /model/handmade-craft, /plans, /plans/[id] for a saved plan, /admin/inputs) and report whether anything looks visually broken or missing. Don't deploy."
+      "notes": "Jennifer dislikes emoji inside app UI \u2014 pills, buttons, modal titles, banners. She's fine with them on the home page vertical tiles (the big-icon-per-tile pattern). This prompt does a clean sweep.",
+      "body": "Audit and clean up emoji usage in the StartupLenz app UI. The rule is: NO emoji inline with text, in buttons, in pills, in modal titles, in banners, or in toolbar labels. Emoji is acceptable in two places only:\n\n1. The home page vertical tiles in apps/web/components/VerticalSelector.tsx (the big icon per tile \u2014 keep these).\n2. Inside emails sent via Resend (apps/web/lib/emails/) \u2014 those are external comms where emoji is conventional. Leave them alone unless I say otherwise.\n\nDo this in three steps:\n\nSTEP 1 \u2014 Audit. Grep the entire apps/web/ directory for emoji characters using a wide unicode range. Specifically: `[\\u{1F300}-\\u{1FAFF}\\u{2600}-\\u{27BF}]` matches the most common ranges. Report a list of every file and line where emoji appears, organized by file. EXCLUDE: VerticalSelector.tsx, anything under lib/emails/, the .env files, and node_modules / .next.\n\nSTEP 2 \u2014 Remove. For each emoji-in-UI hit:\n- If the emoji was decorative next to a label, just delete it and keep the label.\n- If the emoji was conveying a status or affordance (e.g., the \u25b8/\u25be chevrons on the prompt accordion, the \u2713 on a checkmark), replace it with a small inline SVG. Use a single shared `<Icon name=\"...\" />` component in components/Icon.tsx with a tiny set of paths: arrow-left, arrow-right, check, plus, x, copy, mail, share, download, trash. 16\u00d716 currentColor SVGs, ~10 lines of JSX each.\n- Modal titles like \"Plan sent\" or \"Save this plan\" stay text-only \u2014 no icon needed.\n\nSTEP 3 \u2014 Verify. Run `npm run type-check` to confirm clean. Visit each app route in dev (home, /model/handmade-craft, /plans, /plans/[id] for a saved plan, /admin/inputs) and report whether anything looks visually broken or missing. Don't deploy."
     },
     {
       "title": "Pre-deploy checklist run",
       "target": "claude-code",
       "notes": "Make sure the app is clean before pushing to Vercel.",
-      "body": "Run the pre-deploy checklist on apps/web:\n\n1. `npm run type-check` — should pass with zero errors. If any error exists, show it but don't auto-fix unless trivial.\n2. `npm run lint` — surface any warnings.\n3. `npm run build` — confirms the production build completes. Show the bundle size summary at the end.\n4. Visit each of the 8 vertical pages in dev (localhost:4000/model/<slug>) using curl or the Next dev server — confirm each returns 200 and the HTML body contains the calculator markup (search for \"calc-main\" in the response).\n5. Check sitemap.xml and robots.txt render at /sitemap.xml and /robots.txt.\n6. Confirm /opengraph-image returns a 1200x630 PNG with HTTP 200.\n\nReport a single status table at the end: each check, pass/fail, plus any next steps if something fails. Don't deploy — Jennifer will do that herself once you give the green light."
+      "body": "Run the pre-deploy checklist on apps/web:\n\n1. `npm run type-check` \u2014 should pass with zero errors. If any error exists, show it but don't auto-fix unless trivial.\n2. `npm run lint` \u2014 surface any warnings.\n3. `npm run build` \u2014 confirms the production build completes. Show the bundle size summary at the end.\n4. Visit each of the 8 vertical pages in dev (localhost:4000/model/<slug>) using curl or the Next dev server \u2014 confirm each returns 200 and the HTML body contains the calculator markup (search for \"calc-main\" in the response).\n5. Check sitemap.xml and robots.txt render at /sitemap.xml and /robots.txt.\n6. Confirm /opengraph-image returns a 1200x630 PNG with HTTP 200.\n\nReport a single status table at the end: each check, pass/fail, plus any next steps if something fails. Don't deploy \u2014 Jennifer will do that herself once you give the green light."
     }
   ],
   "artifacts": [
@@ -357,5 +401,7 @@
       "kind": "tool"
     }
   ],
-  "notes": "8 verticals live in dev with real models + content. Admin dashboard, email capture, save+share plans, SEO foundations all built. Strategy: free calculator + email list + blog. Stripe deferred.\n\nNext at the desk: keys + migration push + decide on deploy timing. Then prompts above are queued for Claude Code sessions."
+  "notes": "8 verticals live in dev with real models + content. Admin dashboard, email capture, save+share plans, SEO foundations all built. Strategy: free calculator + email list + blog. Stripe deferred.\n\nNext at the desk: keys + migration push + decide on deploy timing. Then prompts above are queued for Claude Code sessions.",
+  "ticket_prefix": "SU",
+  "next_ticket_number": 31
 }

@@ -39,6 +39,16 @@ export interface CostItem {
   pct: number;
 }
 
+/** One rule-of-thumb check returned by a vertical's model. Surfaces in the
+ *  RulesCheck card on the calculator. Only the house-flipping model populates
+ *  this today; other verticals leave it undefined and the UI hides the card. */
+export interface RuleCheckItem {
+  rule: string;
+  status: "pass" | "warn" | "fail";
+  message: string;
+  detail?: string;
+}
+
 export interface ModelOutput {
   grossRevenue: number;
   costOfGoods: number;
@@ -53,6 +63,9 @@ export interface ModelOutput {
   };
   costBreakdown: CostItem[];
   insight: string;
+  /** Optional. House flipping is the first vertical to populate this.
+   *  Verticals that don't supply it get nothing on the dashboard. */
+  rulesCheck?: RuleCheckItem[];
 }
 
 // ─── Snapshot / Plan ──────────────────────────────────────────────────────────
